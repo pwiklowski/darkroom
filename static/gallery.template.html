@@ -1,0 +1,13 @@
+<div class="dr-gallery">
+        <div class="dr-title">{{gallery.Name}}</div>
+        <div class="dr-comment">{{gallery.Comment}}</div>
+        
+        <div class="dr-photos-container">
+            <div *ngFor="let column of columns; let c = index" class="dr-photo-collumn">
+                <div *ngFor="let p of photos; let i = index" class="dr-photo-containter">
+                    <img (click)="showPhoto(p.Id)" *ngIf="i%columnsNumber==c" class="dr-photo b-lazy" src="/static/stub2.gif" data-src="/photo/{{p.Id}}/320"/>
+                </div>
+            </div>
+        </div>
+</div>
+

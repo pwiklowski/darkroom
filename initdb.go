@@ -8,15 +8,17 @@ import "gopkg.in/mgo.v2/bson"
 
 type Photo struct{
     Location string;
+    Name string;
     Size string;
     Comment string;
     GalleryId bson.ObjectId;
 }
 
 type Gallery struct{
-    Id bson.ObjectId `bson:"_id"`
+    Id bson.ObjectId `bson: "_id"`
     Name string;
     Comment string;
+    Key string;
 }
 
 func createGallery(name string, l string, db *mgo.Database){
@@ -31,11 +33,10 @@ func createGallery(name string, l string, db *mgo.Database){
         panic(err)
     }
 
-
     files, _ := ioutil.ReadDir(l)
 
     for _, file  := range files {
-        err := photos.Insert(&Photo{GalleryId: i, Location: l+file.Name()})
+        err := photos.Insert(&Photo{GalleryId: i, Location: l, Name: file.Name()})
         if err != nil {
             panic(err)
         }
@@ -45,9 +46,8 @@ func createGallery(name string, l string, db *mgo.Database){
 
 
 func test(db *mgo.Database) {
-    createGallery("testowa", "/hdd/temp/darkroom/", db)
-    createGallery("druga", "/hdd/temp/foto/100D3100/Jakas wycieczka/", db)
-    createGallery("duza", "/hdd/temp/foto/100D3100/katalog 1/", db)
+    //createGallery("testowa", "/hdd/temp/darkroom/", db)
+    createGallery("Testowa galeria", "/hdd/temp/test2/", db)
 }
 
 func main(){
@@ -59,5 +59,5 @@ func main(){
 
     db := session.DB("test1");
 
-    //test(db)
+    test(db)
 }
