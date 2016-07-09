@@ -1,13 +1,24 @@
-<div class="dr-gallery">
-        <div class="dr-title">{{gallery.Name}}</div>
-        <div class="dr-comment">{{gallery.Comment}}</div>
-        
-        <div class="dr-photos-container">
-            <div *ngFor="let column of columns; let c = index" class="dr-photo-collumn">
-                <div *ngFor="let p of photos; let i = index" class="dr-photo-containter">
-                    <img (click)="showPhoto(p.Id)" *ngIf="i%columnsNumber==c" class="dr-photo b-lazy" src="/static/stub2.gif" data-src="/photo/{{p.Id}}/320"/>
+<div id="dr-photo-slider-container">
+    <div id="dr-photo-slider">
+        <div class="dr-photo-big" (click)="hidePhoto()" [class.dr-photo-big-selected]="i==selectedPhoto" *ngFor="let p of photos; let i=index;">
+            <img id="{{p.Id}}" class="dr-p" data-src="/photo/{{p.Id}}/1920">
+            {{p.Id}} {{p.Name}} {{p.Width }} {{p.Height}}
+        </div>
+    </div>
+</div>
+
+<div class="dr-list">
+    <div class="dr-gallery">
+            <div class="dr-title">{{gallery.Name}}</div>
+            <div class="dr-comment">{{gallery.Comment}}</div>
+            
+            <div class="dr-column-container">
+                <div *ngFor="let column of columns; let c = index" class="dr-photo-column">
+                    <div *ngFor="let p of photos; let i = index"  class="dr-photo-container">
+                        <img (click)="showPhoto(p, i)" *ngIf="i%columnsNumber==c" class="dr-photo b-lazy" src="/static/stub2.gif" data-src="/photo/{{p.Id}}/320"/>
+                    </div>
                 </div>
             </div>
-        </div>
+    </div>
 </div>
 

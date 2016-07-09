@@ -9,6 +9,8 @@ import "fmt"
 type Photo struct{
     Id bson.ObjectId `bson:"_id"`
     Location string;
+    Width int;
+    Height int;
     Size string;
     Comment string;
     GalleryId bson.ObjectId;
@@ -79,7 +81,6 @@ func main(){
                 println("error: " + err.Error())
             }
         }
-    
     })
 
 
