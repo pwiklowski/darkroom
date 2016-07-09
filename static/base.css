@@ -79,6 +79,7 @@ nav{
     display: flex;
     height: 84%;
     z-index: 1000;
+    transition: transform 500ms ease-in-out;
 }
 
 .dr-photo-big{

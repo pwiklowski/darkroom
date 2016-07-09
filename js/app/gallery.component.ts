@@ -96,7 +96,7 @@ export class GalleryComponent {
         this.photoOffset = Math.round((this.viewWidth - w)/2);
         console.log("photoOffset" + this.photoOffset);
 
-        p.style.left = this.photoOffset + "px";
+        p.style.transform = "translate(" +this.photoOffset + "px)";
     }
 
     showPhoto(photo, selectedPhoto){
@@ -115,7 +115,7 @@ export class GalleryComponent {
 
         this.selectedPhoto = selectedPhoto;
         this.photoOffset = photoOffset;
-        slider.style.left = photoOffset + "px";
+        slider.style.transform = "translate(" +this.photoOffset + "px)";
 
         p.style.top = "0%";
     }
@@ -133,7 +133,8 @@ export class GalleryComponent {
         let p = document.getElementById("dr-photo-slider");
         this.photoOffset -= this.getPhotoWidth(this.selectedPhoto)/2 + this.getPhotoWidth(this.selectedPhoto+1)/2 + this.PHOTO_MARGIN;
         this.selectedPhoto++;
-        p.style.left = this.photoOffset + "px";
+        p.style.transform = "translate(" +this.photoOffset + "px)";
+
     }
 
     prevPhoto(){
@@ -143,7 +144,7 @@ export class GalleryComponent {
         let p = document.getElementById("dr-photo-slider");
         this.photoOffset += this.getPhotoWidth(this.selectedPhoto)/2 + this.getPhotoWidth(this.selectedPhoto-1)/2 + this.PHOTO_MARGIN;
         this.selectedPhoto--;
-        p.style.left = this.photoOffset + "px";
+        p.style.transform = "translate(" +this.photoOffset + "px)";
     }
 
     hidePhoto(){
