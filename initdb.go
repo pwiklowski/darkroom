@@ -4,12 +4,17 @@ import "fmt"
 import "io/ioutil"
 import "gopkg.in/mgo.v2"
 import "gopkg.in/mgo.v2/bson"
+import "strings"
+import "strconv"
+import "github.com/xiam/exif"
 
 
 type Photo struct{
     Location string;
     Name string;
     Size string;
+    Width int;
+    Height int;
     Comment string;
     GalleryId bson.ObjectId;
 }
@@ -35,10 +40,34 @@ func createGallery(name string, l string, db *mgo.Database){
 
     files, _ := ioutil.ReadDir(l)
 
+
     for _, file  := range files {
-        err := photos.Insert(&Photo{GalleryId: i, Location: l, Name: file.Name()})
-        if err != nil {
-            panic(err)
+        fmt.Println(l+file.Name())
+        if strings.Contains(strings.ToLower(file.Name()), "jpg"){
+            
+            data, _ := exif.Read(l + file.Name())
+
+            width, _ := strconv.Atoi(data.Tags["Pixel X Dimension"])
+            height, _ := strconv.Atoi(data.Tags["Pixel Y Dimension"])
+            orientation := data.Tags["Orientation"]
+            fmt.Printf("%s\n", orientation)
+
+            if orientation == "Left-bottom" || orientation =="Right-top"{
+                temp := width
+                width = height
+                height = temp
+                fmt.Println("rotate");
+            }
+
+
+            err = photos.Insert(&Photo{GalleryId: i,
+                                        Width: width,
+                                        Height: height,
+                                        Location: l,
+                                        Name: file.Name()})
+            if err != nil {
+                panic(err)
+            }
         }
     }
 }
