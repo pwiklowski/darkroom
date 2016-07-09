@@ -151,7 +151,6 @@ export class GalleryComponent {
         p.style.top = "100%";
     }
 
-
     getGallery(galleryId){
         this.http.get("/gallery/"+galleryId).toPromise().then(res => {this.gallery = res.json(); console.log(this.gallery);});
     }
