@@ -100,7 +100,8 @@ export class GalleryComponent {
     }
 
     showPhoto(photo, selectedPhoto){
-        console.log(photo + " " +  selectedPhoto);
+        this.isPhotoDisplayed = true;
+
         let p = document.getElementById("dr-photo-slider-container");
         let slider = document.getElementById("dr-photo-slider");
         let firstPhoto = this.photos[0];
@@ -146,7 +147,7 @@ export class GalleryComponent {
     }
 
     hidePhoto(){
-        console.log("hidePhoto");
+        this.isPhotoDisplayed = false;
         let p = document.getElementById("dr-photo-slider-container");
         p.style.top = "100%";
     }
@@ -164,15 +165,15 @@ export class GalleryComponent {
         }
     }
 
-    @HostListener('window:scroll', ['$event'])
+    @HostListener('window:mousewheel', ['$event'])
     onScrollEvent(event: any) {
-        console.log(event);
-        if (event.keyIdentifier == "Right"){
-            console.log("right");
-            this.nextPhoto();
-        }else if (event.keyIdentifier == "Left"){
-            console.log("left");
-            this.prevPhoto();
+        if (this.isPhotoDisplayed){
+            if (event.wheelDelta  < 0){
+                this.nextPhoto();
+            }else{
+                this.prevPhoto();
+            }
+            return false;
         }
     }
 }
