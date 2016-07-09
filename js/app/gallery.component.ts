@@ -99,9 +99,23 @@ export class GalleryComponent {
         p.style.left = this.photoOffset + "px";
     }
 
-    showPhoto(photo, i){
-        console.log(photo + " " +  i);
+    showPhoto(photo, selectedPhoto){
+        console.log(photo + " " +  selectedPhoto);
         let p = document.getElementById("dr-photo-slider-container");
+        let slider = document.getElementById("dr-photo-slider");
+        let firstPhoto = this.photos[0];
+
+        let w = firstPhoto.Width * (slider.offsetHeight/ firstPhoto.Height);
+        let photoOffset = Math.round((this.viewWidth - w)/2);
+        
+        for (let i=0; i < selectedPhoto; i++){
+            photoOffset -= this.getPhotoWidth(i)/2 + this.getPhotoWidth(i+1)/2 + this.PHOTO_MARGIN;
+        }
+
+        this.selectedPhoto = selectedPhoto;
+        this.photoOffset = photoOffset;
+        slider.style.left = photoOffset + "px";
+
         p.style.top = "0%";
     }
 
@@ -144,6 +158,15 @@ export class GalleryComponent {
 
     @HostListener('window:keydown', ['$event'])
     onKeyEvent(event: any) {
+        if (event.keyIdentifier == "Right"){
+            this.nextPhoto();
+        }else if (event.keyIdentifier == "Left"){
+            this.prevPhoto();
+        }
+    }
+
+    @HostListener('window:scroll', ['$event'])
+    onScrollEvent(event: any) {
         console.log(event);
         if (event.keyIdentifier == "Right"){
             console.log("right");
