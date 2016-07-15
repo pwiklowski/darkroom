@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewContainerRef } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { ROUTER_DIRECTIVES } from '@angular/router';
@@ -22,7 +22,11 @@ import { ROUTER_DIRECTIVES } from '@angular/router';
 
 
 export class AppComponent {
-
+    viewContainerRef;
+    public constructor(viewContainerRef:ViewContainerRef) {
+        // You need this small hack in order to catch application root view container ref
+        this.viewContainerRef = viewContainerRef;
+    }
 }
 
 

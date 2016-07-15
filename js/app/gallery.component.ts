@@ -1,7 +1,9 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, ViewChild, HostListener } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MODAL_DIRECTIVES, BS_VIEW_PROVIDERS} from 'ng2-bootstrap';
+import {FILE_UPLOAD_DIRECTIVES, FileUploader} from 'ng2-file-upload/ng2-file-upload';
 
 export class Gallery{
     Name: string;
@@ -16,10 +18,16 @@ export class Photo{
 
 @Component({
     selector: 'my-app',
-    templateUrl: './static/gallery.template.html'
+    templateUrl: './static/gallery.template.html',
+    directives: [MODAL_DIRECTIVES, FILE_UPLOAD_DIRECTIVES],
+    viewProviders: [BS_VIEW_PROVIDERS]
 })
 
 export class GalleryComponent {
+    @ViewChild('galleryModal') public galleryModal;
+    @ViewChild('newGalleryModal') public newGalleryModal;
+    uploader: FileUploader = new FileUploader({url: URL});
+
     http: Http;
     photos;
     gallery: Gallery;
@@ -45,6 +53,8 @@ export class GalleryComponent {
     viewHeight: number;
 
     selectedPhoto: number = 0;
+
+    editedGalleryId: string;
 
     ngOnInit() {
         this.sub = this.route.params.subscribe(params => {
@@ -76,8 +86,6 @@ export class GalleryComponent {
             }
         );
     }
-
-
 
     initGallery(){
         console.log("initGallery");
@@ -155,6 +163,23 @@ export class GalleryComponent {
 
     getGallery(galleryId){
         this.http.get("/gallery/"+galleryId).toPromise().then(res => {this.gallery = res.json(); console.log(this.gallery);});
+    }
+
+    createGallery(name, modal){
+        let gallery = {
+            "Name": name,
+            "Comment": ""
+        };
+        this.http.post("/createGallery", gallery).toPromise().then(
+            res => {
+                let g = res.json();
+                console.log(g);
+                this.newGalleryModal.hide();
+                this.editedGalleryId = g.Id;
+                this.uploader = new FileUploader({url: 'http://127.0.0.1:8080/gallery/'+ this.editedGalleryId +'/upload'});
+                this.galleryModal.show();
+            }
+        );
     }
 
     @HostListener('window:keydown', ['$event'])
