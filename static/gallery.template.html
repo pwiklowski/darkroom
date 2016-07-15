@@ -57,7 +57,7 @@
       <div class="modal-body">
 
         <input type="file" ng2FileSelect [uploader]="uploader" multiple name="uploadField" /><br/>
-        <div class="col-md-9" style="margin-bottom: 40px">
+        <div >
 
             <h3>Upload queue</h3>
             <p>Queue length: </p>
@@ -74,8 +74,8 @@
                 </thead>
                 <tbody>
                 <tr *ngFor="let item of uploader.queue">
-                    <td><strong>{{item.name}}</strong></td>
-                    <td *ngIf="uploader.isHTML5" nowrap>0.00 MB</td>
+                    <td><strong>{{ item?.file?.name }} </strong></td>
+                    <td *ngIf="uploader.isHTML5" nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
                     <td *ngIf="uploader.isHTML5">
                         <div class="progress" style="margin-bottom: 0;">
                             <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
