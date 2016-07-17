@@ -9,22 +9,47 @@ import "os"
 import "strconv"
 import "io"
 import "github.com/xiam/exif"
+import "os/exec"
 
 type Photo struct {
-	Id        bson.ObjectId `bson:"_id"`
-	Location  string
-	Width     int
-	Height    int
-	Size      string
-	Comment   string
-	GalleryId bson.ObjectId
-	Name      string
+	Id          bson.ObjectId `_id`
+	Location    string
+	Width       int
+	Height      int
+	Size        string
+	Comment     string
+	GalleryId   bson.ObjectId
+	Name        string
+	Resolutions []string
 }
 
 type Gallery struct {
-	Id      bson.ObjectId `bson:"_id"`
-	Name    string
-	Comment string
+	Id         bson.ObjectId `_id`
+	Name       string
+	Comment    string
+	CoverPhoto bson.ObjectId `bson:",omitempty"`
+}
+
+func (p Photo) getLocation() string {
+	return p.Location + p.Name
+}
+func (p Photo) getLocationScalled(size string) string {
+	return p.Location + size + "_" + p.Name
+}
+
+func (p Photo) convertPhoto() {
+
+	fmt.Println("convertPhoto " + p.getLocation())
+
+	resolutions := []string{"320", "640", "1280", "1920", "3840"}
+
+	for _, res := range resolutions {
+		cmd := exec.Command("convert", p.getLocation(), "-quality", "90", "-resize", res, p.Location+res+"_"+p.Name)
+		cmd.Start()
+		cmd.Wait()
+	}
+
+	p.Resolutions = resolutions
 }
 
 func main() {
@@ -37,6 +62,7 @@ func main() {
 	photoLocation := "/hdd/temp/dark_temp"
 
 	db := session.DB("test1")
+	photosDb := db.C("photos")
 
 	api := iris.New(config.Iris{MaxRequestBodySize: 32 << 20})
 	api.Static("/static", "static/", 1)
@@ -90,7 +116,10 @@ func main() {
 	api.Post("/gallery/:galleryId/upload", func(c *iris.Context) {
 		fmt.Println("new photo")
 		galleryId := c.Param("galleryId")
-		p := Photo{Id: bson.NewObjectId()}
+
+		id := bson.NewObjectId()
+
+		p := Photo{Id: id, GalleryId: bson.ObjectIdHex(galleryId)}
 
 		// Get the file from the request
 		info, err := c.FormFile("file")
@@ -106,11 +135,12 @@ func main() {
 		fname := info.Filename
 		fmt.Println(fname)
 
-		p.Location = photoLocation + "/" + galleryId + "/" + p.Id.Hex()
+		p.Location = photoLocation + "/" + galleryId + "/"
+		p.Name = p.Id.Hex() + ".jpg"
 
-		os.MkdirAll(photoLocation+"/"+galleryId, 0777)
+		os.MkdirAll(p.Location, 0777)
 
-		out, err := os.OpenFile(p.Location, os.O_WRONLY|os.O_CREATE, 0666)
+		out, err := os.OpenFile(p.getLocation(), os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -119,7 +149,7 @@ func main() {
 
 		io.Copy(out, file)
 
-		data, _ := exif.Read(p.Location)
+		data, _ := exif.Read(p.getLocation())
 
 		width, _ := strconv.Atoi(data.Tags["Pixel X Dimension"])
 		height, _ := strconv.Atoi(data.Tags["Pixel Y Dimension"])
@@ -133,6 +163,13 @@ func main() {
 
 		p.Width = width
 		p.Height = height
+
+		p.convertPhoto()
+
+		err = photosDb.Insert(p)
+		if err != nil {
+			fmt.Println(err)
+		}
 
 		c.JSON(iris.StatusOK, p)
 	})
