@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
+import { SliderComponent } from './slider.component';
+import { GalleryComponent } from './gallery.component';
+
 
 export class Gallery{
     Name: string;
@@ -10,19 +13,38 @@ export class Gallery{
 
 @Component({
     selector: 'my-app',
-    template: 'nic'
+    templateUrl: './static/galleries.template.html',
+    directives: [SliderComponent, GalleryComponent]
 })
 
 export class GalleriesComponent {
     http: Http;
     router: Router;
+    galleries: Array<Gallery> = new Array<Gallery>();
+    sub: any;
 
-    constructor(http: Http, router: Router){
+    constructor(http: Http, router: Router, private route: ActivatedRoute){
         this.router = router;
         this.http = http;
+
+        this.getGalleries()
     }
 
-    getGalleries(){
-        this.http.get("/galleries").toPromise().then(res => console.log(res.json()));
+    ngOnInit() {
+        this.sub = this.route.params.subscribe(params => {
+            console.log("pid" + params['photoId']);
+            console.log("id" + params['id']);
+        });
     }
+    getGalleries(){
+        this.http.get("/galleries").toPromise().then(res => {
+            console.log(res.json());
+            this.galleries = res.json();
+        });
+    }
+
+    toggleSideBar(){
+        console.log("toggleSideBar");
+    }
+
 }

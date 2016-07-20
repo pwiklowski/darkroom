@@ -1,62 +1,33 @@
-import { Component } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import 'rxjs/add/operator/toPromise';
-import { Router, ActivatedRoute } from '@angular/router';
-
-export class Gallery{
-    Name: string;
-    Comment: string;
-}
-
-export class Photo{
-    
-
-}
-
-@Component({
-    selector: 'my-app',
-    templateUrl: './static/app.template.html'
-})
-
-export class GalleryComponent {
-    http: Http;
-    photos;
-    gallery: Gallery;
-    currentPhoto: number = 0;
-    columnsNumber: number = 5;
-    columns: Array<number>;
-    router: Router;
-
-    ngOnInit() {
-        // (+) converts string 'id' to a number
-        let id = this.route.snapshot.params['id'];
-        console.log(id);
-        this.gallery = new Gallery();
-        this.getPhotos(id);
-        this.getGallery(id);
-    }
-
-    constructor(http: Http, router: Router, private route: ActivatedRoute){
-        this.router = router;
-        this.columns = new Array<number>();
-        for(let i = 0; i < this.columnsNumber; i++){
-            this.columns.push(i);
-        }
-
-        this.http = http;
-    }
-    
-    getPhotos(galleyId){
-        this.http.get("/gallery/"+galleyId+"/photos").toPromise().then(res => this.photos = res.json());
-    }
-
-    getGalleries(){
-        this.http.get("/galleries").toPromise().then(res => console.log(res.json()));
-    }
-
-    getGallery(galleryId){
-        this.http.get("/gallery/"+galleryId).toPromise().then(res => this.gallery = res.json());
-    }
-}
+<div class="dr-galleries">
+    <div class="dr-galleries-side-list">
+        <div class="dr-header">
+            <img class="dr-header-img" src="/static/logo.png" (click)="toggleSideBar()">
+            <div class="dr-header-text">DARKROOM</div>
+        </div>
+        <div class="dr-galleries-side-list-item" *ngFor="let g of galleries">
+            <a href="#/gallery/{{g.Id}}">
+                <div > {{ g.Name }} </div>
+            </a>
+        </div>
+    </div>
 
 
+    <div class="dr-content">
+        <photo-slider> </photo-slider>
+
+        <!-- <photo-gallery> </photo-gallery>-->
+       
+       <!-- 
+        <div class="dr-galleries-list">
+            <div class="dr-galleries-item" *ngFor="let g of galleries">
+                <a href="#/gallery/{{g.Id}}">
+                    <div class="dr-gallery-cover-container" >
+                        <img class="dr-gallery-cover" src="/gallery/{{g.Id}}/cover">
+                        <div class="dr-gallery-name" > {{ g.Name }} </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+       -->
+    </div>
+</div>
