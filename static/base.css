@@ -12,7 +12,6 @@ html{
 
    width:100%; 
    height:100%; 
-   font-family: 'Work Sans', sans-serif;
    color: white; 
    font-size: 40px;
 }
@@ -22,9 +21,11 @@ html{
 }
 
 .dr-header{
+    position: absolute;
+    top: 0px;
+    left: 0px;
     padding: 10px;
     height: 40px;
-    flex: 1 1 auto;
 }
 .dr-header-text{
     float:left;
@@ -35,8 +36,6 @@ html{
     float:left;
 }
 .dr-list{
-    z-index: 500;
-    position: absolute;
     width: 100%;
     height: 100%;
 }
@@ -72,25 +71,36 @@ nav{
 #dr-photo-slider{
     position:relative;
     left: 0px;
-    top: 8%;;
+    top: 2%;
     display: flex;
-    height: 84%;
+    height: 96%;
     z-index: 1000;
-    transition: transform 500ms ease-in-out;
+    transition: transform 500ms ease-out;
 }
 
 .dr-photo-big{
     flex: 1 1 auto;
     height: 100%;
-    opacity: 0.2;
+    opacity: 0.4;
     margin-right: 20px;
+    position: relative
 }
+.dr-photo-vote{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: white;
+    font-size: 26px;
+    opacity: 0.4;
+
+}
+
 .dr-photo-big-selected{
     opacity: 1;
 }
 .dr-p{
     height: 100%;
-    -webkit-filter: blur(10px);
+    -webkit-filter: blur(5px);
 }
 
 .dr-photo-big-selected .dr-p{
@@ -101,11 +111,11 @@ nav{
 .dr-photo{
     width: 100%;
     height: 100%;
-    padding: 5px;
+    padding: 1px;
 }
 
 .dr-photo:hover{
-    transform: scale(1.1);
+    transform: scale(1.0);
 }
 .dr-title{
    padding: 40px; 
@@ -145,6 +155,117 @@ nav{
 
 .modal-body{
 }
+
+
+.dr-galleries{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+
+
+}
+.dr-galleries-side-list{
+    background-color: #090909;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+}
+.dr-content{
+    flex: 1 1 80%;
+}
+.dr-galleries-list-container{
+    height: 100%;
+    flex: 1 1 80%;
+    display: flex;
+    flex-direction:row ;
+    align-content: center;
+    justify-content: center;
+}
+.dr-galleries-list{
+    flex: 0 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: flex-start;
+
+}
+.dr-galleries-side-list-item{
+    flex: 0 1 auto;
+    text-align: right;
+    padding: 5px;
+    font-size: 20px;
+}
+.dr-galleries-item{
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.dr-gallery-cover-container:hover .dr-gallery-name{
+}
+
+
+
+.dr-gallery-name{
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    background-color: black;
+    opacity: 0.0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 300ms ease-in-out;
+}
+
+.dr-gallery-cover-container:hover .dr-gallery-name{
+    opacity: 0.7;
+}
+
+.dr-gallery-name-text{
+    font-size: 25px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+.dr-gallery-cover-container{
+    flex: 1 1 auto;
+    width: 450px;
+    height: 300px;
+    background-color: gray;
+    overflow: hidden;
+    position: relative;
+}
+
+.dr-gallery-cover{
+    height: 100%;
+    transition: transform 300ms;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+
+.dr-gallery-cover:hover{
+    transform: translate(-50%, -50%) scale(1);
+
+}
+
+
+div{
+   font-family: 'Titillium Web', sans-serif;
+    color: white;
+}
+
+
 
 .modal-lg{
 }

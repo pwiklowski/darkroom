@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SliderComponent } from './slider.component';
-import { GalleryComponent } from './gallery.component';
 
 
 export class Gallery{
@@ -14,7 +12,7 @@ export class Gallery{
 @Component({
     selector: 'my-app',
     templateUrl: './static/galleries.template.html',
-    directives: [SliderComponent, GalleryComponent]
+    directives: []
 })
 
 export class GalleriesComponent {
