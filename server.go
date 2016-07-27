@@ -88,6 +88,23 @@ func main() {
 		}
 		c.JSON(iris.StatusOK, gallery)
 	})
+	api.Get("/gallery/:galleryId/cover", func(c *iris.Context) {
+		photo := Photo{}
+		galleryId := c.Param("galleryId")
+		db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryId)}).One(&photo)
+		fmt.Println(photo)
+
+		size := "640"
+
+		location := photo.getLocationScalled(size)
+		fmt.Println(location)
+
+		err := c.ServeFile(location, false)
+		if err != nil {
+			println("error: " + err.Error())
+		}
+
+	})
 
 	api.Get("/gallery/:galleryId/photos", func(c *iris.Context) {
 		photos := []Photo{}
