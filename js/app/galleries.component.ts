@@ -20,12 +20,19 @@ export class GalleriesComponent {
     router: Router;
     galleries: Array<Gallery> = new Array<Gallery>();
     sub: any;
+    columnsNumber: number = 3;
+    columns: Array<number>;
 
     constructor(http: Http, router: Router, private route: ActivatedRoute){
         this.router = router;
         this.http = http;
 
         this.getGalleries()
+
+        this.columns = new Array<number>();
+        for(let i = 0; i < this.columnsNumber; i++){
+            this.columns.push(i);
+        }
     }
 
     ngOnInit() {

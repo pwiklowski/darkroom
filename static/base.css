@@ -30,6 +30,7 @@ html{
 .dr-header-text{
     float:left;
     padding: 10px;
+    font-size: 40px;
 }
 
 .dr-header-img{
@@ -50,6 +51,8 @@ html{
     display: flex;
     flex-direction: row;
 }
+
+
 .dr-photo-column{
     flex: 1 1 auto;
     height: 500px;
@@ -162,17 +165,17 @@ nav{
     width: 100%;
     height: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 
 
 }
 .dr-galleries-side-list{
     background-color: #090909;
-    flex: 1 1 auto;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-content: center;
     justify-content: center;
+    height: 100px;
 }
 .dr-content{
     flex: 1 1 80%;
@@ -236,8 +239,8 @@ nav{
 
 .dr-gallery-cover-container{
     flex: 1 1 auto;
-    width: 450px;
-    height: 300px;
+    width: 100%;
+    padding-bottom: 70%;
     background-color: gray;
     overflow: hidden;
     position: relative;
