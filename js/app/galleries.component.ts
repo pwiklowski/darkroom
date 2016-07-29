@@ -40,7 +40,32 @@ export class GalleriesComponent {
             console.log("pid" + params['photoId']);
             console.log("id" + params['id']);
         });
+
+        let loader = document.getElementById("dr-loader");
+        loader.style.opacity = "0";
+        setTimeout(this.animate, 20);
+        setTimeout(this.animateCovers, 2000);
+
+        
     }
+
+    animate(){
+        let header = document.getElementById("dr-header");
+        header.style.transform = "translateY(100px)";
+
+        let gh = document.getElementById("dr-header-gh");
+        gh.style.transform = "translateX(-100px)";
+    }
+
+    animateCovers(){
+        var myElements  = document.querySelectorAll(".dr-gallery-name");
+        for (var i = 0; i < myElements.length; i++) {
+            setTimeout(function(x, e){
+                e.style.opacity = "0.0" ;
+            }, i*100, i, <HTMLElement>myElements[i]);
+        }
+    }
+
     getGalleries(){
         this.http.get("/galleries").toPromise().then(res => {
             console.log(res.json());

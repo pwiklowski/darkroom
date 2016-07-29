@@ -1,23 +1,22 @@
 <div class="dr-galleries">
     <div class="dr-galleries-side-list">
-        <div class="dr-header">
+        <div id="dr-header">
             <img class="dr-header-img" src="/static/logo.png" (click)="toggleSideBar()">
             <div class="dr-header-text">DARKROOM</div>
         </div>
+        <img id="dr-header-gh" src="/static/github.png">
     </div>
 
     <div class="dr-gallery">
         <div class="dr-column-container">
             <div *ngFor="let c of columns" class="dr-photo-column">
                 <div *ngFor="let g of galleries; let i = index"  class="dr-photo-container">
-                        <div *ngIf="i%columnsNumber==c" class="dr-gallery-cover-container" >
-                            <a href="#/gallery/{{g.Id}}">
-                            <img class="dr-gallery-cover" src="/gallery/{{g.Id}}/cover">
-                            </a>
-                            <div class="dr-gallery-name"> 
-                                <div class="dr-gallery-name-text">
-                                    {{ g.Name }} 
-                                </div>
+                    <div *ngIf="i%columnsNumber==c" class="dr-gallery-cover-container" >
+                    <a href="#/gallery/{{g.Id}}">
+                        <img class="dr-gallery-cover" src="/gallery/{{g.Id}}/cover">
+                    </a>
+            <div class="dr-gallery-name"> 
+                <div class="dr-gallery-name-text"> {{ g.Name }}</div>
             </div>
         </div>
     </div>
