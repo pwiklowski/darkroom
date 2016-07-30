@@ -2,12 +2,9 @@ import { Component } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Gallery } from './models';
 
 
-export class Gallery{
-    Name: string;
-    Comment: string;
-}
 
 @Component({
     selector: 'my-app',
