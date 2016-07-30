@@ -41,7 +41,6 @@ export class GalleriesComponent {
         let loader = document.getElementById("dr-loader");
         loader.style.opacity = "0";
         setTimeout(this.animate, 20);
-        setTimeout(this.animateCovers, 2000);
 
         
     }
@@ -54,12 +53,17 @@ export class GalleriesComponent {
         gh.style.transform = "translateX(-100px)";
     }
 
-    animateCovers(){
-        var myElements  = document.querySelectorAll(".dr-gallery-name");
-        for (var i = 0; i < myElements.length; i++) {
-            setTimeout(function(x, e){
+    animateCovers(galleries){
+        let timeout = 0;
+        console.log(galleries);
+        for(let g of galleries){
+            let galleryId = g.Id;
+            let galleryNameCover = document.getElementById("dr-gn-" + galleryId);
+
+            setTimeout(function(e){
                 e.style.opacity = "0.0" ;
-            }, i*100, i, <HTMLElement>myElements[i]);
+            }, timeout*100, <HTMLElement>galleryNameCover);
+            timeout++;
         }
     }
 
@@ -67,11 +71,7 @@ export class GalleriesComponent {
         this.http.get("/galleries").toPromise().then(res => {
             console.log(res.json());
             this.galleries = res.json();
+            setTimeout(this.animateCovers, 2000, this.galleries);
         });
     }
-
-    toggleSideBar(){
-        console.log("toggleSideBar");
-    }
-
 }
