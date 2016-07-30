@@ -63,7 +63,8 @@ export class GalleryComponent {
             this.getPhotos(id);
             this.getGallery(id);
         });
-        
+        let loader = document.getElementById("dr-loader");
+        loader.style.opacity = "0";
     }
     ngOnDestroy() {
         this.sub.unsubscribe();
@@ -83,6 +84,7 @@ export class GalleryComponent {
         this.http.get("/gallery/"+galleyId+"/photos").toPromise().then(res => {
                 this.photos = res.json();
                 this.initGallery();
+                setTimeout(this.animatePhotos, 200, this.photos);
             }
         );
     }
@@ -96,15 +98,29 @@ export class GalleryComponent {
         let p = document.getElementById("dr-photo-slider");
         
         let firstPhoto = this.photos[0];
-        console.log(p);
         
         let w = firstPhoto.Width * (p.offsetHeight/ firstPhoto.Height);
-        console.log("firstPhoto" + w);
 
         this.photoOffset = Math.round((this.viewWidth - w)/2);
         console.log("photoOffset" + this.photoOffset);
 
         p.style.transform = "translate(" +this.photoOffset + "px)";
+
+
+
+    }
+
+    animatePhotos(photos){
+        let timeout = 0;
+        for(let p of photos){
+            let photoId = p.Id;
+            let photo = document.getElementById("dr-p-" + photoId);
+
+            setTimeout(function(e){
+                e.style.opacity = "1.0" ;
+            }, timeout*100, <HTMLElement>photo);
+            timeout++;
+        }
     }
 
     showPhoto(photo, selectedPhoto){

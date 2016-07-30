@@ -1,8 +1,10 @@
 <div id="dr-photo-slider-container">
     <div id="dr-photo-slider">
-        <div class="dr-photo-big" (click)="hidePhoto()" [class.dr-photo-big-selected]="i==selectedPhoto" *ngFor="let p of photos; let i=index;">
-            <img id="{{p.Id}}" class="dr-p" data-src="/photo/{{p.Id}}/1920">
+        <div class="dr-photo-big" (click)="hidePhoto()" 
+            [class.dr-photo-big-selected]="i==selectedPhoto"
+            *ngFor="let p of photos; let i=index;">
 
+            <img id="{{p.Id}}" class="dr-p" data-src="/photo/{{p.Id}}/1920">
             <div class="dr-photo-vote">&#9733;&#9733;&#9733;&#9733;&#9734;  &hearts;</div>
             {{p.Id}} {{p.Name}} {{p.Width }} {{p.Height}}
         </div>
@@ -11,15 +13,18 @@
 
 <div class="dr-list">
     <div class="dr-gallery">
-<button class="btn btn-primary" (click)="lgModal.show()">Large modal</button>
-<button class="btn btn-primary" (click)="newGalleryModal.show()">Create gallery</button>
+        <button class="btn btn-primary" (click)="lgModal.show()">Large modal</button>
+        <button class="btn btn-primary" (click)="newGalleryModal.show()">Create gallery</button>
         <div class="dr-title">{{gallery.Name}}</div>
         <div class="dr-comment">{{gallery.Comment}}</div>
         
         <div class="dr-column-container">
             <div *ngFor="let column of columns; let c = index" class="dr-photo-column">
                 <div *ngFor="let p of photos; let i = index"  class="dr-photo-container">
-                    <img (click)="showPhoto(p, i)" *ngIf="i%columnsNumber==c" class="dr-photo b-lazy" src="/static/stub2.gif" data-src="/photo/{{p.Id}}/320"/>
+                    <img (click)="showPhoto(p, i)" *ngIf="i%columnsNumber==c"
+                        class="dr-photo b-lazy" src="/static/stub2.gif"
+                        id="dr-p-{{p.Id}}"
+                        data-src="/photo/{{p.Id}}/320"/>
                 </div>
             </div>
         </div>
