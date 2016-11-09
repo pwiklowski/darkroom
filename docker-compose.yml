@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  mongo:  
+    image: mvertes/alpine-mongo:3.2.3
+    volumes:
+      - /home/pawwik/dev/darkroom_go/mydatabase:/data/db
+    ports:
+      - "27017:27017"
+    command: mongod --smallfiles
