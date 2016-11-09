@@ -12,10 +12,10 @@
             <div *ngFor="let c of columns" class="dr-photo-column">
                 <div *ngFor="let g of galleries; let i = index"  class="dr-photo-container">
                     <div *ngIf="i%columnsNumber==c" class="dr-gallery-cover-container" >
-                    <a href="#/gallery/{{g.Id}}">
-                        <img class="dr-gallery-cover" src="/gallery/{{g.Id}}/cover">
-                    </a>
-            <div class="dr-gallery-name"> 
+                        <a href="#/gallery/{{g.Id}}">
+                            <img class="dr-gallery-cover" src="/gallery/{{g.Id}}/cover">
+                        </a>
+                        <div id="dr-gn-{{g.Id}}"class="dr-gallery-name"> 
                 <div class="dr-gallery-name-text"> {{ g.Name }}</div>
             </div>
         </div>

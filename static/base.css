@@ -19,6 +19,18 @@ html{
   margin: 0;
   padding: 0;
 }
+.loader{
+    z-index: 1000;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    background-image: url(stub2.gif);
+    pointer-events: none;
+    background-position: center;
+    opacity: 1.0;
+    transition: opacity 1000ms ease-in-out;
+}
 #dr-loader{
     z-index: 1000;
     position: absolute;
@@ -141,13 +153,12 @@ nav{
 .dr-photo{
     width: 100%;
     height: 100%;
-    padding: 1px;
-    opacity: 0.1; 
-    transition: opacity 500ms ease-in-out;
+    opacity: 0.0; 
+    transition: opacity 100ms ease-in-out;
 }
 
 .dr-photo:hover{
-    transform: scale(1.0);
+    opacity: 0.8 !important;
 }
 .dr-title{
    padding: 40px; 

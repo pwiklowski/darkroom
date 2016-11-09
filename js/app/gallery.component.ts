@@ -56,6 +56,8 @@ export class GalleryComponent {
 
     editedGalleryId: string;
 
+    selectedPhotoWidth: number = 1280;
+
     ngOnInit() {
         this.sub = this.route.params.subscribe(params => {
             this.gallery = new Gallery();
@@ -106,8 +108,24 @@ export class GalleryComponent {
 
         p.style.transform = "translate(" +this.photoOffset + "px)";
 
+        
+
+        setTimeout(this.initSlider, 200, this.photos);
+    }
+
+    initSlider(photos){
+        let slider = document.getElementById("dr-photo-slider");
+        for(let p of photos){
+            let photoId = p.Id;
+            let photo = document.getElementById("dr-big-p-" + photoId);
+            let loader = document.getElementById("dr-loader-p-" + photoId);
 
 
+            let w = p.Width * (slider.offsetHeight/p.Height);
+            photo.style.width = w + "px";
+            loader.style.width = w + "px";
+
+        }
     }
 
     animatePhotos(photos){
@@ -142,6 +160,30 @@ export class GalleryComponent {
         slider.style.transform = "translate(" +this.photoOffset + "px)";
 
         p.style.top = "0%";
+
+        this.loadPhoto(selectedPhoto); 
+    }
+
+    loadPhoto(selectedPhoto){
+        if (selectedPhoto >= (this.photos.length)) {
+            return;
+        }
+
+        let photo = this.photos[selectedPhoto];
+        console.log(photo);
+        let photoElement = <HTMLImageElement>document.getElementById("dr-big-p-" + photo.Id);
+        let loaderElement = <HTMLImageElement>document.getElementById("dr-loader-p-" + photo.Id);
+
+        console.log(photoElement.src);
+
+        if(photoElement.src == ""){
+            var _this = this;
+            photoElement.addEventListener('load', function(){
+                loaderElement.style.opacity = "0.0";
+                _this.loadPhoto(selectedPhoto+1);
+            });
+            photoElement.src = "/photo/"+photo.Id+"/1920";
+        }
     }
 
 
@@ -154,21 +196,25 @@ export class GalleryComponent {
         if (this.selectedPhoto == (this.photos.length-1)) {
             return;
         }
+        
         let p = document.getElementById("dr-photo-slider");
         this.photoOffset -= this.getPhotoWidth(this.selectedPhoto)/2 + this.getPhotoWidth(this.selectedPhoto+1)/2 + this.PHOTO_MARGIN;
         this.selectedPhoto++;
         p.style.transform = "translate(" +this.photoOffset + "px)";
 
+        this.loadPhoto(this.selectedPhoto);
     }
 
     prevPhoto(){
         if (this.selectedPhoto==0) {
             return;
         }
+
         let p = document.getElementById("dr-photo-slider");
         this.photoOffset += this.getPhotoWidth(this.selectedPhoto)/2 + this.getPhotoWidth(this.selectedPhoto-1)/2 + this.PHOTO_MARGIN;
         this.selectedPhoto--;
         p.style.transform = "translate(" +this.photoOffset + "px)";
+        this.loadPhoto(this.selectedPhoto);
     }
 
     hidePhoto(){
