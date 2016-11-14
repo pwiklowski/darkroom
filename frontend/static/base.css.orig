@@ -1,0 +1,348 @@
+
+body{
+   width:100%;
+   height:100%;
+   background-color: #1C1C1C;
+
+   background-size: cover;
+   display: flex;
+   flex-direction: column;
+}
+html{
+
+   width:100%;
+   height:100%;
+   color: white;
+   font-size: 40px;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.dr-header{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 10px;
+    height: 40px;
+}
+.dr-header-text{
+    float:left;
+    padding: 10px;
+}
+
+.dr-header-img{
+    float:left;
+}
+.dr-list{
+    width: 100%;
+    height: 100%;
+}
+<<<<<<< Updated upstream
+=======
+.dr-gallery{
+    background-color: #111;
+}
+>>>>>>> Stashed changes
+
+
+.dr-column-container{
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+}
+.dr-photo-column{
+    flex: 1 1 auto;
+    height: 500px;
+    display: flex;
+    flex-direction:column;
+}
+nav{
+    position: absolute;
+}
+#dr-photo-slider-container{
+    background-color: black;
+}
+<<<<<<< Updated upstream
+
+.dr-content{
+    flex: 1 1 80%;
+    display: flex;
+    overflow: hidden;
+=======
+#dr-photo-slider{
+    position:relative;
+    left: 0px;
+    top: 2%;
+    display: flex;
+    height: 96%;
+    z-index: 1000;
+    transition: transform 500ms ease-out;
+}
+>>>>>>> Stashed changes
+
+}
+.dr-photo-container{
+    flex: 1 1 auto;
+<<<<<<< Updated upstream
+
+    background: url('/photo/578b9b6ea14e5e1412773818/1920') center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.dr-photo-slider{
+    flex: 1 1 auto;
+    display: flex;
+    overflow: hidden;
+=======
+    height: 100%;
+    opacity: 0.4;
+    margin-right: 20px;
+    position: relative
+}
+.dr-photo-vote{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: white;
+    font-size: 26px;
+    opacity: 0.4;
+
+}
+
+.dr-photo-big-selected{
+    opacity: 1;
+>>>>>>> Stashed changes
+}
+#dr-photo-slider-photos{
+    position: absolute;
+    height: 100%;
+<<<<<<< Updated upstream
+    display: flex;
+    flex-direction: row;
+=======
+    -webkit-filter: blur(5px);
+>>>>>>> Stashed changes
+}
+
+.dr-photo-slider-photo{
+    flex: 1 1 auto;
+    background: url('/photo/578b9b6ea14e5e1412773818/1920') center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.dr-photo{
+    width: 100%;
+    height: 100%;
+    padding: 1px;
+}
+
+.dr-photo:hover{
+<<<<<<< Updated upstream
+=======
+    transform: scale(1.0);
+>>>>>>> Stashed changes
+}
+.dr-title{
+   padding: 40px;
+   flex: 0 1 auto;
+   color: white;
+   font-size: 50px;
+   height: 50px;
+}
+
+
+
+
+
+
+
+.dr-comment{
+   font-size: 25px;
+   flex: 0 1 auto;
+   background-color: #222;
+   color: white;
+   max-width: 100%;
+   padding: 15px;
+}
+
+.dr-comment-photo{
+   margin-left: 40px;
+   margin-top: 5px;
+   margin-right: 40px;
+   margin-bottom: 40px;
+   font-size: 20px;
+   background-color: #222;
+   color: white;
+   max-width: 100%;
+   padding: 18px;
+}
+
+
+.modal-body{
+}
+
+
+.dr-galleries{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+
+
+}
+.dr-galleries-side-list{
+    background-color: #090909;
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    width: 140px;
+    z-index: 100;
+}
+.dr-galleries-list-container{
+    height: 100%;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction:row ;
+    align-content: center;
+    justify-content: center;
+}
+.dr-galleries-list{
+    flex: 0 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: flex-start;
+
+}
+.dr-galleries-side-list-item{
+    flex: 0 1 auto;
+    text-align: right;
+    padding: 5px;
+    font-size: 20px;
+}
+.dr-galleries-item{
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.dr-gallery-cover-container:hover .dr-gallery-name{
+}
+.dr-gallery-name{
+    position: absolute;
+    padding: 3px;
+    bottom: 0px;
+    z-index: 10;
+    pointer-events: none;
+    width: 100%;
+}
+
+
+.dr-gallery-cover-container{
+    flex: 1 1 auto;
+    width: 450px;
+    height: 300px;
+    background-color: gray;
+    overflow: hidden;
+    position: relative;
+}
+
+.dr-gallery-cover{
+    height: 100%;
+    transition: transform 200ms;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+
+.dr-gallery-cover:hover{
+    transform: translate(-50%, -50%) scale(1);
+
+}
+
+
+div{
+   font-family: 'Titillium Web', sans-serif;
+    color: white;
+}
+
+
+
+.modal-lg{
+}
+.modal-lg{
+    width: 95%;
+    height: 95%;
+}
+.modal-content{
+    background-color: #222;
+    height: 95%;
+    position: relative;
+}
+}
+.modal-header{
+    border-bottom: none;
+}
+input{
+    color: #222;
+}
+
+.modal-body{
+    display: flex;
+    flex-direction: column;
+    height: 95%;
+    font-size: 10px;
+}
+
+.dr-upload-panel{
+    flex: 0 1 auto;
+    height: 200px;
+}
+
+.dr-upload{
+    flex: 1 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+}
+.dr-upload-item{
+    background-color: black;
+    margin: 10px;
+
+}
+
+.dr-upload-container{
+    flex: 1 1 auto;
+    width: 250px;
+    height: 250px;
+
+    position: relative;
+}
+
+.dr-upload-photo{
+    position: absolute;
+    max-width: 250px;
+    max-height: 250px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.dr-upload-photo-comment{
+   font-size: 14px;
+   width: 250px;
+
+}
+.dr-upload-delete{
+    position: absolute;
+    right: 0px;
+}

@@ -1,0 +1,88 @@
+<<<<<<< Updated upstream
+=======
+<div id="dr-photo-slider-container">
+    <div id="dr-photo-slider">
+        <div class="dr-photo-big" (click)="hidePhoto()" [class.dr-photo-big-selected]="i==selectedPhoto" *ngFor="let p of photos; let i=index;">
+            <img id="{{p.Id}}" class="dr-p" data-src="/photo/{{p.Id}}/1920">
+
+            <div class="dr-photo-vote">&#9733;&#9733;&#9733;&#9733;&#9734;  &hearts;</div>
+            {{p.Id}} {{p.Name}} {{p.Width }} {{p.Height}}
+        </div>
+    </div>
+</div>
+
+>>>>>>> Stashed changes
+<div class="dr-list">
+    <div class="dr-column-container">
+        <div *ngFor="let column of columns; let c = index" class="dr-photo-column">
+            <div *ngFor="let p of photos; let i = index"  class="dr-photo-container">
+                <img (click)="showPhoto(p, i)" *ngIf="i%columnsNumber==c" class="dr-photo b-lazy" src="/static/stub2.gif" data-src="/photo/{{p.Id}}/320"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div bsModal #newGalleryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="newGalleryModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Create new gallery</h4>
+      </div>
+      <div class="modal-body"> 
+          Name <input #galleryName type="text"/><br>
+      </div>
+      <div class="modal-header">
+          <button (click)="createGallery(galleryName.value)">Create </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ 
+<div bsModal #galleryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="galleryModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Create new gallery {{editedGalleryId}}</h4>
+      </div>
+      <div class="modal-body">
+
+            <div class="dr-upload">
+                <div *ngFor="let item of uploader.queue" class="dr-upload-item">
+                    <div class="dr-upload-container" >
+                        <div class="dr-upload-delete" (click)="deleteUploadedPhoto(item.file.name)">Delete</div>
+                        <img class="dr-upload-photo" [attr.filename]="item.file.name" />
+                    </div>
+                </div>
+            </div>
+            <div class="dr-upload-panel">
+                <input type="file" ng2FileSelect [uploader]="uploader" multiple name="uploadField" /><br/>
+                Queue progress:
+                <div class="progress" style="">
+                    <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                </div>
+                <button type="button" class="btn btn-success btn-s"
+                        (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+                    <span class="glyphicon glyphicon-upload"></span> Upload all
+                </button>
+                <button type="button" class="btn btn-warning btn-s"
+                        (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
+                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+                </button>
+                <button type="button" class="btn btn-danger btn-s"
+                        (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+                    <span class="glyphicon glyphicon-trash"></span> Remove all
+                </button>
+            </div>
+
+    </div>
+  </div>
+</div>
+

@@ -1,4 +1,4 @@
 *.swp
-js/node_modules*
+frontend/js/node_modules*
 js/typings*
 mydatabase*
