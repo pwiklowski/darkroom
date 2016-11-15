@@ -65,12 +65,6 @@ func main() {
 	photosDb := db.C("photos")
 
 	api := iris.New(config.Iris{MaxRequestBodySize: 32 << 20})
-	api.Static("/static", "static/", 1)
-	api.Static("/js", "js/dist/", 1)
-
-	api.Get("/", func(c *iris.Context) {
-		c.ServeFile("static/index.html", false)
-	})
 
 	api.Get("/galleries", func(c *iris.Context) {
 		galleries := []Gallery{}
