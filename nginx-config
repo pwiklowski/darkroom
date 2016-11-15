@@ -1,0 +1,20 @@
+server {
+	listen 11000 default_server;
+	listen [::]:11000 default_server;
+
+	index index.html 
+
+	server_name _;
+
+	location /api/ {
+		proxy_pass http://127.0.0.1:11001/;
+        proxy_buffering off;
+	}
+	location / {
+		proxy_pass http://127.0.0.1:11002/;
+        proxy_buffering off;
+	}
+
+}
+
+
