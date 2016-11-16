@@ -9,7 +9,7 @@ import { ROUTES } from './app.routes';
 import { AppComponent } from './app.component';
 import { Ng2BootstrapModule } from "ng2-bootstrap";
 import { FileSelectDirective } from 'ng2-file-upload';
-
+import { MdlModule } from 'angular2-mdl';
 
 import { GalleriesComponent } from './galleries.component';
 import { GalleryComponent } from './gallery.component';
@@ -26,6 +26,7 @@ import { GalleryComponent } from './gallery.component';
     BrowserModule,
     HttpModule,
     Ng2BootstrapModule,
+    MdlModule,
     RouterModule.forRoot(ROUTES, { useHash: true })
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection

@@ -17,8 +17,8 @@
 
 <div class="dr-list">
     <div class="dr-gallery">
-        <button class="btn btn-primary" (click)="lgModal.show()">Large modal</button>
-        <button class="btn btn-primary" (click)="newGalleryModal.show()">Create gallery</button>
+        <button #editUserButton mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple (click)="createGallery.show()">Create gallery</button>
+
         <div class="dr-title">{{gallery.Name}}</div>
         <div class="dr-comment">{{gallery.Comment}}</div>
         
@@ -34,28 +34,30 @@
         </div>
     </div>
 </div>
-<div bsModal #newGalleryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="newGalleryModal.hide()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">Create new gallery</h4>
-      </div>
-      <div class="modal-body"> 
-          Name <input #galleryName type="text"/><br>
-      </div>
-      <div class="modal-header">
-          <button (click)="createGallery(galleryName.value)">Create </button>
-      </div>
+<mdl-dialog #createGallery
+            [mdl-dialog-config]="{
+              clickOutsideToClose: true,
+              styles:{'width': '300px', 'color': black},
+              isModal:true,
+              enterTransitionDuration: 400,
+              leaveTransitionDuration: 400}">
+    <h3 class="mdl-dialog__title">Create gallery</h3>
+    <mdl-textfield #galleryName type="text" label="Gallery name" floating-label autofocus></mdl-textfield>
+    <div class="mdl-dialog__actions">
+        <button mdl-button (click)="createGallery(galleryName.value)" mdl-ripple>Create</button>
+        <button mdl-button (click)="createGalle.close()" mdl-ripple>Cancel</button>
     </div>
-  </div>
-</div>
+</mdl-dialog>
 
 
  
-<div bsModal #galleryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<mdl-dialog #uploadPhotos [mdl-dialog-config]="{
+              clickOutsideToClose: true,
+              styles:{'width': '300px', color: black},
+              isModal:true,
+              openFrom: editUserButton,
+              enterTransitionDuration: 400,
+              leaveTransitionDuration: 400}">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -138,4 +140,4 @@
       </div>
     </div>
   </div>
-</div>
+</mdl-dialog>
