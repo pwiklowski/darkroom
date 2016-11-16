@@ -1,0 +1,380 @@
+
+body{ 
+   width:100%; 
+   height:100%; 
+   background-color: #1C1C1C;
+
+   background-size: cover;
+   display: flex;
+   flex-direction: column;
+}
+html{ 
+
+   width:100%; 
+   height:100%; 
+   color: white; 
+   font-size: 40px;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+.loader{
+    z-index: 1000;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    background-image: url(../img/stub2.gif);
+    pointer-events: none;
+    background-position: center;
+    opacity: 1.0;
+    transition: opacity 1000ms ease-in-out;
+}
+#dr-loader{
+    z-index: 1000;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    background-image: url(../img/stub2.gif);
+    pointer-events: none;
+    background-position: center;
+    opacity: 1.0;
+    transition: opacity 1000ms ease-in-out;
+}
+#dr-header-gh{
+    position: absolute;
+    top: 0px;
+    right: -100px;
+    padding: 20px;
+    height: 100px;
+    transition: all 2000ms ease-in-out;
+    
+}
+
+#dr-header{
+    position: absolute;
+    top: -100px;
+    left: 0px;
+    padding: 10px;
+    height: 40px;
+    transition: all 2000ms ease-in-out;
+}
+
+#dr-header:hover{
+
+}
+
+.dr-header-text{
+    float:left;
+    padding: 10px;
+    font-size: 40px;
+}
+
+.dr-header-img{
+    float:left;
+}
+.dr-list{
+    width: 100%;
+    height: 100%;
+}
+
+.dr-photo-container{
+    width: 100%;
+    display: flex;
+}
+
+.dr-column-container{
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+}
+
+
+.dr-photo-column{
+    flex: 1 1 auto;
+    height: 500px;
+    display: flex;
+    flex-direction:column;
+}
+nav{
+    position: absolute;
+}
+#dr-photo-slider-container{
+    position: fixed;
+    left: 0px;
+    top: 100%;
+    height: 100%;
+    width: 100%;
+    z-index: 800;
+    background-color: black;
+}
+#dr-photo-slider{
+    position:relative;
+    left: 0px;
+    top: 2%;
+    display: flex;
+    height: 96%;
+    z-index: 1000;
+    transition: transform 500ms ease-out;
+}
+
+.dr-photo-big{
+    flex: 1 1 auto;
+    height: 100%;
+    opacity: 0.4;
+    margin-right: 20px;
+    position: relative
+}
+.dr-photo-vote{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: white;
+    font-size: 26px;
+    opacity: 0.4;
+
+}
+
+.dr-photo-big-selected{
+    opacity: 1;
+}
+.dr-p{
+    height: 100%;
+    -webkit-filter: blur(5px);
+}
+
+.dr-photo-big-selected .dr-p{
+    height: 100%;
+    -webkit-filter: none;
+}
+
+.dr-photo{
+    width: 100%;
+    height: 100%;
+    opacity: 0.0; 
+    transition: opacity 100ms ease-in-out;
+}
+
+.dr-photo:hover{
+    opacity: 0.8 !important;
+}
+.dr-title{
+   padding: 40px; 
+   flex: 0 1 auto;
+   color: white;
+   font-size: 50px;
+   height: 50px;
+}
+
+
+
+
+
+
+
+.dr-comment{
+   font-size: 25px;
+   flex: 0 1 auto;
+   background-color: #222;
+   color: white;
+   max-width: 100%;
+   padding: 15px;
+}
+
+.dr-comment-photo{
+   margin-left: 40px;
+   margin-top: 5px;
+   margin-right: 40px;
+   margin-bottom: 40px;
+   font-size: 20px;
+   background-color: #222;
+   color: white;
+   max-width: 100%;
+   padding: 18px;
+} 
+
+
+.modal-body{
+}
+
+
+.dr-galleries{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+
+}
+.dr-galleries-side-list{
+    background-color: #090909;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    height: 100px;
+    position: relative;
+}
+.dr-content{
+    flex: 1 1 80%;
+}
+.dr-galleries-list-container{
+    height: 100%;
+    flex: 1 1 80%;
+    display: flex;
+    flex-direction:row ;
+    align-content: center;
+    justify-content: center;
+}
+.dr-galleries-list{
+    flex: 0 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: flex-start;
+
+}
+.dr-galleries-side-list-item{
+    flex: 0 1 auto;
+    text-align: right;
+    padding: 5px;
+    font-size: 20px;
+}
+.dr-galleries-item{
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.dr-gallery-cover-container:hover .dr-gallery-name{
+}
+
+
+
+.dr-gallery-name{
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    background-color: black;
+    opacity: 1.0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 500ms ease-in-out;
+}
+
+.dr-gallery-cover-container:hover .dr-gallery-name{
+    opacity: 0.7 !important;
+}
+
+.dr-gallery-name-text{
+    font-size: 50px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+.dr-gallery-cover-container{
+    flex: 1 1 auto;
+    width: 100%;
+    padding-bottom: 70%;
+    background-color: gray;
+    overflow: hidden;
+    position: relative;
+}
+
+.dr-gallery-cover{
+    height: 100%;
+    transition: transform 500ms;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+
+.dr-gallery-cover:hover{
+    transform: translate(-50%, -50%) scale(1);
+
+}
+
+
+div{
+   font-family: 'Titillium Web', sans-serif;
+    color: white;
+}
+
+
+
+.modal-lg{
+}
+.modal-lg{
+    width: 95%;
+    height: 95%;
+}
+.modal-content{
+    background-color: #222;
+    height: 95%;
+    position: relative;
+}
+.modal-header{
+    border-bottom: none;
+}
+input{
+    color: #222;
+}
+
+.modal-body{
+    display: flex;
+    flex-direction: column;
+    height: 95%;
+    font-size: 10px;
+}
+
+.dr-upload-panel{
+    flex: 0 1 auto;
+    height: 200px;
+}
+
+.dr-upload{
+    flex: 1 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+}
+.dr-upload-item{
+    background-color: black;
+    margin: 10px;
+
+}
+
+.dr-upload-container{
+    flex: 1 1 auto;
+    width: 250px;
+    height: 250px;
+
+    position: relative;
+}
+
+.dr-upload-photo{
+    position: absolute;
+    max-width: 250px;
+    max-height: 250px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.dr-upload-photo-comment{
+   font-size: 14px; 
+   width: 250px;
+    
+}
+.dr-upload-delete{
+    position: absolute;
+    right: 0px;
+}

@@ -1,4 +1,7 @@
 *.swp
-frontend/js/node_modules*
+frontend/node_modules*
+frontend/dist*
+frontend_/node_modules*
+frontend_bak/js/node_modules*
 js/typings*
 mydatabase*
