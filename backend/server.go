@@ -10,6 +10,9 @@ import "strconv"
 import "io"
 import "github.com/xiam/exif"
 import "os/exec"
+import (
+	firebase "github.com/wuman/firebase-server-sdk-go"
+)
 
 type Photo struct {
 	Id          bson.ObjectId `_id`
@@ -37,6 +40,18 @@ func (p Photo) getLocationScalled(size string) string {
 	return p.Location + size + "_" + p.Name
 }
 
+func verifyAccess(auth *firebase.Auth, c *iris.Context) bool {
+	token := c.RequestHeader("Authorization")
+
+	decodedToken, err := auth.VerifyIDToken(token)
+	if err == nil {
+		uid, found := decodedToken.UID()
+		fmt.Println(uid)
+		return found
+	}
+	return false
+}
+
 func (p Photo) convertPhoto() {
 
 	fmt.Println("convertPhoto " + p.getLocation())
@@ -53,6 +68,11 @@ func (p Photo) convertPhoto() {
 }
 
 func main() {
+	firebase.InitializeApp(&firebase.Options{
+		ServiceAccountPath: "cred.json",
+	})
+
+	auth, _ := firebase.GetAuth()
 	session, err := mgo.Dial("127.0.0.1")
 	if err != nil {
 		panic(err)
@@ -67,12 +87,21 @@ func main() {
 	api := iris.New(config.Iris{MaxRequestBodySize: 32 << 20})
 
 	api.Get("/galleries", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
+
 		galleries := []Gallery{}
 		db.C("galleries").Find(nil).All(&galleries)
 		c.JSON(iris.StatusOK, galleries)
 	})
 
 	api.Get("/gallery/:galleryId", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
 		gallery := Gallery{}
 		galleryId := c.Param("galleryId")
 		fmt.Println(galleryId)
@@ -83,6 +112,10 @@ func main() {
 		c.JSON(iris.StatusOK, gallery)
 	})
 	api.Get("/gallery/:galleryId/cover", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
 		photo := Photo{}
 		galleryId := c.Param("galleryId")
 		db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryId)}).One(&photo)
@@ -101,6 +134,10 @@ func main() {
 	})
 
 	api.Get("/gallery/:galleryId/photos", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
 		photos := []Photo{}
 		galleryId := c.Param("galleryId")
 		db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryId)}).All(&photos)
@@ -108,6 +145,10 @@ func main() {
 	})
 
 	api.Get("/photo/:photo/:size", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
 		photo := Photo{}
 		photoId := c.Param("photo")
 		size := c.Param("size")
@@ -125,6 +166,10 @@ func main() {
 	})
 
 	api.Post("/gallery/:galleryId/upload", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
 		fmt.Println("new photo")
 		galleryId := c.Param("galleryId")
 
@@ -185,6 +230,10 @@ func main() {
 		c.JSON(iris.StatusOK, p)
 	})
 	api.Post("/createGallery", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
 		fmt.Println("new gallery")
 		galleries := db.C("galleries")
 
