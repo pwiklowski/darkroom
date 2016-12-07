@@ -3,7 +3,7 @@ import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Gallery } from './models';
-
+import { BackendService } from './backend.service';
 
 
 @Component({
@@ -19,7 +19,7 @@ export class GalleriesComponent {
     columnsNumber: number = 3;
     columns: Array<number>;
 
-    constructor(http: Http, router: Router, private route: ActivatedRoute){
+    constructor(http: Http, router: Router, private route: ActivatedRoute, private backend: BackendService){
         this.router = router;
         this.http = http;
 
@@ -67,7 +67,7 @@ export class GalleriesComponent {
     }
 
     getGalleries(){
-        this.http.get("/api/galleries").toPromise().then(res => {
+        this.backend.get("/api/galleries").then(res => {
             console.log(res.json());
             this.galleries = res.json();
             setTimeout(this.animateCovers, 2000, this.galleries);
