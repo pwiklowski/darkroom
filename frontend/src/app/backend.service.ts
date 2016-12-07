@@ -16,6 +16,9 @@ export class BackendService{
             }
         });
     }
+    isUserLogged(){
+        return this.isLogged;
+    }
 
     login(){
         this.af.auth.login({
