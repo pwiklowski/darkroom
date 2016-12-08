@@ -74,6 +74,6 @@
         <button mdl-button mdl-ripple (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
             Remove all
         </button>
-        <button mdl-button (click)="uploadPhotos.close()" mdl-ripple>Close</button>
+        <button mdl-button (click)="getGalleries(); uploadPhotos.close()" mdl-ripple>Close</button>
     </div>
 </mdl-dialog>
