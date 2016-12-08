@@ -89,6 +89,12 @@ export class GalleriesComponent {
                 this.createGallery.close();
                 let editedGalleryId = g.Id;
                 this.uploader = new FileUploader({url: '/api/gallery/'+  editedGalleryId +'/upload'});
+
+                this.uploader.onCompleteItem = (item: FileItem, response: string, status: number, headers: ParsedResponseHeaders)=>{
+                    let data = JSON.parse(response);
+                    item.photoUrl = "/api/photo/"+data.Id+"/320";
+                }
+
                 this.uploadPhotos.show();
             }
         );
