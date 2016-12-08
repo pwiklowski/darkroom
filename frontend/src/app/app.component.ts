@@ -3,8 +3,8 @@ import { Http, Response } from '@angular/http';
 
 @Component({
     selector: 'app',
-    template:`
-    <router-outlet></router-outlet> ` ,
+    template:`<router-outlet ></router-outlet> ` 
+    ,
    
 })
 

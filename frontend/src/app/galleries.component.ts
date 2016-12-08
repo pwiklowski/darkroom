@@ -61,6 +61,15 @@ export class GalleriesComponent {
     getImageUrl(g: Gallery){
         return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+g.Id+"/cover)");
     }
+
+    hideCover(c){
+        let cover = document.getElementById(c);
+        cover.style.opacity = "0";
+
+        setTimeout(()=> cover.style.visibility= "hidden", 500);
+
+    }
+
     animateCovers(galleries){
         let timeout = 0;
         console.log(galleries);
@@ -95,7 +104,7 @@ export class GalleriesComponent {
                 let editedGalleryId = g.Id;
                 this.uploader = new FileUploader({url: '/api/gallery/'+  editedGalleryId +'/upload'});
 
-                this.uploader.onCompleteItem = (item: FileItem, response: string, status: number, headers: ParsedResponseHeaders)=>{
+                this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
                     let data = JSON.parse(response);
                     item.photoUrl = "/api/photo/"+data.Id+"/320";
                 }
