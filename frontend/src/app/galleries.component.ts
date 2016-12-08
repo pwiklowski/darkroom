@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Gallery } from './models';
 import { BackendService } from './backend.service';
-
+import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
 
 @Component({
     selector: 'my-app',
@@ -12,6 +12,10 @@ import { BackendService } from './backend.service';
 })
 
 export class GalleriesComponent {
+    @ViewChild('uploadPhotos') uploadPhotos;
+    @ViewChild('createGallery') createGallery;
+    uploader: FileUploader = new FileUploader({url:""});
+
     http: Http;
     router: Router;
     galleries: Array<Gallery> = new Array<Gallery>();
@@ -72,5 +76,21 @@ export class GalleriesComponent {
             this.galleries = res.json();
             setTimeout(this.animateCovers, 2000, this.galleries);
         });
+    }
+
+    addGallery(name){
+        let gallery = {
+            "Name": name,
+            "Comment": ""
+        };
+        this.backend.post("/api/createGallery", gallery).then(
+            res => {
+                let g = res.json();
+                this.createGallery.close();
+                let editedGalleryId = g.Id;
+                this.uploader = new FileUploader({url: '/api/gallery/'+  editedGalleryId +'/upload'});
+                this.uploadPhotos.show();
+            }
+        );
     }
 }

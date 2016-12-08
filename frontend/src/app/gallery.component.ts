@@ -2,7 +2,6 @@ import { Component, ViewChild, HostListener } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
 
 import {Gallery, Photo } from './models.ts';
 
@@ -11,10 +10,6 @@ import {Gallery, Photo } from './models.ts';
     templateUrl: './gallery.template.html',
 })
 export class GalleryComponent {
-    @ViewChild('galleryModal') public galleryModal;
-    @ViewChild('newGalleryModal') public newGalleryModal;
-    uploader: FileUploader = new FileUploader({url:""});
-
     http: Http;
     photos;
     gallery: Gallery;
@@ -215,22 +210,6 @@ export class GalleryComponent {
         this.http.get("/api/gallery/"+galleryId).toPromise().then(res => {this.gallery = res.json(); console.log(this.gallery);});
     }
 
-    createGallery(name, modal){
-        let gallery = {
-            "Name": name,
-            "Comment": ""
-        };
-        this.http.post("/api/createGallery", gallery).toPromise().then(
-            res => {
-                let g = res.json();
-                console.log(g);
-                this.newGalleryModal.hide();
-                this.editedGalleryId = g.Id;
-                this.uploader = new FileUploader({url: '/api/gallery/'+ this.editedGalleryId +'/upload'});
-                this.galleryModal.show();
-            }
-        );
-    }
 
     @HostListener('window:keydown', ['$event'])
     onKeyEvent(event: any) {

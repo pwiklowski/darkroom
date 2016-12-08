@@ -26,6 +26,12 @@ html{
   background-color: white;
   z-index: 100;
 }
+#dr-create-gallery-button{
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+
+}
 
 .loader{
     z-index: 1000;
