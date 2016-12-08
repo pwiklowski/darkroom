@@ -121,7 +121,7 @@ func main() {
 		db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryId)}).One(&photo)
 		fmt.Println(photo)
 
-		size := "640"
+		size := "1920"
 
 		location := photo.getLocationScalled(size)
 		fmt.Println(location)
