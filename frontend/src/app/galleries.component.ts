@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Gallery } from './models';
 import { BackendService } from './backend.service';
 import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
     selector: 'my-app',
@@ -23,7 +24,8 @@ export class GalleriesComponent {
     columnsNumber: number = 3;
     columns: Array<number>;
 
-    constructor(http: Http, router: Router, private route: ActivatedRoute, private backend: BackendService){
+    constructor(http: Http, router: Router, private route: ActivatedRoute,
+                private backend: BackendService, private sanitizer:DomSanitizer){
         this.router = router;
         this.http = http;
 
@@ -56,6 +58,9 @@ export class GalleriesComponent {
         gh.style.transform = "translateX(-100px)";
     }
 
+    getImageUrl(g: Gallery){
+        return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+g.Id+"/cover)");
+    }
     animateCovers(galleries){
         let timeout = 0;
         console.log(galleries);

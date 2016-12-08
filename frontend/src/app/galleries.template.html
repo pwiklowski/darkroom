@@ -1,30 +1,20 @@
 <div class="dr-galleries">
-    <div class="dr-galleries-side-list">
-        <div id="dr-header">
-            <img class="dr-header-img" src="/assets/img/logo.png">
-            <div class="dr-header-text">DARKROOM</div>
-        </div>
-        <a href="https://github.com/pwiklowski/darkroom">
-            <img id="dr-header-gh" src="/assets/img/github.png">
-        </a>
+    <div id="dr-header">
+        <img class="dr-header-img" src="/assets/img/logo.png">
     </div>
+    <a href="https://github.com/pwiklowski/darkroom">
+        <img id="dr-header-gh" src="/assets/img/github.png">
+    </a>
 
-    <div class="dr-gallery">
-        <div class="dr-column-container">
-            <div *ngFor="let c of columns" class="dr-photo-column">
-                <div *ngFor="let g of galleries; let i = index"  class="dr-photo-container">
-                    <div *ngIf="i%columnsNumber==c" class="dr-gallery-cover-container" >
-                        <a href="#/gallery/{{g.Id}}">
-                            <img class="dr-gallery-cover" src="/api/gallery/{{g.Id}}/cover">
-                        </a>
-                        <div id="dr-gn-{{g.Id}}"class="dr-gallery-name"> 
-                            <div class="dr-gallery-name-text"> {{ g.Name }}</div>
-                        </div>
-                    </div>
-                </div>
+    <div *ngFor="let g of galleries; let i = index"  class="dr-photo-container" id="{{g.Id}}"  (click)="hideCover(g.Id)">
+        <div class="dr-gallery-cover-container" [style.background-image]="getImageUrl(g)" >
+            <div id="dr-gn-{{g.Id}}"class="dr-gallery-name"> 
+                <div class="dr-gallery-name-text"> {{ g.Name }}</div>
             </div>
         </div>
     </div>
+
+
     <button id="dr-create-gallery-button" #editUserButton mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="createGallery.show()">
         <mdl-icon>add</mdl-icon>
     </button>
