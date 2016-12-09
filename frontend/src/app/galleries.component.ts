@@ -15,6 +15,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 export class GalleriesComponent {
     @ViewChild('uploadPhotos') uploadPhotos;
     @ViewChild('createGallery') createGallery;
+    @ViewChild('drawer') drawer;
     uploader: FileUploader = new FileUploader({url:""});
 
     http: Http;
@@ -112,5 +113,14 @@ export class GalleriesComponent {
                 this.uploadPhotos.show();
             }
         );
+    }
+
+    showDrawer(){
+        this.drawer.nativeElement.style.left = 0;
+    }
+
+    openGallery(galleryId){
+        this.router.navigate(['/gallery', galleryId]);
+        this.drawer.nativeElement.style.left = "-400px";
     }
 }
