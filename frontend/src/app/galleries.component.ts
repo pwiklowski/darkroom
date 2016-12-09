@@ -64,11 +64,13 @@ export class GalleriesComponent {
     }
 
     hideCover(c){
-        let cover = document.getElementById(c);
-        cover.style.opacity = "0";
+        if (c != this.galleries[0].Id){
+            let cover = document.getElementById(c);
+            cover.style.opacity = "0";
+            setTimeout(()=> cover.style.visibility= "hidden", 500);
+        }else{
 
-        setTimeout(()=> cover.style.visibility= "hidden", 500);
-
+        }
     }
 
     animateCovers(galleries){
