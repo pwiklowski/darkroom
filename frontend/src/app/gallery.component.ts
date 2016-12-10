@@ -2,7 +2,7 @@ import { Component, ViewChild, HostListener } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
-
+import {DomSanitizer} from '@angular/platform-browser';
 import {Gallery, Photo } from './models.ts';
 
 @Component({
@@ -15,6 +15,21 @@ import {Gallery, Photo } from './models.ts';
     width: 100%;
     height: 100%;
     overflow: hidden;
+}
+
+.dr-gallery-background-container{
+    position: absolute;
+    z-index:-10;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    opacity: 0.2;
+    -webkit-filter: blur(20px);
+    filter: blur(20px);
 }
 .dr-column-container{
     margin-top: 10%;
@@ -89,7 +104,7 @@ export class GalleryComponent {
         this.sub.unsubscribe();
     }
 
-    constructor(http: Http, router: Router, private route: ActivatedRoute){
+    constructor(http: Http, router: Router, private route: ActivatedRoute, private sanitizer:DomSanitizer){
         this.router = router;
         this.columns = new Array<number>();
         for(let i = 0; i < this.columnsNumber; i++){
@@ -144,6 +159,11 @@ export class GalleryComponent {
 
         }
     }
+    
+    getCoverUrl(){
+        return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+this.gallery.Id+"/cover)");
+    }
+
 
     animatePhotos(photos){
         let timeout = 0;

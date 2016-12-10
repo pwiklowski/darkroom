@@ -15,7 +15,8 @@
     </div>
 </div>
 
-<div id="dr-gallery" >
+<div id="dr-gallery">
+    <div class="dr-gallery-background-container" [style.background-image]="getCoverUrl()"></div>
     <div class="dr-column-container">
         <div *ngFor="let column of columns; let c = index" class="dr-photo-column">
             <div *ngFor="let p of photos; let i = index"  class="dr-photo-container">
