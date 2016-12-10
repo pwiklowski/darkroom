@@ -11,6 +11,8 @@ import { BackendService } from './backend.service';
     <div id="dr-hamburger" (click)="showDrawer()">
         <img class="dr-header-img" src="/assets/img/logo.png">
     </div>
+    <div #drawerClose id="dr-drawer-close" (click)="closeDrawer()"> </div>
+
 
     <div #drawer class="dr-drawer">
         <div class="dr-drawer-title">Galleries</div>
@@ -31,6 +33,7 @@ export class AppComponent {
     viewContainerRef;
     galleries: Array<Gallery> = new Array<Gallery>();
     @ViewChild('drawer') drawer;
+    @ViewChild('drawerClose') drawerClose;
 
     public constructor(viewContainerRef:ViewContainerRef,
                        private router: Router,
@@ -40,11 +43,21 @@ export class AppComponent {
     }
     showDrawer(){
         this.drawer.nativeElement.style.left = 0;
+        this.drawerClose.nativeElement.style.opacity = "0.6";
+        this.drawerClose.nativeElement.style.visibility= "visible";
+    }
+
+    closeDrawer(){
+        this.drawer.nativeElement.style.left = "-400px";
+        this.drawerClose.nativeElement.style.opacity = 0;
+        setTimeout(()=>{
+            this.drawerClose.nativeElement.style.visibility= "hidden";
+        }, 200);
     }
 
     openGallery(galleryId){
         this.router.navigate(['/gallery', galleryId]);
-        this.drawer.nativeElement.style.left = "-400px";
+        this.closeDrawer();
     }
     getGalleries(){
         this.backend.get("/api/galleries").then(res => {
