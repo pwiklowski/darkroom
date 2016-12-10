@@ -43,8 +43,11 @@ import {Gallery, Photo } from './models.ts';
     flex-direction: row;
     height: 33.33%;
 }
+.dr-photo:hover{
+    opacity: 1;
+}
 .dr-photo{
-    opacity: 0.8; 
+    opacity: 0.5; 
     transition: opacity 100ms ease-in-out;
     height: 100%;
 }
