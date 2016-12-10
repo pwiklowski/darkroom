@@ -96,9 +96,8 @@ html{
     height: 60px;
 }
 
-#dr-header{
+#dr-hamburger{
     position: absolute;
-    top: -100px;
     left: 0px;
     padding: 20px;
     height: 40px;

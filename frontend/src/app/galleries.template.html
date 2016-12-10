@@ -1,14 +1,4 @@
-<div #drawer class="dr-drawer">
-    <div class="dr-drawer-title">Galleries</div>
-
-    <div *ngFor="let g of galleries" class="dr-drawer-name" (click)="openGallery(g.Id)" >
-       {{ g.Name }}
-    </div>
-</div>
 <div class="dr-galleries">
-    <div id="dr-header" (click)="showDrawer()">
-        <img class="dr-header-img" src="/assets/img/logo.png">
-    </div>
     <a href="https://github.com/pwiklowski/darkroom">
         <img id="dr-header-gh" src="/assets/img/github.png">
     </a>
