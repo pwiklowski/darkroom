@@ -14,7 +14,6 @@ import {Gallery, Photo } from './models.ts';
     position: absolute;
     width: 100%;
     height: 100%;
-    overflow: hidden;
 }
 
 .dr-gallery-background-container{
@@ -31,12 +30,13 @@ import {Gallery, Photo } from './models.ts';
     -webkit-filter: blur(20px);
     filter: blur(20px);
 }
-.dr-column-container{
+#dr-column-container{
     margin-top: 10%;
     height: 70%;
     display: flex;
     flex-direction: column;
     background-color: rgba(119, 119, 119, 0.09);
+    overflow: hidden;
 }
 .dr-photo-column{
     display: flex;
@@ -91,6 +91,7 @@ export class GalleryComponent {
     editedGalleryId: string;
 
     selectedPhotoWidth: number = 1280;
+    thumbnailsContainer;
 
     ngOnInit() {
         console.log("Gallery component");
@@ -127,6 +128,8 @@ export class GalleryComponent {
     }
 
     initGallery(){
+        this.thumbnailsContainer = document.getElementById("dr-column-container");
+
         console.log("initGallery" + this.photos);
         let container = document.getElementById("body");
         this.viewWidth = container.offsetWidth;
@@ -286,6 +289,15 @@ export class GalleryComponent {
                 this.prevPhoto();
             }
             return false;
+        }else{
+            if (event.wheelDelta  < 0){
+                this.thumbnailsContainer.scrollLeft+=120;
+
+            }else{
+                this.thumbnailsContainer.scrollLeft-=200;
+            }
+            console.log("scroll", this.thumbnailsContainer.scrollLeft, this.thumbnailsContainer.offsetWidth);
+
         }
     }
 }
