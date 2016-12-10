@@ -306,9 +306,8 @@ export class GalleryComponent {
         }else{
             if (event.wheelDelta  < 0){
                 this.thumbnailsContainer.scrollLeft+=100;
-
             }else{
-                this.thumbnailsContainer.scrollLeft-=200;
+                this.thumbnailsContainer.scrollLeft-=100;
             }
             this.scroll.style.width = (100*this.thumbnailsContainer.scrollLeft)/(this.thumbnailsContainer.scrollWidth-this.thumbnailsContainer.offsetWidth) + "%";
         }
