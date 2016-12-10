@@ -67,6 +67,19 @@ func (p Photo) convertPhoto() {
 	p.Resolutions = resolutions
 }
 
+func getImageDimension(imagePath string) (int, int) {
+	file, err := os.Open(imagePath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+	}
+
+	image, _, err := image.DecodeConfig(file)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s: %v\n", imagePath, err)
+	}
+	return image.Width, image.Height
+}
+
 func main() {
 	firebase.InitializeApp(&firebase.Options{
 		ServiceAccountPath: "cred.json",
@@ -205,20 +218,7 @@ func main() {
 
 		io.Copy(out, file)
 
-		data, _ := exif.Read(p.getLocation())
-
-		width, _ := strconv.Atoi(data.Tags["Pixel X Dimension"])
-		height, _ := strconv.Atoi(data.Tags["Pixel Y Dimension"])
-		orientation := data.Tags["Orientation"]
-
-		if orientation == "Left-bottom" || orientation == "Right-top" {
-			temp := width
-			width = height
-			height = temp
-		}
-
-		p.Width = width
-		p.Height = height
+		p.Width, p.Height = getImageDimension(p.getLocation())
 
 		p.convertPhoto()
 
