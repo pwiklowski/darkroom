@@ -15,7 +15,7 @@ import { BackendService } from './backend.service';
 
 
     <div #drawer class="dr-drawer">
-        <div class="dr-drawer-title">Galleries</div>
+        <div class="dr-drawer-title" (click)="showGalleries()">Galleries</div>
 
         <div *ngFor="let g of galleries" class="dr-drawer-name" (click)="openGallery(g.Id)" >
         {{ g.Name }}
@@ -53,6 +53,10 @@ export class AppComponent {
         setTimeout(()=>{
             this.drawerClose.nativeElement.style.visibility= "hidden";
         }, 200);
+    }
+    showGalleries(){
+        this.router.navigate(['/galleries']);
+        this.closeDrawer();
     }
 
     openGallery(galleryId){

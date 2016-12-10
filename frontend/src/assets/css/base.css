@@ -58,6 +58,7 @@ html{
 .dr-drawer-title{
     margin: 40px;
     font-size: 38px;
+    cursor: pointer;
  }
 .dr-drawer-name{
     margin: 30px;
