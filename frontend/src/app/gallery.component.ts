@@ -8,13 +8,47 @@ import {Gallery, Photo } from './models.ts';
 @Component({
     selector: 'my-app',
     templateUrl: './gallery.template.html',
+
+    styles:[`
+#dr-gallery{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.dr-column-container{
+    margin-top: 10%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(119, 119, 119, 0.09);
+}
+.dr-photo-column{
+    display: flex;
+    flex-direction: row;
+    height: 33.33%;
+}
+.dr-photo{
+    opacity: 0.8; 
+    transition: opacity 100ms ease-in-out;
+    height: 100%;
+}
+.dr-photo-container{
+    height: 100%;
+}
+
+
+
+    
+    `]
+
 })
 export class GalleryComponent {
     http: Http;
     photos;
     gallery: Gallery;
     currentPhoto: number = 0;
-    columnsNumber: number = 4;
+    columnsNumber: number = 3;
     columns: Array<number>;
     router: Router;
     sub: any;
