@@ -5,9 +5,9 @@
 
     <div *ngFor="let g of galleries; let i = index"  class="dr-gallery-cover-container" id="{{g.Id}}"  (click)="hideCover(g.Id)">
         <div class="dr-gallery-cover-container" [style.background-image]="getImageUrl(g)" >
-            <div class="dr-gallery-name"> 
-                <div class="dr-gallery-name-text"> {{ g.Name }}</div>
-            </div>
+            <div class="dr-gallery-name"></div>
+            <div class="dr-gallery-name-text"> {{ g.Name }}</div>
+            <div class="dr-gallery-comment">{{ g.Comment }}</div>
         </div>
     </div>
 
