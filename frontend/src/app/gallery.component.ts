@@ -55,6 +55,19 @@ import {Gallery, Photo } from './models.ts';
     height: 100%;
 }
 
+#dr-scrollbar-fill{
+    width: 0%;
+    height: 1px;
+    background: white;
+}
+
+#dr-scrollbar{
+    position:absolute;
+    bottom: 20px;
+    width: 100%;
+    background:gray;
+    height:1px;
+}
 
 
     
@@ -93,6 +106,8 @@ export class GalleryComponent {
     selectedPhotoWidth: number = 1280;
     thumbnailsContainer;
 
+    scroll;
+
     ngOnInit() {
         console.log("Gallery component");
         this.sub = this.route.params.subscribe(params => {
@@ -129,8 +144,7 @@ export class GalleryComponent {
 
     initGallery(){
         this.thumbnailsContainer = document.getElementById("dr-column-container");
-
-        console.log("initGallery" + this.photos);
+        this.scroll = document.getElementById("dr-scrollbar-fill");
         let container = document.getElementById("body");
         this.viewWidth = container.offsetWidth;
         this.viewHeight = container.offsetHeight;
@@ -291,13 +305,12 @@ export class GalleryComponent {
             return false;
         }else{
             if (event.wheelDelta  < 0){
-                this.thumbnailsContainer.scrollLeft+=120;
+                this.thumbnailsContainer.scrollLeft+=100;
 
             }else{
                 this.thumbnailsContainer.scrollLeft-=200;
             }
-            console.log("scroll", this.thumbnailsContainer.scrollLeft, this.thumbnailsContainer.offsetWidth);
-
+            this.scroll.style.width = (100*this.thumbnailsContainer.scrollLeft)/(this.thumbnailsContainer.scrollWidth-this.thumbnailsContainer.offsetWidth) + "%";
         }
     }
 }
