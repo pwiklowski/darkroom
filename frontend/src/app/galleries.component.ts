@@ -30,11 +30,6 @@ export class GalleriesComponent {
         this.http = http;
 
         this.getGalleries()
-
-        this.columns = new Array<number>();
-        for(let i = 0; i < this.columnsNumber; i++){
-            this.columns.push(i);
-        }
     }
 
     ngOnInit() {
@@ -46,8 +41,6 @@ export class GalleriesComponent {
         let loader = document.getElementById("dr-loader");
         loader.style.opacity = "0";
         setTimeout(this.animate, 20);
-
-        
     }
 
     animate(){
@@ -72,25 +65,9 @@ export class GalleriesComponent {
         }
     }
 
-    animateCovers(galleries){
-        let timeout = 0;
-        console.log(galleries);
-        for(let g of galleries){
-            let galleryId = g.Id;
-            let galleryNameCover = document.getElementById("dr-gn-" + galleryId);
-
-            setTimeout(function(e){
-                e.style.opacity = "0.0" ;
-            }, timeout*100, <HTMLElement>galleryNameCover);
-            timeout++;
-        }
-    }
-
     getGalleries(){
         this.backend.get("/api/galleries").then(res => {
-            console.log(res.json());
             this.galleries = res.json();
-            setTimeout(this.animateCovers, 2000, this.galleries);
         });
     }
 
