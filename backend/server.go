@@ -1,16 +1,18 @@
 package main
 
-import "github.com/kataras/iris"
-import "github.com/kataras/iris/config"
-import "gopkg.in/mgo.v2"
-import "gopkg.in/mgo.v2/bson"
-import "fmt"
-import "os"
-import "strconv"
-import "io"
-import "github.com/xiam/exif"
-import "os/exec"
 import (
+	"fmt"
+	"image"
+	_ "image/jpeg"
+	"io"
+	"os"
+	"os/exec"
+
+	"github.com/kataras/iris"
+	"github.com/kataras/iris/config"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
+
 	firebase "github.com/wuman/firebase-server-sdk-go"
 )
 
