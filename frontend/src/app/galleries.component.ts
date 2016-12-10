@@ -40,15 +40,6 @@ export class GalleriesComponent {
 
         let loader = document.getElementById("dr-loader");
         loader.style.opacity = "0";
-        setTimeout(this.animate, 20);
-    }
-
-    animate(){
-        let header = document.getElementById("dr-header");
-        header.style.transform = "translateY(100px)";
-
-        let gh = document.getElementById("dr-header-gh");
-        gh.style.transform = "translateX(-100px)";
     }
 
     getImageUrl(g: Gallery){
