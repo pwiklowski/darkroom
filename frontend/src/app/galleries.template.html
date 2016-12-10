@@ -13,7 +13,7 @@
         <img id="dr-header-gh" src="/assets/img/github.png">
     </a>
 
-    <div *ngFor="let g of galleries; let i = index"  class="dr-photo-container" id="{{g.Id}}"  (click)="hideCover(g.Id)">
+    <div *ngFor="let g of galleries; let i = index"  class="dr-gallery-cover-container" id="{{g.Id}}"  (click)="hideCover(g.Id)">
         <div class="dr-gallery-cover-container" [style.background-image]="getImageUrl(g)" >
             <div id="dr-gn-{{g.Id}}"class="dr-gallery-name"> 
                 <div class="dr-gallery-name-text"> {{ g.Name }}</div>
