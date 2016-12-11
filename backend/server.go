@@ -231,6 +231,24 @@ func main() {
 
 		c.JSON(iris.StatusOK, p)
 	})
+
+	api.Post("/gallery/:galleryId", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
+		g := Gallery{}
+		c.ReadJSON(&g)
+
+		g.Id = bson.ObjectIdHex(c.Param("galleryId"))
+
+		err := db.C("galleries").Update(bson.M{"_id": g.Id}, g)
+		if err != nil {
+			println("error: " + err.Error())
+		}
+
+		c.JSON(iris.StatusOK, g)
+	})
 	api.Post("/createGallery", func(c *iris.Context) {
 		if !verifyAccess(auth, c) {
 			c.JSON(iris.StatusForbidden, nil)
