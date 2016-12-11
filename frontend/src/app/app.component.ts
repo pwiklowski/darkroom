@@ -58,9 +58,17 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
               enterTransitionDuration: 400,
               leaveTransitionDuration: 400}">
         
-        <h3 class="mdl-dialog__title">Upload photos</h3>
+        <div >Upload photos</div>
+        <mdl-textfield #galleryName type="text" label="Gallery name" floating-label autofocus [(ngModel)]="gallery.Name" (blur)="saveGallery()"></mdl-textfield><br>
+        <mdl-textfield #galleryComment type="text" label="Comment" floating-label autofocus [(ngModel)]="gallery.Comment" (blur)="saveGallery()"></mdl-textfield><br>
         <input type="file" ng2FileSelect [uploader]="uploader" multiple name="uploadField" /><br/>
         <div class="dr-upload">
+            <div class="dr-upload-container" *ngFor="let photo of photos">
+                <img src="/api/photo/{{photo.Id}}/320" class="dr-upload-photo"/>
+                <button mdl-button mdl-button-type="icon"  mdl-colored="primary" (click)="item.remove()">
+                    <mdl-icon>remove</mdl-icon>
+                </button>
+            </div>
             <div class="dr-upload-container" *ngFor="let item of uploader.queue">
                 <img src="{{item.photoUrl}}" class="dr-upload-photo"/>
                 <button mdl-button mdl-button-type="icon"  mdl-colored="primary" (click)="item.remove()">
@@ -106,6 +114,11 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
     right: -300px;
     bottom: 20px;
     transition: all 200ms ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+.dr-drawer-button{
+    margin: 10px 20px;
 }
 
 .dr-button-label{
@@ -145,6 +158,8 @@ export class AppComponent {
 
     url: string;
 
+    photos = [];
+    gallery: Gallery = new Gallery();
     uploader: FileUploader = new FileUploader({url:""});
 
     public constructor(viewContainerRef:ViewContainerRef,
@@ -192,6 +207,31 @@ export class AppComponent {
             this.galleries = res.json();
         });
     }
+
+    editGallery(){
+        this.uploadPhotos.show();
+        this.backend.get("/api/gallery/"+this.getGalleryId()+"/photos").then(res => {
+            this.photos = res.json();
+        });
+        this.backend.get("/api/gallery/"+this.getGalleryId()).then(res => {
+            this.gallery = res.json();
+        });
+
+        this.uploader = new FileUploader({url: '/api/gallery/'+ this.getGalleryId() +'/upload'});
+
+        this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
+            let data = JSON.parse(response);
+            item.photoUrl = "/api/photo/"+data.Id+"/320";
+        }
+    }
+
+    saveGallery(){
+        this.backend.post("/api/gallery/"+this.gallery.Id, this.gallery).then(res =>{
+
+
+        });
+    }
+
     addGallery(name){
         let gallery = {
             "Name": name,
