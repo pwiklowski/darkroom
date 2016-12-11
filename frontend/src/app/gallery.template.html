@@ -3,14 +3,8 @@
         <div class="dr-photo-big" (click)="hidePhoto()" 
             [class.dr-photo-big-selected]="i==selectedPhoto"
             *ngFor="let p of photos; let i=index;">
-
             <div id="dr-loader-p-{{p.Id}}" class="loader"></div>
             <img id="dr-big-p-{{p.Id}}" class="dr-p" >
-
-
-
-            <div class="dr-photo-vote">&#9733;&#9733;&#9733;&#9733;&#9734;  &hearts;</div>
-            {{p.Id}} {{p.Name}} {{p.Width }} {{p.Height}}
         </div>
     </div>
 </div>
