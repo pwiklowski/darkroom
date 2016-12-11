@@ -12,57 +12,6 @@
     </div>
 
 
-    <button id="dr-create-gallery-button" #editUserButton mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="createGallery.show()">
-        <mdl-icon>add</mdl-icon>
-    </button>
 </div>
 
 
-
-<mdl-dialog #createGallery
-            [mdl-dialog-config]="{
-              clickOutsideToClose: true,
-              styles:{'width': '300px', 'color': black},
-              isModal:true,
-              enterTransitionDuration: 400,
-              leaveTransitionDuration: 400}">
-    <h3 class="mdl-dialog__title">Create gallery</h3>
-    <mdl-textfield #galleryName type="text" label="Gallery name" floating-label autofocus></mdl-textfield>
-    <div class="mdl-dialog__actions">
-        <button mdl-button (click)="addGallery(galleryName.value)" mdl-ripple>Create</button>
-        <button mdl-button (click)="createGallery.close()" mdl-ripple>Cancel</button>
-    </div>
-</mdl-dialog>
-
-
- 
-<mdl-dialog #uploadPhotos [mdl-dialog-config]="{
-              styles:{'width': '90%', 'height':'90%', 'display': 'flex'},
-              isModal:true,
-              openFrom: editUserButton,
-              enterTransitionDuration: 400,
-              leaveTransitionDuration: 400}">
-        
-        <h3 class="mdl-dialog__title">Upload photos</h3>
-        <input type="file" ng2FileSelect [uploader]="uploader" multiple name="uploadField" /><br/>
-        <div class="dr-upload">
-            <div class="dr-upload-container" *ngFor="let item of uploader.queue">
-                <img src="{{item.photoUrl}}" class="dr-upload-photo"/>
-                <button mdl-button mdl-button-type="icon"  mdl-colored="primary" (click)="item.remove()">
-                    <mdl-icon>remove</mdl-icon>
-                </button>
-            </div>
-        </div>
-    <div class="mdl-dialog__actions">
-        <button mdl-button mdl-ripple (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
-           Upload all
-        </button>
-        <button mdl-button mdl-ripple (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
-           Cancel all
-        </button>
-        <button mdl-button mdl-ripple (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
-            Remove all
-        </button>
-        <button mdl-button (click)="getGalleries(); uploadPhotos.close()" mdl-ripple>Close</button>
-    </div>
-</mdl-dialog>
