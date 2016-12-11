@@ -15,6 +15,10 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
     <div #drawerCloseFill id="dr-drawer-close-fill"></div>
 
     <div #drawerButtons id="dr-drawer-buttons">
+        <button *ngIf="getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="removeGallery()">
+            <div class="dr-button-label">Remove gallery</div>
+            <mdl-icon>delete_forever</mdl-icon>
+        </button>
         <button *ngIf="getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="editGallery()">
             <div class="dr-button-label">Edit gallery</div>
             <mdl-icon>add_to_photos</mdl-icon>
@@ -225,6 +229,13 @@ export class AppComponent {
         }
     }
 
+    removeGallery(){
+        this.backend.delete("/api/gallery/"+this.getGalleryId()).then(res =>{
+            console.log("Removed gallery " + this.getGalleryId());
+            this.getGalleries();
+            this.router.navigate(['/galleries']);
+        });
+    }
     saveGallery(){
         this.backend.post("/api/gallery/"+this.gallery.Id, this.gallery).then(res =>{
 

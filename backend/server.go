@@ -232,6 +232,19 @@ func main() {
 		c.JSON(iris.StatusOK, p)
 	})
 
+	api.Delete("/gallery/:galleryId", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
+
+		err := db.C("galleries").Remove(bson.M{"_id": bson.ObjectIdHex(c.Param("galleryId"))})
+		if err != nil {
+			c.JSON(iris.StatusNotFound, nil)
+			return
+		}
+		c.JSON(iris.StatusOK, nil)
+	})
 	api.Post("/gallery/:galleryId", func(c *iris.Context) {
 		if !verifyAccess(auth, c) {
 			c.JSON(iris.StatusForbidden, nil)
