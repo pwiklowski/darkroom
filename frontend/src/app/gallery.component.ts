@@ -136,8 +136,10 @@ export class GalleryComponent {
     getPhotos(galleyId){
         this.http.get("/api/gallery/"+galleyId+"/photos").toPromise().then(res => {
                 this.photos = res.json();
-                this.initGallery();
-                setTimeout(this.animatePhotos, 200, this.photos);
+                if (this.photos.length > 0){
+                    this.initGallery();
+                    setTimeout(this.animatePhotos, 200, this.photos);
+                }
             }
         );
     }
