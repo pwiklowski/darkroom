@@ -15,7 +15,11 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
     <div #drawerCloseFill id="dr-drawer-close-fill"></div>
 
     <div #drawerButtons id="dr-drawer-buttons">
-        <button id="dr-create-gallery-button" #editUserButton mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="createGallery.show()">
+        <button *ngIf="getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="editGallery()">
+            <div class="dr-button-label">Edit gallery</div>
+            <mdl-icon>add_to_photos</mdl-icon>
+        </button>
+        <button class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="createGallery.show()">
             <div class="dr-button-label">Add new gallery</div>
             <mdl-icon>add</mdl-icon>
         </button>
@@ -139,6 +143,7 @@ export class AppComponent {
     @ViewChild('createGallery') createGallery;
     @ViewChild('drawerButtons') drawerButtons;
 
+    url: string;
 
     uploader: FileUploader = new FileUploader({url:""});
 
@@ -147,7 +152,16 @@ export class AppComponent {
                        private backend: BackendService){
         this.viewContainerRef = viewContainerRef;
         this.getGalleries();
+        this.router.events.subscribe((event) => this.url = event.url);
     }
+
+    getGalleryId(){
+        if (this.url.indexOf("/gallery/") !== -1){
+            return this.url.split("/")[2];
+        }
+        return undefined;
+    }
+
     showDrawer(){
         this.drawer.nativeElement.style.left = 0;
         this.drawerCloseFill.nativeElement.style.opacity = "0.6";
