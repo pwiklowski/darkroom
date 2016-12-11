@@ -13,9 +13,13 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
 </div>
 <div #drawerClose id="dr-drawer-close" (click)="closeDrawer()">
     <div #drawerCloseFill id="dr-drawer-close-fill"></div>
-    <button id="dr-create-gallery-button" #editUserButton mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="createGallery.show()">
-        <mdl-icon>add</mdl-icon>
-    </button>
+
+    <div #drawerButtons id="dr-drawer-buttons">
+        <button id="dr-create-gallery-button" #editUserButton mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="createGallery.show()">
+            <div class="dr-button-label">Add new gallery</div>
+            <mdl-icon>add</mdl-icon>
+        </button>
+    </div>
 </div>
 
 
@@ -42,7 +46,7 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
         <button mdl-button (click)="createGallery.close()" mdl-ripple>Cancel</button>
     </div>
 </mdl-dialog>
- 
+
 <mdl-dialog #uploadPhotos [mdl-dialog-config]="{
               styles:{'width': '90%', 'height':'90%', 'display': 'flex'},
               isModal:true,
@@ -85,6 +89,7 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
     height: 100%;
     z-index: 50;
     visibility: hidden;
+    overflow: hidden;
 }
 #dr-drawer-close-fill{
     width: 100%;
@@ -92,7 +97,31 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
     background-color:black;
     transition: opacity 200ms ease-in-out;
 }
-    
+#dr-drawer-buttons{
+    position: absolute;
+    right: -300px;
+    bottom: 20px;
+    transition: all 200ms ease-in-out;
+}
+
+.dr-button-label{
+    position: absolute;
+    width: 150px;
+    right: 70px;
+    top: 0px;
+    height: 36px;
+    line-height: 36px;
+    background-color: rgba(255,255,255, 0.5);
+    margin: 10px;
+    padding: 0 10px;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    text-transform:none;
+}
+.mdl-button--fab{
+    overflow: visible;
+}
     
     
     `]
@@ -108,6 +137,9 @@ export class AppComponent {
 
     @ViewChild('uploadPhotos') uploadPhotos;
     @ViewChild('createGallery') createGallery;
+    @ViewChild('drawerButtons') drawerButtons;
+
+
     uploader: FileUploader = new FileUploader({url:""});
 
     public constructor(viewContainerRef:ViewContainerRef,
@@ -120,11 +152,14 @@ export class AppComponent {
         this.drawer.nativeElement.style.left = 0;
         this.drawerCloseFill.nativeElement.style.opacity = "0.6";
         this.drawerClose.nativeElement.style.visibility= "visible";
+        this.drawerButtons.nativeElement.style.right = "0px"
+
     }
 
     closeDrawer(){
         this.drawer.nativeElement.style.left = "-400px";
         this.drawerCloseFill.nativeElement.style.opacity = 0;
+        this.drawerButtons.nativeElement.style.right = "-300px"
         setTimeout(()=>{
             this.drawerClose.nativeElement.style.visibility= "hidden";
         }, 200);
