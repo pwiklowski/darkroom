@@ -35,7 +35,7 @@ import {Gallery, Photo } from './models.ts';
     height: 70%;
     display: flex;
     flex-direction: column;
-    background-color: rgba(119, 119, 119, 0.09);
+    background-color: rgba(0, 0, 0, 0.5);
     overflow: hidden;
 }
 .dr-photo-column{
