@@ -55,31 +55,26 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
     </div>
 </mdl-dialog>
 
-<mdl-dialog #uploadPhotos [mdl-dialog-config]="{
-              styles:{'width': '90%', 'height':'90%', 'display': 'flex'},
-              isModal:true,
-              openFrom: editUserButton,
-              enterTransitionDuration: 400,
-              leaveTransitionDuration: 400}">
-        
-        <div >Upload photos</div>
-        <mdl-textfield #galleryName type="text" label="Gallery name" floating-label autofocus [(ngModel)]="gallery.Name" (blur)="saveGallery()"></mdl-textfield><br>
-        <mdl-textfield #galleryComment type="text" label="Comment" floating-label autofocus [(ngModel)]="gallery.Comment" (blur)="saveGallery()"></mdl-textfield><br>
-        <input type="file" ng2FileSelect [uploader]="uploader" multiple name="uploadField" /><br/>
-        <div class="dr-upload">
-            <div class="dr-upload-container" *ngFor="let photo of photos">
-                <img src="/api/photo/{{photo.Id}}/320" class="dr-upload-photo"/>
-                <button mdl-button mdl-button-type="icon"  mdl-colored="primary" (click)="item.remove()">
-                    <mdl-icon>remove</mdl-icon>
-                </button>
-            </div>
-            <div class="dr-upload-container" *ngFor="let item of uploader.queue">
-                <img src="{{item.photoUrl}}" class="dr-upload-photo"/>
-                <button mdl-button mdl-button-type="icon"  mdl-colored="primary" (click)="item.remove()">
-                    <mdl-icon>remove</mdl-icon>
-                </button>
-            </div>
-        </div>
+<div #editGalleryModal class="dr-modal-container">
+<div class="dr-modal">
+    <div >Upload photos</div>
+    <mdl-textfield #galleryName type="text" label="Gallery name" floating-label autofocus [(ngModel)]="gallery.Name" (blur)="saveGallery()"></mdl-textfield><br>
+    <mdl-textfield #galleryComment type="text" label="Comment" floating-label autofocus [(ngModel)]="gallery.Comment" (blur)="saveGallery()"></mdl-textfield><br>
+    <input type="file" ng2FileSelect [uploader]="uploader" multiple name="uploadField" /><br/>
+    <div class="dr-upload">
+        <div class="dr-upload-container" *ngFor="let photo of photos">
+            <img src="/api/photo/{{photo.Id}}/320" class="dr-upload-photo"/>
+            <button mdl-button mdl-button-type="icon"  mdl-colored="primary" (click)="item.remove()">
+                <mdl-icon>remove</mdl-icon>
+            </button>
+        </div>
+        <div class="dr-upload-container" *ngFor="let item of uploader.queue">
+            <img src="{{item.photoUrl}}" class="dr-upload-photo"/>
+            <button mdl-button mdl-button-type="icon"  mdl-colored="primary" (click)="item.remove()">
+                <mdl-icon>remove</mdl-icon>
+            </button>
+        </div>
+    </div>
     <div class="mdl-dialog__actions">
         <button mdl-button mdl-ripple (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
            Upload all
@@ -90,9 +85,12 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
         <button mdl-button mdl-ripple (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
             Remove all
         </button>
-        <button mdl-button (click)="getGalleries(); uploadPhotos.close()" mdl-ripple>Close</button>
+        <button mdl-button (click)="getGalleries(); hide(editGalleryModal)" mdl-ripple>Close</button>
     </div>
-</mdl-dialog>
+    </div>
+
+</div>
+
     
     <router-outlet ></router-outlet>
     `,
@@ -143,7 +141,28 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
 .mdl-button--fab{
     overflow: visible;
 }
-    
+.mdl-dialog__content{
+    flex: 1 0 auto;
+}
+.dr-modal-container{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 10000;
+    visibility: hidden;
+}
+.dr-modal{
+    top: 20px;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+
+    background-color: white;
+}
     
     `]
 })
@@ -156,7 +175,7 @@ export class AppComponent {
     @ViewChild('drawerClose') drawerClose;
     @ViewChild('drawerCloseFill') drawerCloseFill;
 
-    @ViewChild('uploadPhotos') uploadPhotos;
+    @ViewChild('editGalleryModal') editGalleryModal;
     @ViewChild('createGallery') createGallery;
     @ViewChild('drawerButtons') drawerButtons;
 
@@ -212,8 +231,17 @@ export class AppComponent {
         });
     }
 
+    show(el){
+        el.style.visibility= "visible";
+    }
+
+    hide(el){
+        console.log(el);
+        el.style.visibility = "hidden";
+    }
+
     editGallery(){
-        this.uploadPhotos.show();
+        this.show(this.editGalleryModal.nativeElement);
         this.backend.get("/api/gallery/"+this.getGalleryId()+"/photos").then(res => {
             this.photos = res.json();
         });
@@ -260,7 +288,7 @@ export class AppComponent {
                     item.photoUrl = "/api/photo/"+data.Id+"/320";
                 }
 
-                this.uploadPhotos.show();
+                this.show(this.editGalleryModal.nativeElement);
             }
         );
     }
