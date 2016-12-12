@@ -64,7 +64,7 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
     <div class="dr-upload">
         <div class="dr-upload-container" *ngFor="let photo of photos">
             <img src="/api/photo/{{photo.Id}}/320" class="dr-upload-photo"/>
-            <button mdl-button mdl-button-type="icon"  mdl-colored="primary" (click)="item.remove()">
+            <button mdl-button mdl-button-type="icon"  mdl-colored="primary" (click)="removePhoto(photo.Id)">
                 <mdl-icon>remove</mdl-icon>
             </button>
         </div>
@@ -255,6 +255,17 @@ export class AppComponent {
             let data = JSON.parse(response);
             item.photoUrl = "/api/photo/"+data.Id+"/320";
         }
+    }
+
+    removePhoto(photoId){
+        this.backend.delete("/api/photo/"+photoId).then(res =>{
+            for(let i=0; this.photos.length; i++){
+                if (this.photos[i].Id === photoId){
+                    this.photos.splice(i,1);
+                    break;
+                }
+            }
+        });
     }
 
     removeGallery(){

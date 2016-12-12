@@ -159,6 +159,24 @@ func main() {
 		c.JSON(iris.StatusOK, photos)
 	})
 
+	api.Delete("/photo/:photo", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
+
+		photo := Photo{}
+		photoID := c.Param("photo")
+		db.C("photos").Find(bson.M{"_id": bson.ObjectIdHex(photoID)}).One(&photo)
+		fmt.Println(photo)
+
+		for i := 0; i < len(photo.Resolutions); i++ {
+			fmt.Println(photo.Location + photo.Resolutions[i] + "_" + photo.Name)
+		}
+		db.C("photos").Remove(bson.M{"_id": bson.ObjectIdHex(photoID)})
+
+		c.JSON(iris.StatusOK, nil)
+	})
 	api.Get("/photo/:photo/:size", func(c *iris.Context) {
 		if !verifyAccess(auth, c) {
 			c.JSON(iris.StatusForbidden, nil)
