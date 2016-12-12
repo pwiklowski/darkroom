@@ -54,7 +54,7 @@ func verifyAccess(auth *firebase.Auth, c *iris.Context) bool {
 	return false
 }
 
-func (p Photo) convertPhoto() {
+func (p *Photo) convertPhoto() {
 
 	fmt.Println("convertPhoto " + p.getLocation())
 
