@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Gallery, Photo } from './models';
 import { BackendService } from './backend.service';
 import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
+import { MdlDialogService } from 'angular2-mdl';
 
 @Component({
     selector: 'app',
@@ -171,7 +172,8 @@ export class AppComponent {
 
     public constructor(viewContainerRef:ViewContainerRef,
                        private router: Router,
-                       private backend: BackendService){
+                       private backend: BackendService,
+                       private dialogService: MdlDialogService){
         this.viewContainerRef = viewContainerRef;
         this.getGalleries();
         this.router.events.subscribe((event) => this.url = event.url);
@@ -244,22 +246,38 @@ export class AppComponent {
     }
 
     removePhoto(photoId){
-        this.backend.delete("/api/photo/"+photoId).then(res =>{
-            for(let i=0; this.photos.length; i++){
-                if (this.photos[i].Id === photoId){
-                    this.photos.splice(i,1);
-                    break;
-                }
+        let r = this.dialogService.confirm('Are you sure ?', 'No', 'Yes');
+        r.subscribe(()=>{
+                this.backend.delete("/api/photo/"+photoId).then(res =>{
+                    for(let i=0; this.photos.length; i++){
+                        if (this.photos[i].Id === photoId){
+                            this.photos.splice(i,1);
+                            break;
+                        }
+                    }
+                });
+            },
+            (err: any) => {
+
             }
-        });
+        );
+
+
     }
 
     removeGallery(){
-        this.backend.delete("/api/gallery/"+this.getGalleryId()).then(res =>{
-            console.log("Removed gallery " + this.getGalleryId());
-            this.getGalleries();
-            this.router.navigate(['/galleries']);
-        });
+        let r = this.dialogService.confirm('Are you sure ?', 'No', 'Yes');
+        r.subscribe(()=>{
+                this.backend.delete("/api/gallery/"+this.getGalleryId()).then(res =>{
+                    console.log("Removed gallery " + this.getGalleryId());
+                    this.getGalleries();
+                    this.router.navigate(['/galleries']);
+                });
+            },
+            (err: any) => {
+
+            }
+        );
     }
     saveGallery(){
         this.backend.post("/api/gallery/"+this.gallery.Id, this.gallery).then(res =>{
