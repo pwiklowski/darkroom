@@ -172,6 +172,7 @@ func main() {
 
 		for i := 0; i < len(photo.Resolutions); i++ {
 			fmt.Println(photo.Location + photo.Resolutions[i] + "_" + photo.Name)
+			os.Remove(photo.Location + photo.Resolutions[i] + "_" + photo.Name)
 		}
 		db.C("photos").Remove(bson.M{"_id": bson.ObjectIdHex(photoID)})
 
@@ -261,6 +262,23 @@ func main() {
 			c.JSON(iris.StatusNotFound, nil)
 			return
 		}
+
+		photos := []Photo{}
+		galleryId := c.Param("galleryId")
+		db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryId)}).All(&photos)
+
+		for j := 0; j < len(photos); j++ {
+			photo := photos[j]
+
+			for i := 0; i < len(photo.Resolutions); i++ {
+				fmt.Println(photo.Location + photo.Resolutions[i] + "_" + photo.Name)
+				os.Remove(photo.Location + photo.Resolutions[i] + "_" + photo.Name)
+			}
+			os.Remove(photo.Location + photo.Name)
+			os.Remove(photo.Location)
+			db.C("photos").Remove(bson.M{"_id": photo.Id})
+		}
+
 		c.JSON(iris.StatusOK, nil)
 	})
 	api.Post("/gallery/:galleryId", func(c *iris.Context) {
