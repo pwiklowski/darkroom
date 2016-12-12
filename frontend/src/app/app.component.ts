@@ -1,7 +1,7 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Router } from '@angular/router';
-import { Gallery } from './models';
+import { Gallery, Photo } from './models';
 import { BackendService } from './backend.service';
 import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
 
@@ -23,7 +23,7 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
             <div class="dr-button-label">Edit gallery</div>
             <mdl-icon>add_to_photos</mdl-icon>
         </button>
-        <button class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="createGallery.show()">
+        <button class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="newGallery()">
             <div class="dr-button-label">Add new gallery</div>
             <mdl-icon>add</mdl-icon>
         </button>
@@ -40,25 +40,10 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
 </div>
 
 
-<mdl-dialog #createGallery
-            [mdl-dialog-config]="{
-              clickOutsideToClose: true,
-              styles:{'width': '300px', 'color': black},
-              isModal:true,
-              enterTransitionDuration: 400,
-              leaveTransitionDuration: 400}">
-    <h3 class="mdl-dialog__title">Create gallery</h3>
-    <mdl-textfield #galleryName type="text" label="Gallery name" floating-label autofocus></mdl-textfield>
-    <div class="mdl-dialog__actions">
-        <button mdl-button (click)="addGallery(galleryName.value)" mdl-ripple>Create</button>
-        <button mdl-button (click)="createGallery.close()" mdl-ripple>Cancel</button>
-    </div>
-</mdl-dialog>
-
 <div #editGalleryModal class="dr-modal-container">
 <div class="dr-modal">
     <div >Upload photos</div>
-    <mdl-textfield #galleryName type="text" label="Gallery name" floating-label autofocus [(ngModel)]="gallery.Name" (blur)="saveGallery()"></mdl-textfield><br>
+    <mdl-textfield #galleryName type="text" label="Gallery name" floating-label autofocus [(ngModel)]="gallery.Name" (blur)="saveGallery()"></mdl-textfield>
     <mdl-textfield #galleryComment type="text" label="Comment" floating-label autofocus [(ngModel)]="gallery.Comment" (blur)="saveGallery()"></mdl-textfield><br>
     <input type="file" ng2FileSelect [uploader]="uploader" multiple name="uploadField" /><br/>
     <div class="dr-upload">
@@ -88,7 +73,6 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
         <button mdl-button (click)="getGalleries(); hide(editGalleryModal)" mdl-ripple>Close</button>
     </div>
     </div>
-
 </div>
 
     
@@ -179,7 +163,7 @@ export class AppComponent {
     @ViewChild('createGallery') createGallery;
     @ViewChild('drawerButtons') drawerButtons;
 
-    url: string;
+    url: string = "";
 
     photos = [];
     gallery: Gallery = new Gallery();
@@ -196,6 +180,8 @@ export class AppComponent {
     getGalleryId(){
         if (this.url.indexOf("/gallery/") !== -1){
             return this.url.split("/")[2];
+        }else if (this.gallery.Id !== undefined){
+            return this.gallery.Id;
         }
         return undefined;
     }
@@ -282,26 +268,26 @@ export class AppComponent {
         });
     }
 
-    addGallery(name){
+    newGallery(){
+        this.show(this.editGalleryModal.nativeElement);
+
+        this.gallery.Name = "Name";
+        this.gallery.Comment = "Comment";
         let gallery = {
-            "Name": name,
-            "Comment": ""
+            "Name": this.gallery.Name,
+            "Comment": this.gallery.Comment
         };
-        this.backend.post("/api/createGallery", gallery).then(
-            res => {
-                let g = res.json();
-                this.createGallery.close();
-                let editedGalleryId = g.Id;
-                this.uploader = new FileUploader({url: '/api/gallery/'+  editedGalleryId +'/upload'});
+        this.backend.post("/api/createGallery", gallery).then(res => {
+            this.gallery = res.json();
+            this.uploader = new FileUploader({url: '/api/gallery/'+  this.gallery.Id +'/upload'});
 
-                this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
-                    let data = JSON.parse(response);
-                    item.photoUrl = "/api/photo/"+data.Id+"/320";
-                }
-
-                this.show(this.editGalleryModal.nativeElement);
+            this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
+                let data = JSON.parse(response);
+                item.photoUrl = "/api/photo/"+data.Id+"/320";
             }
-        );
+
+            this.show(this.editGalleryModal.nativeElement);
+         });
     }
 }
 
