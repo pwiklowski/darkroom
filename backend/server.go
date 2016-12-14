@@ -16,6 +16,12 @@ import (
 	firebase "github.com/wuman/firebase-server-sdk-go"
 )
 
+type User struct {
+	UserID     string
+	PhotosIDs  []string
+	GalleryIDs []string
+}
+
 type Photo struct {
 	Id          bson.ObjectId `_id`
 	Location    string
@@ -98,8 +104,57 @@ func main() {
 
 	db := session.DB("test1")
 	photosDb := db.C("photos")
+	usersDb := db.C("users")
 
 	api := iris.New(config.Iris{MaxRequestBodySize: 32 << 20})
+
+	api.Get("/users", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
+
+		users := []User{}
+		usersDb.Find(nil).All(&users)
+		c.JSON(iris.StatusOK, users)
+	})
+
+	api.Get("/user/:userID", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
+		userID := c.Param("userID")
+
+		user := User{}
+		usersDb.Find(bson.M{"userid": userID}).One(&user)
+		c.JSON(iris.StatusOK, user)
+	})
+
+	api.Post("/user/:userID", func(c *iris.Context) {
+		if !verifyAccess(auth, c) {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
+		userID := c.Param("userID")
+
+		sentUser := User{}
+		c.ReadJSON(&sentUser)
+
+		user := User{}
+		err := usersDb.Find(bson.M{"userid": userID}).One(&user)
+		if err != nil {
+			user.UserID = userID
+			usersDb.Insert(user)
+		}
+
+		user.GalleryIDs = sentUser.GalleryIDs
+		user.PhotosIDs = sentUser.PhotosIDs
+
+		usersDb.Update(bson.M{"userid": userID}, user)
+
+		c.JSON(iris.StatusOK, user)
+	})
 
 	api.Get("/galleries", func(c *iris.Context) {
 		if !verifyAccess(auth, c) {
