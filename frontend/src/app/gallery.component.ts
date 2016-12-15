@@ -4,6 +4,7 @@ import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Gallery, Photo } from './models.ts';
+import {BackendService} from './backend.service';
 
 @Component({
     selector: 'my-app',
@@ -123,7 +124,7 @@ export class GalleryComponent {
         this.sub.unsubscribe();
     }
 
-    constructor(http: Http, router: Router, private route: ActivatedRoute, private sanitizer:DomSanitizer){
+    constructor(http: Http, private backend: BackendService, router: Router, private route: ActivatedRoute, private sanitizer:DomSanitizer){
         this.router = router;
         this.columns = new Array<number>();
         for(let i = 0; i < this.columnsNumber; i++){
@@ -134,7 +135,7 @@ export class GalleryComponent {
     }
     
     getPhotos(galleyId){
-        this.http.get("/api/gallery/"+galleyId+"/photos").toPromise().then(res => {
+        this.backend.get("/api/gallery/"+galleyId+"/photos").then(res => {
                 this.photos = res.json();
                 if (this.photos.length > 0){
                     this.initGallery();
@@ -283,7 +284,7 @@ export class GalleryComponent {
     }
 
     getGallery(galleryId){
-        this.http.get("/api/gallery/"+galleryId).toPromise().then(res => {this.gallery = res.json(); console.log(this.gallery);});
+        this.backend.get("/api/gallery/"+galleryId).then(res => {this.gallery = res.json(); console.log(this.gallery);});
     }
 
 
