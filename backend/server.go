@@ -65,7 +65,9 @@ func getUserID(auth *firebase.Auth, c *iris.Context) string {
 	token := c.RequestHeader("Authorization")
 	decodedToken, err := auth.VerifyIDToken(token)
 	if err == nil {
-		uid, _ := decodedToken.UID()
+		uid, found := decodedToken.UID()
+		fmt.Println(uid, found)
+
 		return uid
 	}
 	return ""
@@ -201,33 +203,40 @@ func main() {
 	})
 
 	api.Get("/gallery/:galleryId", func(c *iris.Context) {
-		if !verifyAccess(auth, c) {
+		uid := getUserID(auth, c)
+		if uid == "" {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
+
 		gallery := Gallery{}
-		galleryId := c.Param("galleryId")
-		fmt.Println(galleryId)
-		err := db.C("galleries").Find(bson.M{"_id": bson.ObjectIdHex(galleryId)}).One(&gallery)
-		if err != nil {
-			println("error: " + err.Error())
+		galleryID := c.Param("galleryId")
+
+		if isSuperuser(auth, c, db) {
+			db.C("galleries").Find(bson.M{"_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
+		} else {
+			db.C("galleries").Find(bson.M{"userids": uid, "_id": bson.ObjectIdHex(galleryID)}).All(&gallery)
 		}
+
 		c.JSON(iris.StatusOK, gallery)
 	})
 	api.Get("/gallery/:galleryId/cover", func(c *iris.Context) {
-		if !verifyAccess(auth, c) {
+		uid := getUserID(auth, c)
+		if uid == "" {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
 		photo := Photo{}
-		galleryId := c.Param("galleryId")
-		db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryId)}).One(&photo)
-		fmt.Println(photo)
+		galleryID := c.Param("galleryId")
+
+		if isSuperuser(auth, c, db) {
+			db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
+		} else {
+			db.C("photos").Find(bson.M{"userids": uid, "galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
+		}
 
 		size := "1920"
-
 		location := photo.getLocationScalled(size)
-		fmt.Println(location)
 
 		err := c.ServeFile(location, false)
 		if err != nil {
@@ -237,13 +246,27 @@ func main() {
 	})
 
 	api.Get("/gallery/:galleryId/photos", func(c *iris.Context) {
-		if !verifyAccess(auth, c) {
+		uid := getUserID(auth, c)
+		if uid == "" {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
 		photos := []Photo{}
-		galleryId := c.Param("galleryId")
-		db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryId)}).All(&photos)
+		galleryID := c.Param("galleryId")
+
+		if isSuperuser(auth, c, db) {
+			db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryID)}).All(&photos)
+		} else {
+			gallery := Gallery{}
+			err := db.C("galleries").Find(bson.M{"userids": uid, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
+			fmt.Println(gallery)
+			if err != nil {
+				c.JSON(iris.StatusForbidden, nil)
+				return
+			}
+			db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryID)}).All(&photos)
+		}
+
 		c.JSON(iris.StatusOK, photos)
 	})
 
@@ -267,15 +290,26 @@ func main() {
 		c.JSON(iris.StatusOK, nil)
 	})
 	api.Get("/photo/:photo/:size", func(c *iris.Context) {
-		if !verifyAccess(auth, c) {
+		uid := getUserID(auth, c)
+		if uid == "" {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
 		photo := Photo{}
-		photoId := c.Param("photo")
+		photoID := c.Param("photo")
 		size := c.Param("size")
-		db.C("photos").Find(bson.M{"_id": bson.ObjectIdHex(photoId)}).One(&photo)
-		fmt.Println(photo)
+
+		if isSuperuser(auth, c, db) {
+			db.C("photos").Find(bson.M{"_id": bson.ObjectIdHex(photoID)}).One(&photo)
+		} else {
+			db.C("photos").Find(bson.M{"_id": bson.ObjectIdHex(photoID)}).One(&photo)
+			gallery := Gallery{}
+			err := db.C("galleries").Find(bson.M{"userids": uid, "_id": photo.GalleryId}).One(&gallery)
+			if err != nil {
+				c.JSON(iris.StatusForbidden, nil)
+				return
+			}
+		}
 
 		if size == "info" {
 			c.JSON(iris.StatusOK, photo)
