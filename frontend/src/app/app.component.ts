@@ -16,6 +16,10 @@ import { MdlDialogService } from 'angular2-mdl';
     <div #drawerCloseFill id="dr-drawer-close-fill"></div>
 
     <div #drawerButtons id="dr-drawer-buttons">
+        <button class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="logout()">
+            <div class="dr-button-label">Logout</div>
+            <mdl-icon>user</mdl-icon>
+        </button>
         <button *ngIf="getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="removeGallery()">
             <div class="dr-button-label">Remove gallery</div>
             <mdl-icon>delete_forever</mdl-icon>
@@ -306,6 +310,11 @@ export class AppComponent {
 
             this.show(this.editGalleryModal.nativeElement);
          });
+    }
+
+    logout(){
+        this.backend.logout();
+        this.router.navigate(['/']);
     }
 }
 
