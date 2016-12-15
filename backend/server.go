@@ -177,12 +177,8 @@ func main() {
 			usersDb.Insert(user)
 		}
 
-		user.GalleryIDs = sentUser.GalleryIDs
-		user.PhotosIDs = sentUser.PhotosIDs
 		user.IsSuperuser = sentUser.IsSuperuser
-
 		usersDb.Update(bson.M{"userid": userID}, user)
-
 		c.JSON(iris.StatusOK, user)
 	})
 
