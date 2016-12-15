@@ -19,8 +19,6 @@ import (
 type User struct {
 	UserID      string
 	IsSuperuser bool
-	PhotosIDs   []string
-	GalleryIDs  []string
 }
 
 type Photo struct {
@@ -33,6 +31,7 @@ type Photo struct {
 	GalleryId   bson.ObjectId
 	Name        string
 	Resolutions []string
+	UsersIDs    []string
 }
 
 type Gallery struct {
@@ -40,6 +39,7 @@ type Gallery struct {
 	Name       string
 	Comment    string
 	CoverPhoto bson.ObjectId `bson:",omitempty"`
+	UsersIDs   []string
 }
 
 func (p Photo) getLocation() string {
@@ -59,6 +59,16 @@ func verifyAccess(auth *firebase.Auth, c *iris.Context) bool {
 		return found
 	}
 	return false
+}
+
+func getUserID(auth *firebase.Auth, c *iris.Context) string {
+	token := c.RequestHeader("Authorization")
+	decodedToken, err := auth.VerifyIDToken(token)
+	if err == nil {
+		uid, _ := decodedToken.UID()
+		return uid
+	}
+	return ""
 }
 
 func isSuperuser(auth *firebase.Auth, c *iris.Context, db *mgo.Database) bool {
@@ -177,13 +187,20 @@ func main() {
 	})
 
 	api.Get("/galleries", func(c *iris.Context) {
-		if !verifyAccess(auth, c) {
+		uid := getUserID(auth, c)
+
+		if uid == "" {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
-
 		galleries := []Gallery{}
-		db.C("galleries").Find(nil).All(&galleries)
+
+		if isSuperuser(auth, c, db) {
+			db.C("galleries").Find(nil).All(&galleries)
+		} else {
+			db.C("galleries").Find(bson.M{"userids": uid}).All(&galleries)
+		}
+
 		c.JSON(iris.StatusOK, galleries)
 	})
 
