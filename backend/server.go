@@ -17,9 +17,10 @@ import (
 )
 
 type User struct {
-	UserID     string
-	PhotosIDs  []string
-	GalleryIDs []string
+	UserID      string
+	IsSuperuser bool
+	PhotosIDs   []string
+	GalleryIDs  []string
 }
 
 type Photo struct {
@@ -56,6 +57,24 @@ func verifyAccess(auth *firebase.Auth, c *iris.Context) bool {
 		uid, found := decodedToken.UID()
 		fmt.Println(uid)
 		return found
+	}
+	return false
+}
+
+func isSuperuser(auth *firebase.Auth, c *iris.Context, db *mgo.Database) bool {
+	token := c.RequestHeader("Authorization")
+
+	decodedToken, err := auth.VerifyIDToken(token)
+	if err == nil {
+		uid, found := decodedToken.UID()
+		if found {
+			user := User{}
+			err := db.C("users").Find(bson.M{"userid": uid}).One(&user)
+
+			if err == nil {
+				return user.IsSuperuser
+			}
+		}
 	}
 	return false
 }
@@ -132,7 +151,7 @@ func main() {
 	})
 
 	api.Post("/user/:userID", func(c *iris.Context) {
-		if !verifyAccess(auth, c) {
+		if !isSuperuser(auth, c, db) {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
@@ -150,6 +169,7 @@ func main() {
 
 		user.GalleryIDs = sentUser.GalleryIDs
 		user.PhotosIDs = sentUser.PhotosIDs
+		user.IsSuperuser = sentUser.IsSuperuser
 
 		usersDb.Update(bson.M{"userid": userID}, user)
 
@@ -215,7 +235,7 @@ func main() {
 	})
 
 	api.Delete("/photo/:photo", func(c *iris.Context) {
-		if !verifyAccess(auth, c) {
+		if !isSuperuser(auth, c, db) {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
@@ -255,7 +275,7 @@ func main() {
 	})
 
 	api.Post("/gallery/:galleryId/upload", func(c *iris.Context) {
-		if !verifyAccess(auth, c) {
+		if !isSuperuser(auth, c, db) {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
@@ -307,7 +327,7 @@ func main() {
 	})
 
 	api.Delete("/gallery/:galleryId", func(c *iris.Context) {
-		if !verifyAccess(auth, c) {
+		if !isSuperuser(auth, c, db) {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
@@ -337,7 +357,7 @@ func main() {
 		c.JSON(iris.StatusOK, nil)
 	})
 	api.Post("/gallery/:galleryId", func(c *iris.Context) {
-		if !verifyAccess(auth, c) {
+		if !isSuperuser(auth, c, db) {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
@@ -354,11 +374,10 @@ func main() {
 		c.JSON(iris.StatusOK, g)
 	})
 	api.Post("/createGallery", func(c *iris.Context) {
-		if !verifyAccess(auth, c) {
+		if !isSuperuser(auth, c, db) {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
-		fmt.Println("new gallery")
 		galleries := db.C("galleries")
 
 		g := Gallery{}
