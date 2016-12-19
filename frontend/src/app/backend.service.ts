@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers } from '@angular/http';
+import { Http, Response, Headers, ResponseContentType } from '@angular/http';
 import { AngularFire, AuthProviders } from 'angularfire2';
+
 
 
 @Injectable()
@@ -31,6 +32,21 @@ export class BackendService{
         this.isLogged = false;
     }
 
+
+    getImage(url, el){
+        this.af.auth.subscribe(user => {
+            user.auth.getToken().then((token) => {
+                let h = new Headers({ 'Authorization': token });
+                return this.http.get(url, {headers: h, responseType: ResponseContentType.Blob}).toPromise().then((res) => {
+                    var reader = new FileReader();
+                    reader.onload = (e) => {
+                        el.src = e.target.result;
+                    };
+                    reader.readAsDataURL(new Blob([res.blob()]));
+                }).catch(err => console.error(err));
+            });
+        });
+    }
 
     get(url){
         return new Promise<Response>((resolve, reject)=>{

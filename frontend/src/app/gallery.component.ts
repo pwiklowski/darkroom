@@ -136,13 +136,12 @@ export class GalleryComponent {
     
     getPhotos(galleyId){
         this.backend.get("/api/gallery/"+galleyId+"/photos").then(res => {
-                this.photos = res.json();
-                if (this.photos.length > 0){
-                    this.initGallery();
-                    setTimeout(this.animatePhotos, 200, this.photos);
-                }
+            this.photos = res.json();
+            if (this.photos.length > 0){
+                this.initGallery();
+                setTimeout(this.animatePhotos, 200, this.photos);
             }
-        );
+        });
     }
 
     initGallery(){
@@ -163,7 +162,7 @@ export class GalleryComponent {
 
         p.style.transform = "translate(" +this.photoOffset + "px)";
 
-        
+        setTimeout(()=>this.loadThumbnails(), 100);
 
         setTimeout(this.initSlider, 200, this.photos);
     }
@@ -224,6 +223,19 @@ export class GalleryComponent {
         this.loadPhoto(selectedPhoto); 
     }
 
+    loadThumbnails(){
+
+        this.photos.forEach(photo => {
+            let element = document.getElementById("dr-p-" + photo.Id);
+
+            console.log("dr-p-" + photo.Id);
+
+            this.backend.getImage("/api/photo/"+photo.Id+"/320", element);
+        });
+
+
+    }
+
     loadPhoto(selectedPhoto){
         if (selectedPhoto >= (this.photos.length)) {
             return;
@@ -234,15 +246,13 @@ export class GalleryComponent {
         let photoElement = <HTMLImageElement>document.getElementById("dr-big-p-" + photo.Id);
         let loaderElement = <HTMLImageElement>document.getElementById("dr-loader-p-" + photo.Id);
 
-        console.log(photoElement.src);
-
         if(photoElement.src == ""){
             var _this = this;
             photoElement.addEventListener('load', function(){
                 loaderElement.style.opacity = "0.0";
                 _this.loadPhoto(selectedPhoto+1);
             });
-            photoElement.src = "/api/photo/"+photo.Id+"/1920";
+            this.backend.getImage("/api/photo/"+photo.Id+"/1920", photoElement);
         }
     }
 
