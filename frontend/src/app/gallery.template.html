@@ -15,7 +15,7 @@
         <div *ngFor="let column of columns; let c = index" class="dr-photo-column">
             <div *ngFor="let p of photos; let i = index"  class="dr-photo-container">
                 <img (click)="showPhoto(p, i)" *ngIf="i%columnsNumber==c"
-                    class="dr-photo" src="/assets/img/stub2.gif"
+                    class="dr-photo b-lazy" src="/assets/img/stub2.gif"
                     id="dr-p-{{p.Id}}"
                     data-src="/api/photo/{{p.Id}}/320"/>
             </div>
