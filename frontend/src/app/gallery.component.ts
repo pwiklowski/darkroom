@@ -108,14 +108,21 @@ export class GalleryComponent {
     thumbnailsContainer;
 
     scroll;
+    token: string;
 
     ngOnInit() {
         console.log("Gallery component");
         this.sub = this.route.params.subscribe(params => {
             this.gallery = new Gallery();
             let id = params['id'];
-            this.getPhotos(id);
-            this.getGallery(id);
+
+            this.backend.getToken().then(token =>{
+                console.log("new token is" + token);
+                this.token = token;
+                this.getPhotos(id);
+                this.getGallery(id);
+            });
+
         });
         let loader = document.getElementById("dr-loader");
         loader.style.opacity = "0";
@@ -184,7 +191,7 @@ export class GalleryComponent {
     }
     
     getCoverUrl(){
-        return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+this.gallery.Id+"/cover)");
+        return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+this.gallery.Id+"/cover?token="+this.token+")");
     }
 
 
@@ -242,7 +249,7 @@ export class GalleryComponent {
                 loaderElement.style.opacity = "0.0";
                 _this.loadPhoto(selectedPhoto+1);
             });
-            photoElement.src = "/api/photo/"+photo.Id+"/1920";
+            photoElement.src = "/api/photo/"+photo.Id+"/1920?token="+this.token;
         }
     }
 

@@ -19,13 +19,19 @@ export class GalleriesComponent {
     sub: any;
     columnsNumber: number = 3;
     columns: Array<number>;
+    token: string;
 
     constructor(http: Http, router: Router, private route: ActivatedRoute,
                 private backend: BackendService, private sanitizer:DomSanitizer){
         this.router = router;
         this.http = http;
 
-        this.getGalleries()
+        this.backend.getToken().then(token =>{
+            console.log("new token is" + token);
+            this.token = token;
+            this.getGalleries()
+        });
+
     }
 
     ngOnInit() {
@@ -39,7 +45,7 @@ export class GalleriesComponent {
     }
 
     getImageUrl(g: Gallery){
-        return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+g.Id+"/cover)");
+        return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+g.Id+"/cover?token="+ this.token);
     }
 
     hideCover(c){

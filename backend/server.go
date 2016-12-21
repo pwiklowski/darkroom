@@ -5,16 +5,26 @@ import (
 	"image"
 	_ "image/jpeg"
 	"io"
+	"math/rand"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/config"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 
+	"errors"
+
 	firebase "github.com/wuman/firebase-server-sdk-go"
 )
+
+type Token struct {
+	Token   string
+	ValidTo int64
+	UserID  string
+}
 
 type User struct {
 	UserID      string
@@ -80,17 +90,21 @@ func isSuperuser(auth *firebase.Auth, c *iris.Context, db *mgo.Database) bool {
 	if err == nil {
 		uid, found := decodedToken.UID()
 		if found {
-			user := User{}
-			err := db.C("users").Find(bson.M{"userid": uid}).One(&user)
-
-			if err == nil {
-				return user.IsSuperuser
-			}
+			return isSuperuserUID(uid, db)
 		}
 	}
 	return false
 }
 
+func isSuperuserUID(uid string, db *mgo.Database) bool {
+	user := User{}
+	err := db.C("users").Find(bson.M{"userid": uid}).One(&user)
+
+	if err == nil {
+		return user.IsSuperuser
+	}
+	return false
+}
 func (p *Photo) convertPhoto() {
 
 	fmt.Println("convertPhoto " + p.getLocation())
@@ -119,6 +133,35 @@ func getImageDimension(imagePath string) (int, int) {
 	return image.Width, image.Height
 }
 
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+func generateToken(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
+}
+
+func getTokenIfValid(t string, collection *mgo.Collection) (Token, error) {
+	token := Token{}
+	now := time.Now()
+
+	err := collection.Find(bson.M{"token": t}).One(&token)
+	fmt.Println(err)
+	if err == nil {
+		fmt.Printf("%d %d\n", token.ValidTo, now.Unix())
+		if token.ValidTo > now.Unix() {
+			return token, nil
+		} else {
+			fmt.Println("Token is expired")
+			return token, errors.New("Token is expired")
+		}
+	}
+	fmt.Println("Token not found")
+	return token, errors.New("Not found")
+}
+
 func main() {
 	firebase.InitializeApp(&firebase.Options{
 		ServiceAccountPath: "cred.json",
@@ -136,8 +179,25 @@ func main() {
 	db := session.DB("test1")
 	photosDb := db.C("photos")
 	usersDb := db.C("users")
+	tokensDb := db.C("tokens")
 
 	api := iris.New(config.Iris{MaxRequestBodySize: 32 << 20})
+
+	api.Get("/token", func(c *iris.Context) {
+		uid := getUserID(auth, c)
+		if uid == "" {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
+
+		now := time.Now()
+		token := Token{}
+		token.ValidTo = now.Unix() + 120
+		token.Token = generateToken(48)
+		token.UserID = uid
+		tokensDb.Insert(&token)
+		c.JSON(iris.StatusOK, token)
+	})
 
 	api.Get("/users", func(c *iris.Context) {
 		if !verifyAccess(auth, c) {
@@ -221,32 +281,35 @@ func main() {
 		c.JSON(iris.StatusOK, gallery)
 	})
 	api.Get("/gallery/:galleryId/cover", func(c *iris.Context) {
-		uid := getUserID(auth, c)
-		if uid == "" {
+		photo := Photo{}
+		galleryID := c.Param("galleryId")
+		tokenID := c.URLParam("token")
+
+		token, err := getTokenIfValid(tokenID, tokensDb)
+
+		if err != nil {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
-		photo := Photo{}
-		galleryID := c.Param("galleryId")
 
-		if isSuperuser(auth, c, db) {
+		if isSuperuserUID(token.UserID, db) {
 			db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
 		} else {
-			db.C("photos").Find(bson.M{"userids": uid, "galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
+			db.C("photos").Find(bson.M{"userids": token.UserID, "galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
 		}
 
 		size := "1920"
 		location := photo.getLocationScalled(size)
-
-		err := c.ServeFile(location, false)
+		err = c.ServeFile(location, false)
 		if err != nil {
-			println("error: " + err.Error())
+			c.JSON(iris.StatusNotFound, nil)
 		}
 
 	})
 
 	api.Get("/gallery/:galleryId/photos", func(c *iris.Context) {
 		uid := getUserID(auth, c)
+		fmt.Println(uid)
 		if uid == "" {
 			c.JSON(iris.StatusForbidden, nil)
 			return
@@ -290,21 +353,25 @@ func main() {
 		c.JSON(iris.StatusOK, nil)
 	})
 	api.Get("/photo/:photo/:size", func(c *iris.Context) {
-		uid := getUserID(auth, c)
-		if uid == "" {
+		tokenID := c.URLParam("token")
+
+		token, err := getTokenIfValid(tokenID, tokensDb)
+		if err != nil {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
+
 		photo := Photo{}
 		photoID := c.Param("photo")
 		size := c.Param("size")
+		fmt.Println(token)
 
-		if isSuperuser(auth, c, db) {
+		if isSuperuserUID(token.UserID, db) {
 			db.C("photos").Find(bson.M{"_id": bson.ObjectIdHex(photoID)}).One(&photo)
 		} else {
 			db.C("photos").Find(bson.M{"_id": bson.ObjectIdHex(photoID)}).One(&photo)
 			gallery := Gallery{}
-			err := db.C("galleries").Find(bson.M{"userids": uid, "_id": photo.GalleryId}).One(&gallery)
+			err := db.C("galleries").Find(bson.M{"userids": token.UserID, "_id": photo.GalleryId}).One(&gallery)
 			if err != nil {
 				c.JSON(iris.StatusForbidden, nil)
 				return
@@ -317,6 +384,7 @@ func main() {
 			err := c.ServeFile(photo.Location+size+"_"+photo.Name, false)
 			if err != nil {
 				println("error: " + err.Error())
+				c.JSON(iris.StatusNotFound, nil)
 			}
 		}
 	})

@@ -31,6 +31,19 @@ export class BackendService{
         this.isLogged = false;
     }
 
+    getToken(){
+        return new Promise<string>((resolve, reject)=>{
+            this.af.auth.subscribe(user => {
+                user.auth.getToken().then((token) => {
+                    let h = new Headers({ 'Authorization': token });
+                    return this.http.get("/api/token", {headers: h}).toPromise().then((res) =>{
+                        resolve(res.json().Token);
+                    }).catch(err => reject(err));
+                });
+            });
+        });
+    }
+
 
     get(url){
         return new Promise<Response>((resolve, reject)=>{
