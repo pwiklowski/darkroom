@@ -37,6 +37,10 @@ import { MdlDialogService } from 'angular2-mdl';
 
 
 <div #drawer class="dr-drawer">
+    <div class="dr-user-info">
+        <img class="dr-user-avatar" src="{{ backend.getUser().photoURL }}"/>   {{backend.getUser().displayName}}
+    </div>
+
     <div class="dr-drawer-title" (click)="showGalleries()">Galleries</div>
 
     <div *ngFor="let g of galleries" class="dr-drawer-name" (click)="openGallery(g.Id)" >
@@ -152,8 +156,18 @@ import { MdlDialogService } from 'angular2-mdl';
     right: 20px;
     display: flex;
     flex-direction: column;
-
+    color: black;
     background-color: white;
+}
+.dr-user-avatar{
+    width: 60px;
+    height: 60px;
+    margin: 15px;
+    border-radius: 30px;
+}
+.dr-user-info{
+    height: 70px;
+    font-size: 22px;
 }
     
     `]

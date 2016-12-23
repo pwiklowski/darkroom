@@ -19,6 +19,15 @@ export class BackendService{
     isUserLogged(){
         return this.isLogged;
     }
+    getUser(){
+        if (this.user.provider == AuthProviders.Google){
+            return this.user.google;
+        }else if (this.user.provider == AuthProviders.Facebook){
+            return this.user.facebook;
+        }
+
+        return this.user;
+    }
 
     login(){
         this.af.auth.login({
