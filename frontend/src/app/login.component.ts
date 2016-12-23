@@ -25,6 +25,15 @@ export class LoginComponent {
 
         this.af.auth.subscribe(user => {
             if(user) {
+                let userData = backend.getUserData(user);
+                console.log(userData);
+                let u = {
+                    DisplayName: userData.displayName,
+                    PhotoUrl: userData.photoURL
+                };
+                
+                this.backend.post("/api/me", u).then();
+
                 this.router.navigate(['/galleries']);
             }
         })

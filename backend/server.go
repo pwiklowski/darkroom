@@ -29,6 +29,8 @@ type Token struct {
 type User struct {
 	UserID      string
 	IsSuperuser bool
+	DisplayName string
+	PhotoUrl    string
 }
 
 type Photo struct {
@@ -219,6 +221,31 @@ func main() {
 
 		user := User{}
 		usersDb.Find(bson.M{"userid": uid}).One(&user)
+		c.JSON(iris.StatusOK, user)
+	})
+	api.Post("/me", func(c *iris.Context) {
+		uid := getUserID(auth, c)
+
+		if uid == "" {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
+
+		sentUser := User{}
+		c.ReadJSON(&sentUser)
+
+		user := User{}
+		err := usersDb.Find(bson.M{"userid": uid}).One(&user)
+		if err != nil {
+			user.UserID = uid
+			usersDb.Insert(user)
+		} else {
+			user.DisplayName = sentUser.DisplayName
+			user.PhotoUrl = sentUser.PhotoUrl
+
+			usersDb.Update(bson.M{"userid": uid}, user)
+		}
+
 		c.JSON(iris.StatusOK, user)
 	})
 
