@@ -42,6 +42,9 @@ import { MdlDialogService } from 'angular2-mdl';
     <div *ngFor="let g of galleries" class="dr-drawer-name" (click)="openGallery(g.Id)" >
     {{ g.Name }}
     </div>
+    <div *ngIf="galleries.length == 0" class="dr-drawer-name">
+        No galleries 
+    </div>
 </div>
 
 

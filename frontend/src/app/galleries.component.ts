@@ -9,6 +9,16 @@ import {DomSanitizer} from '@angular/platform-browser';
 @Component({
     selector: 'my-app',
     templateUrl: './galleries.template.html',
+    styles:[`
+        .dr-centered-error{
+            font-size: 30px;
+            left: 50%;
+            top: 50%;
+            position: absolute;
+            transform: translate(-50%,-50%);
+
+        }
+    `]
 })
 
 export class GalleriesComponent {
