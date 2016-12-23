@@ -6,6 +6,7 @@ import { AngularFire, AuthProviders } from 'angularfire2';
 @Injectable()
 export class BackendService{
     user = {};
+    superuser:boolean;
     isLogged = false;
 
     constructor(private http: Http, public af: AngularFire){
@@ -13,8 +14,14 @@ export class BackendService{
             if(user) {
                 this.isLogged = true;
                 this.user = user;
+                this.get("/api/me").then((user)=>{
+                    this.superuser = user.json().IsSuperuser;
+                });
             }
         });
+    }
+    isSuperuser(){
+        return this.superuser;
     }
     isUserLogged(){
         return this.isLogged;

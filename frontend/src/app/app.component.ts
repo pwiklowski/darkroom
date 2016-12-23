@@ -20,15 +20,15 @@ import { MdlDialogService } from 'angular2-mdl';
             <div class="dr-button-label">Logout</div>
             <mdl-icon>user</mdl-icon>
         </button>
-        <button *ngIf="getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="removeGallery()">
+        <button *ngIf="backend.isSuperuser() && getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="removeGallery()">
             <div class="dr-button-label">Remove gallery</div>
             <mdl-icon>delete_forever</mdl-icon>
         </button>
-        <button *ngIf="getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="editGallery()">
+        <button *ngIf="backend.isSuperuser() && getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="editGallery()">
             <div class="dr-button-label">Edit gallery</div>
             <mdl-icon>add_to_photos</mdl-icon>
         </button>
-        <button class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="newGallery()">
+        <button *ngIf="backend.isSuperuser()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="newGallery()">
             <div class="dr-button-label">Add new gallery</div>
             <mdl-icon>add</mdl-icon>
         </button>
@@ -198,6 +198,7 @@ export class AppComponent {
         this.viewContainerRef = viewContainerRef;
         this.getGalleries();
         this.router.events.subscribe((event) => this.url = event.url);
+
     }
 
     getGalleryId(){

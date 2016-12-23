@@ -209,6 +209,18 @@ func main() {
 		usersDb.Find(nil).All(&users)
 		c.JSON(iris.StatusOK, users)
 	})
+	api.Get("/me", func(c *iris.Context) {
+		uid := getUserID(auth, c)
+
+		if uid == "" {
+			c.JSON(iris.StatusForbidden, nil)
+			return
+		}
+
+		user := User{}
+		usersDb.Find(bson.M{"userid": uid}).One(&user)
+		c.JSON(iris.StatusOK, user)
+	})
 
 	api.Get("/user/:userID", func(c *iris.Context) {
 		if !verifyAccess(auth, c) {
