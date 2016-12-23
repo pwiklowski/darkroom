@@ -20,6 +20,10 @@ import { MdlDialogService } from 'angular2-mdl';
             <div class="dr-button-label">Logout</div>
             <mdl-icon>user</mdl-icon>
         </button>
+        <button *ngIf="backend.isSuperuser() && getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="shareGallery()">
+            <div class="dr-button-label">Share gallery</div>
+            <mdl-icon>share</mdl-icon>
+        </button>
         <button *ngIf="backend.isSuperuser() && getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="removeGallery()">
             <div class="dr-button-label">Remove gallery</div>
             <mdl-icon>delete_forever</mdl-icon>
@@ -50,6 +54,25 @@ import { MdlDialogService } from 'angular2-mdl';
         No galleries 
     </div>
 </div>
+<mdl-dialog #shareGalleryModal [mdl-dialog-config]="{ clickOutsideToClose: true, styles:{'width': '500px'}, isModal:true, enterTransitionDuration: 400, leaveTransitionDuration: 400}" >
+  Share gallery
+  <div class="mdl-dialog__content">
+    <mdl-list>
+        <mdl-list-item mdl-ripple *ngFor="let user of users">
+            <mdl-list-item-primary-content>
+            <mdl-icon *ngIf="user.PhotoUrl ==''" mdl-list-item-avatar>person</mdl-icon>
+            <img *ngIf="user.PhotoUrl !=''" class="dr-user-avatar-list" src="{{user.PhotoUrl }}"/> 
+
+            <span>{{user.DisplayName}}</span>
+            </mdl-list-item-primary-content>
+        </mdl-list-item>
+    </mdl-list>
+  </div>
+  <div class="mdl-dialog__actions">
+    <button mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Save</button>
+    <button mdl-button (click)="shareGalleryModal.close()" mdl-ripple>Cancel</button>
+  </div>
+</mdl-dialog>
 
 
 <div #editGalleryModal class="dr-modal-container">
@@ -159,6 +182,12 @@ import { MdlDialogService } from 'angular2-mdl';
     color: black;
     background-color: white;
 }
+.dr-user-avatar-list{
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    margin-right: 20px;
+}
 .dr-user-avatar{
     width: 60px;
     height: 60px;
@@ -185,11 +214,15 @@ export class AppComponent {
     @ViewChild('createGallery') createGallery;
     @ViewChild('drawerButtons') drawerButtons;
 
+    @ViewChild('shareGalleryModal') shareGalleryModal;
+
     url: string = "";
 
     photos = [];
     gallery: Gallery = new Gallery();
     uploader: FileUploader = new FileUploader({url:""});
+
+    users: [];
 
     public constructor(viewContainerRef:ViewContainerRef,
                        private router: Router,
@@ -306,6 +339,20 @@ export class AppComponent {
 
 
         });
+    }
+
+    shareGallery(){
+        this.backend.get("/api/users").then(res => {
+            console.log(res.json());
+            this.users = res.json();
+        });
+
+        this.backend.get("/api/gallery/"+this.getGalleryId()).then(res => {
+            this.gallery = res.json();
+            this.shareGalleryModal.show();
+        });
+
+
     }
 
     newGallery(){
