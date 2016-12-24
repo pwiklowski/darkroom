@@ -331,7 +331,14 @@ func main() {
 		if isSuperuserUID(token.UserID, db) {
 			db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
 		} else {
-			db.C("photos").Find(bson.M{"usersids": token.UserID, "galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
+			gallery := Gallery{}
+			err := db.C("galleries").Find(bson.M{"usersids": token.UserID, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
+			fmt.Println(gallery)
+			if err != nil {
+				c.JSON(iris.StatusForbidden, nil)
+				return
+			}
+			db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
 		}
 
 		size := "1920"
@@ -358,7 +365,6 @@ func main() {
 		} else {
 			gallery := Gallery{}
 			err := db.C("galleries").Find(bson.M{"usersids": uid, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
-			fmt.Println(gallery)
 			if err != nil {
 				c.JSON(iris.StatusForbidden, nil)
 				return
