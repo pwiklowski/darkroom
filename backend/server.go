@@ -295,7 +295,7 @@ func main() {
 		if isSuperuser(auth, c, db) {
 			db.C("galleries").Find(nil).All(&galleries)
 		} else {
-			db.C("galleries").Find(bson.M{"userids": uid}).All(&galleries)
+			db.C("galleries").Find(bson.M{"usersids": uid}).All(&galleries)
 		}
 
 		c.JSON(iris.StatusOK, galleries)
@@ -314,7 +314,7 @@ func main() {
 		if isSuperuser(auth, c, db) {
 			db.C("galleries").Find(bson.M{"_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
 		} else {
-			db.C("galleries").Find(bson.M{"userids": uid, "_id": bson.ObjectIdHex(galleryID)}).All(&gallery)
+			db.C("galleries").Find(bson.M{"usersids": uid, "_id": bson.ObjectIdHex(galleryID)}).All(&gallery)
 		}
 
 		c.JSON(iris.StatusOK, gallery)
@@ -334,7 +334,7 @@ func main() {
 		if isSuperuserUID(token.UserID, db) {
 			db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
 		} else {
-			db.C("photos").Find(bson.M{"userids": token.UserID, "galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
+			db.C("photos").Find(bson.M{"usersids": token.UserID, "galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
 		}
 
 		size := "1920"
@@ -360,7 +360,7 @@ func main() {
 			db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryID)}).All(&photos)
 		} else {
 			gallery := Gallery{}
-			err := db.C("galleries").Find(bson.M{"userids": uid, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
+			err := db.C("galleries").Find(bson.M{"usersids": uid, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
 			fmt.Println(gallery)
 			if err != nil {
 				c.JSON(iris.StatusForbidden, nil)
@@ -410,7 +410,7 @@ func main() {
 		} else {
 			db.C("photos").Find(bson.M{"_id": bson.ObjectIdHex(photoID)}).One(&photo)
 			gallery := Gallery{}
-			err := db.C("galleries").Find(bson.M{"userids": token.UserID, "_id": photo.GalleryId}).One(&gallery)
+			err := db.C("galleries").Find(bson.M{"usersids": token.UserID, "_id": photo.GalleryId}).One(&gallery)
 			if err != nil {
 				c.JSON(iris.StatusForbidden, nil)
 				return
