@@ -296,12 +296,15 @@ export class AppComponent {
             this.gallery = res.json();
         });
 
-        this.uploader = new FileUploader({url: '/api/gallery/'+ this.getGalleryId() +'/upload'});
+        this.backend.getAuthToken().then(token=>{
+            this.uploader = new FileUploader({url: '/api/gallery/'+ this.getGalleryId() +'/upload',
+                                              authToken: token });
 
-        this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
-            let data = JSON.parse(response);
-            item.photoUrl = "/api/photo/"+data.Id+"/320";
-        }
+            this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
+                let data = JSON.parse(response);
+                item.photoUrl = "/api/photo/"+data.Id+"/320";
+            }
+        });
     }
 
     removePhoto(photoId){
@@ -381,14 +384,19 @@ export class AppComponent {
         };
         this.backend.post("/api/createGallery", gallery).then(res => {
             this.gallery = res.json();
-            this.uploader = new FileUploader({url: '/api/gallery/'+  this.gallery.Id +'/upload'});
 
-            this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
-                let data = JSON.parse(response);
-                item.photoUrl = "/api/photo/"+data.Id+"/320";
-            }
+            this.backend.getToken().then(token=>{
+                this.uploader = new FileUploader({url: '/api/gallery/'+  this.gallery.Id +'/upload',
+                                                authToken: token });
 
-            this.show(this.editGalleryModal.nativeElement);
+                this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
+                    let data = JSON.parse(response);
+                    item.photoUrl = "/api/photo/"+data.Id+"/320";
+                }
+
+                this.show(this.editGalleryModal.nativeElement);
+            });
+
          });
     }
 
