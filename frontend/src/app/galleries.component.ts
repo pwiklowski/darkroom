@@ -55,7 +55,8 @@ export class GalleriesComponent {
     }
 
     getImageUrl(g: Gallery){
-        return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+g.Id+"/cover?token="+ this.token);
+        if (g.Id !== undefined)
+            return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+g.Id+"/cover?token="+ this.token);
     }
 
     hideCover(c){

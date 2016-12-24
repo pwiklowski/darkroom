@@ -191,7 +191,8 @@ export class GalleryComponent {
     }
     
     getCoverUrl(){
-        return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+this.gallery.Id+"/cover?token="+this.token+")");
+        if (this.gallery.Id !== undefined)
+            return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+this.gallery.Id+"/cover?token="+this.token+")");
     }
 
 
