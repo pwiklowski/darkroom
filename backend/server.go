@@ -311,7 +311,7 @@ func main() {
 		if isSuperuser(auth, c, db) {
 			db.C("galleries").Find(bson.M{"_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
 		} else {
-			db.C("galleries").Find(bson.M{"usersids": uid, "_id": bson.ObjectIdHex(galleryID)}).All(&gallery)
+			db.C("galleries").Find(bson.M{"usersids": uid, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
 		}
 
 		c.JSON(iris.StatusOK, gallery)
