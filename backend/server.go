@@ -66,8 +66,7 @@ func verifyAccess(auth *firebase.Auth, c *iris.Context) bool {
 
 	decodedToken, err := auth.VerifyIDToken(token)
 	if err == nil {
-		uid, found := decodedToken.UID()
-		fmt.Println(uid)
+		_, found := decodedToken.UID()
 		return found
 	}
 	return false
@@ -77,9 +76,7 @@ func getUserID(auth *firebase.Auth, c *iris.Context) string {
 	token := c.RequestHeader("Authorization")
 	decodedToken, err := auth.VerifyIDToken(token)
 	if err == nil {
-		uid, found := decodedToken.UID()
-		fmt.Println(uid, found)
-
+		uid, _ := decodedToken.UID()
 		return uid
 	}
 	return ""
