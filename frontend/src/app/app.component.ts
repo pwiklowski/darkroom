@@ -58,18 +58,22 @@ import { MdlDialogService } from 'angular2-mdl';
   Share gallery
   <div class="mdl-dialog__content">
     <mdl-list>
-        <mdl-list-item mdl-ripple *ngFor="let user of users">
+        <mdl-list-item mdl-ripple *ngFor="let user of users" (click)="toggleSharing(user.UserID)">
             <mdl-list-item-primary-content>
             <mdl-icon *ngIf="user.PhotoUrl ==''" mdl-list-item-avatar>person</mdl-icon>
             <img *ngIf="user.PhotoUrl !=''" class="dr-user-avatar-list" src="{{user.PhotoUrl }}"/> 
 
             <span>{{user.DisplayName}}</span>
             </mdl-list-item-primary-content>
+            <mdl-list-item-secondary-action >
+                <mdl-switch mdl-ripple [ngModel]="isSharedToUser(user.UserID)" ></mdl-switch>
+            </mdl-list-item-secondary-action>
+            
         </mdl-list-item>
     </mdl-list>
   </div>
   <div class="mdl-dialog__actions">
-    <button mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Save</button>
+    <button mdl-button (click)="saveGallery(shareGalleryModal)" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Save</button>
     <button mdl-button (click)="shareGalleryModal.close()" mdl-ripple>Cancel</button>
   </div>
 </mdl-dialog>
@@ -334,16 +338,20 @@ export class AppComponent {
             }
         );
     }
-    saveGallery(){
+    saveGallery(modal){
         this.backend.post("/api/gallery/"+this.gallery.Id, this.gallery).then(res =>{
-
-
+            if (modal !== undefined){
+                modal.close();
+            }
         });
+    }
+
+    isSharedToUser(userID){
+        return this.gallery.UsersIDs.indexOf(userID) !== -1
     }
 
     shareGallery(){
         this.backend.get("/api/users").then(res => {
-            console.log(res.json());
             this.users = res.json();
         });
 
@@ -351,8 +359,15 @@ export class AppComponent {
             this.gallery = res.json();
             this.shareGalleryModal.show();
         });
+    }
 
-
+    toggleSharing(userID){
+        let index = this.gallery.UsersIDs.indexOf(userID);
+        if (index !== -1){
+            this.gallery.UsersIDs.splice(index, 1);
+        }else{
+            this.gallery.UsersIDs.push(userID);
+        }
     }
 
     newGallery(){
