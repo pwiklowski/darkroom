@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef,HostListener } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { Gallery, Photo } from './models';
@@ -229,6 +229,8 @@ export class AppComponent {
     users = [];
     token: string;
 
+    isDrawerVisible: boolean = false;
+
     public constructor(viewContainerRef:ViewContainerRef,
                        private router: Router,
                        private backend: BackendService,
@@ -256,7 +258,8 @@ export class AppComponent {
         this.drawer.nativeElement.style.left = 0;
         this.drawerCloseFill.nativeElement.style.opacity = "0.6";
         this.drawerClose.nativeElement.style.visibility= "visible";
-        this.drawerButtons.nativeElement.style.right = "0px"
+        this.drawerButtons.nativeElement.style.right = "0px";
+        this.isDrawerVisible = true;
 
     }
 
@@ -267,6 +270,7 @@ export class AppComponent {
         setTimeout(()=>{
             this.drawerClose.nativeElement.style.visibility= "hidden";
         }, 200);
+        this.isDrawerVisible = false;
     }
     showGalleries(){
         this.router.navigate(['/galleries']);
@@ -404,6 +408,18 @@ export class AppComponent {
             });
 
          });
+    }
+
+    @HostListener('window:keydown', ['$event'])
+    onKeyEvent(event: any) {
+        console.log(event);
+        if (event.keyCode == 192){
+            if (this.isDrawerVisible)
+                this.closeDrawer();
+            else
+                this.showDrawer();
+
+        }
     }
 
     logout(){
