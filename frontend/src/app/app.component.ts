@@ -87,7 +87,7 @@ import { MdlDialogService } from 'angular2-mdl';
     <input type="file" ng2FileSelect [uploader]="uploader" multiple name="uploadField" /><br/>
     <div class="dr-upload">
         <div class="dr-upload-container" *ngFor="let photo of photos">
-            <img src="/api/photo/{{photo.Id}}/320" class="dr-upload-photo"/>
+            <img src="/api/photo/{{photo.Id}}/320?token={{token}}" class="dr-upload-photo"/>
             <button mdl-button mdl-button-type="icon"  mdl-colored="primary" (click)="removePhoto(photo.Id)">
                 <mdl-icon>remove</mdl-icon>
             </button>
@@ -226,15 +226,20 @@ export class AppComponent {
     gallery: Gallery = new Gallery();
     uploader: FileUploader = new FileUploader({url:""});
 
-    users: [];
+    users = [];
+    token: string;
 
     public constructor(viewContainerRef:ViewContainerRef,
                        private router: Router,
                        private backend: BackendService,
                        private dialogService: MdlDialogService){
         this.viewContainerRef = viewContainerRef;
-        this.getGalleries();
         this.router.events.subscribe((event) => this.url = event.url);
+
+        this.backend.getToken().then(token =>{
+            this.token = token;
+            this.getGalleries();
+        });
 
     }
 
@@ -302,7 +307,7 @@ export class AppComponent {
 
             this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
                 let data = JSON.parse(response);
-                item.photoUrl = "/api/photo/"+data.Id+"/320";
+                item.photoUrl = "/api/photo/"+data.Id+"/320?token="+this.token;
             }
         });
     }
@@ -374,8 +379,6 @@ export class AppComponent {
     }
 
     newGallery(){
-        this.show(this.editGalleryModal.nativeElement);
-
         this.gallery.Name = "Name";
         this.gallery.Comment = "Comment";
         let gallery = {
@@ -385,13 +388,15 @@ export class AppComponent {
         this.backend.post("/api/createGallery", gallery).then(res => {
             this.gallery = res.json();
 
-            this.backend.getToken().then(token=>{
+            this.backend.getAuthToken().then(token=>{
                 this.uploader = new FileUploader({url: '/api/gallery/'+  this.gallery.Id +'/upload',
-                                                authToken: token });
+                                                  authToken: token });
 
                 this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
-                    let data = JSON.parse(response);
-                    item.photoUrl = "/api/photo/"+data.Id+"/320";
+                    if (status === 200){
+                        let data = JSON.parse(response);
+                        item.photoUrl = "/api/photo/"+data.Id+"/320?token="+this.token;
+                    }
                 }
 
                 this.show(this.editGalleryModal.nativeElement);
