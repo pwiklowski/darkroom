@@ -383,7 +383,8 @@ export class AppComponent {
         this.gallery.Comment = "Comment";
         let gallery = {
             "Name": this.gallery.Name,
-            "Comment": this.gallery.Comment
+            "Comment": this.gallery.Comment,
+            "UsersIDs": []
         };
         this.backend.post("/api/createGallery", gallery).then(res => {
             this.gallery = res.json();
