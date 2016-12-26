@@ -10,14 +10,14 @@
 </div>
 
 <div id="dr-gallery">
-    <div class="dr-gallery-background-container" [style.background-image]="getCoverUrl()"></div>
+    <div class="dr-gallery-background-container" [style.background-image]="gallery.coverUrl"></div>
     <div id="dr-column-container">
         <div *ngFor="let column of columns; let c = index" class="dr-photo-column">
             <div *ngFor="let p of photos; let i = index"  class="dr-photo-container">
                 <img (click)="showPhoto(p, i)" *ngIf="i%columnsNumber==c"
                     class="dr-photo b-lazy" src="/assets/img/stub2.gif"
                     id="dr-p-{{p.Id}}"
-                    data-src="/api/photo/{{p.Id}}/320?token={{token}}"/>
+                    src="{{p.url}}"/>
             </div>
         </div>
     </div>

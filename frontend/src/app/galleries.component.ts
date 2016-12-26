@@ -29,19 +29,12 @@ export class GalleriesComponent {
     sub: any;
     columnsNumber: number = 3;
     columns: Array<number>;
-    token: string;
 
     constructor(http: Http, router: Router, private route: ActivatedRoute,
                 private backend: BackendService, private sanitizer:DomSanitizer){
         this.router = router;
         this.http = http;
-
-        this.backend.getToken().then(token =>{
-            console.log("new token is" + token);
-            this.token = token;
-            this.getGalleries()
-        });
-
+        this.getGalleries();
     }
 
     ngOnInit() {
@@ -65,11 +58,15 @@ export class GalleriesComponent {
     }
 
     getGalleries(){
+        console.log("getGalleries");
         this.backend.get("/api/galleries").then(res => {
             this.galleries = res.json();
-            this.galleries.forEach(g=> {
-                g.url = this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+g.Id+"/cover?token="+ this.backend.getQueryToken());
+            this.backend.getQueryToken().then(queryToken => {
+                this.galleries.forEach(g=> {
+                    g.url = this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+g.Id+"/cover?token="+queryToken);
+                });
             });
+
         });
     }
 

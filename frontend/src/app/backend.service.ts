@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { AngularFire, AuthProviders } from 'angularfire2';
+import {Observable} from 'rxjs/Rx';
+
+import { Subscription } from 'rxjs/Rx';
 
 
 @Injectable()
@@ -8,6 +11,7 @@ export class BackendService{
     user = {};
     superuser:boolean;
     isLogged = false;
+    tokenData;
 
     constructor(private http: Http, public af: AngularFire){
         this.af.auth.subscribe(user => {
@@ -17,9 +21,34 @@ export class BackendService{
                 this.get("/api/me").then((user)=>{
                     this.superuser = user.json().IsSuperuser;
                 });
+
+                this.get("/api/token").then((res) =>{
+                    this.tokenData = res.json();
+                });
             }
         });
     }
+
+    getQueryToken(){
+        return new Promise<string>((resolve, reject) => {
+            let date = new Date();
+            if((date.getTime()/1000) < this.tokenData.ValidTo){
+                resolve(JSON.parse(JSON.stringify(this.tokenData.Token)));
+            }else{
+                this.get("/api/token").then((res) =>{
+                    this.tokenData = res.json();
+                    resolve(JSON.parse(JSON.stringify(this.tokenData.Token)));
+                });
+            }
+        });
+    }
+
+    refreshToken(){
+        this.get("/api/token").then((res) =>{
+            this.tokenData = res.json();
+        });
+    }
+
     isSuperuser(){
         return this.superuser;
     }
@@ -64,24 +93,10 @@ export class BackendService{
         });
     }
 
-    getToken(){
-        return new Promise<string>((resolve, reject)=>{
-            this.af.auth.subscribe(user => {
-                user.auth.getToken().then((token) => {
-                    let h = new Headers({ 'Authorization': token });
-                    return this.http.get("/api/token", {headers: h}).toPromise().then((res) =>{
-                        resolve(res.json().Token);
-                    }).catch(err => reject(err));
-                });
-            });
-        });
-    }
-
-
     get(url){
         return new Promise<Response>((resolve, reject)=>{
             this.af.auth.subscribe(user => {
-                user.auth.getToken().then((token) => {
+                this.getAuthToken().then((token) => {
                     let h = new Headers({ 'Authorization': token });
                     return this.http.get(url, {headers: h}).toPromise().then(res => resolve(res)).catch(err => reject(err));
                 });
@@ -92,7 +107,7 @@ export class BackendService{
     post(url, data){
         return new Promise<Response>((resolve, reject)=>{
             this.af.auth.subscribe(user => {
-                user.auth.getToken().then((token) => {
+                this.getAuthToken().then((token) => {
                     let h = new Headers({ 'Authorization': token });
                     return this.http.post(url, data, {headers: h}).toPromise().then(res => resolve(res)).catch(err => reject(err));
                 });
@@ -103,7 +118,7 @@ export class BackendService{
     delete(url){
         return new Promise<Response>((resolve, reject)=>{
             this.af.auth.subscribe(user => {
-                user.auth.getToken().then((token) => {
+                this.getAuthToken().then((token) => {
                     let h = new Headers({ 'Authorization': token });
                     return this.http.delete(url, {headers: h}).toPromise().then(res => resolve(res)).catch(err => reject(err));
                 });

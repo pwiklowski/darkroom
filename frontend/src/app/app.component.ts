@@ -11,6 +11,7 @@ import { MdlDialogService } from 'angular2-mdl';
     template:`
 <div id="dr-hamburger" (click)="showDrawer()">
     <img class="dr-header-img" src="/assets/img/logo.png">
+
 </div>
 <div #drawerClose id="dr-drawer-close" (click)="closeDrawer()">
     <div #drawerCloseFill id="dr-drawer-close-fill"></div>
@@ -87,13 +88,13 @@ import { MdlDialogService } from 'angular2-mdl';
     <input type="file" ng2FileSelect [uploader]="uploader" multiple name="uploadField" /><br/>
     <div class="dr-upload">
         <div class="dr-upload-container" *ngFor="let photo of photos">
-            <img src="/api/photo/{{photo.Id}}/320?token={{token}}" class="dr-upload-photo"/>
+            <img src="{{ photo.url }}" class="dr-upload-photo"/>
             <button mdl-button mdl-button-type="icon"  mdl-colored="primary" (click)="removePhoto(photo.Id)">
                 <mdl-icon>remove</mdl-icon>
             </button>
         </div>
         <div class="dr-upload-container" *ngFor="let item of uploader.queue">
-            <img src="{{item.photoUrl}}" class="dr-upload-photo"/>
+            <img src="{{item.url }}" class="dr-upload-photo"/>
             <button mdl-button mdl-button-type="icon"  mdl-colored="primary" (click)="item.remove()">
                 <mdl-icon>remove</mdl-icon>
             </button>
@@ -227,7 +228,6 @@ export class AppComponent {
     uploader: FileUploader = new FileUploader({url:""});
 
     users = [];
-    token: string;
 
     isDrawerVisible: boolean = false;
 
@@ -235,13 +235,15 @@ export class AppComponent {
                        private router: Router,
                        private backend: BackendService,
                        private dialogService: MdlDialogService){
-        this.viewContainerRef = viewContainerRef;
-        this.router.events.subscribe((event) => this.url = event.url);
 
-        this.backend.getToken().then(token =>{
-            this.token = token;
-            this.getGalleries();
+        this.viewContainerRef = viewContainerRef;
+        this.router.events.subscribe((event) =>{
+            console.log(event.url);
+            console.log("is logged " + this.backend.isUserLogged());
+            this.url = event.url;
         });
+
+        this.getGalleries();
 
     }
 
@@ -300,19 +302,25 @@ export class AppComponent {
         this.show(this.editGalleryModal.nativeElement);
         this.backend.get("/api/gallery/"+this.getGalleryId()+"/photos").then(res => {
             this.photos = res.json();
+            this.backend.getQueryToken().then(queryToken=>{
+
+                this.photos.forEach(photo=>{
+                    photo.url = "/api/photo/"+photo.Id+"/320?token="+queryToken;
+                });
+            });
         });
         this.backend.get("/api/gallery/"+this.getGalleryId()).then(res => {
             this.gallery = res.json();
         });
 
         this.backend.getAuthToken().then(token=>{
-            this.uploader = new FileUploader({url: '/api/gallery/'+ this.getGalleryId() +'/upload',
-                                              authToken: token });
-
-            this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
-                let data = JSON.parse(response);
-                item.photoUrl = "/api/photo/"+data.Id+"/320?token="+this.token;
-            }
+            this.uploader = new FileUploader({url: '/api/gallery/'+ this.getGalleryId() +'/upload', authToken: token });
+                this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
+                    this.backend.getQueryToken().then(queryToken=>{
+                        let data = JSON.parse(response);
+                        item.url = "/api/photo/"+data.Id+"/320?token="+queryToken;
+                    });
+                }
         });
     }
 
@@ -397,12 +405,14 @@ export class AppComponent {
                 this.uploader = new FileUploader({url: '/api/gallery/'+  this.gallery.Id +'/upload',
                                                   authToken: token });
 
-                this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
-                    if (status === 200){
-                        let data = JSON.parse(response);
-                        item.photoUrl = "/api/photo/"+data.Id+"/320?token="+this.token;
+                    this.uploader.onCompleteItem = (item, response: string, status: number, headers)=>{
+                        this.backend.getQueryToken().then(queryToken=>{
+                            if (status === 200){
+                                let data = JSON.parse(response);
+                                item.url = "/api/photo/"+data.Id+"/320?token="+queryToken;
+                            }
+                        });
                     }
-                }
 
                 this.show(this.editGalleryModal.nativeElement);
             });

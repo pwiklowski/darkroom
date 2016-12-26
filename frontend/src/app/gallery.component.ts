@@ -108,20 +108,16 @@ export class GalleryComponent {
     thumbnailsContainer;
 
     scroll;
-    token: string;
 
     ngOnInit() {
-        console.log("Gallery component");
         this.sub = this.route.params.subscribe(params => {
             this.gallery = new Gallery();
             let id = params['id'];
+            
+            console.log("Gallery component" + id);
 
-            this.backend.getToken().then(token =>{
-                console.log("new token is" + token);
-                this.token = token;
-                this.getPhotos(id);
-                this.getGallery(id);
-            });
+            this.getPhotos(id);
+            this.getGallery(id);
 
         });
         let loader = document.getElementById("dr-loader");
@@ -144,6 +140,12 @@ export class GalleryComponent {
     getPhotos(galleyId){
         this.backend.get("/api/gallery/"+galleyId+"/photos").then(res => {
                 this.photos = res.json();
+                this.backend.getQueryToken().then(token=>{
+                    this.photos.forEach(photo =>{
+                        photo.url = "/api/photo/"+photo.Id+"/320?token="+token; 
+                    });
+                });
+
                 if (this.photos.length > 0){
                     this.initGallery();
                     setTimeout(this.animatePhotos, 200, this.photos);
@@ -189,12 +191,6 @@ export class GalleryComponent {
 
         }
     }
-    
-    getCoverUrl(){
-        if (this.gallery.Id !== undefined)
-            return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+this.gallery.Id+"/cover?token="+this.token+")");
-    }
-
 
     animatePhotos(photos){
         let timeout = 0;
@@ -250,7 +246,9 @@ export class GalleryComponent {
                 loaderElement.style.opacity = "0.0";
                 _this.loadPhoto(selectedPhoto+1);
             });
-            photoElement.src = "/api/photo/"+photo.Id+"/1920?token="+this.token;
+            this.backend.getQueryToken().then(token=>{
+                photoElement.src = "/api/photo/"+photo.Id+"/1920?token="+token;
+            });
         }
     }
 
@@ -292,7 +290,12 @@ export class GalleryComponent {
     }
 
     getGallery(galleryId){
-        this.backend.get("/api/gallery/"+galleryId).then(res => {this.gallery = res.json(); console.log(this.gallery);});
+        this.backend.get("/api/gallery/"+galleryId).then(res => {
+            this.gallery = res.json(); 
+            this.backend.getQueryToken().then(token=>{
+                this.gallery.coverUrl =  this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+res.json().Id+"/cover?token="+ token+")");
+            });
+        });
     }
 
 
