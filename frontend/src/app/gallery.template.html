@@ -1,13 +1,8 @@
-<div id="dr-photo-slider-container">
-    <div id="dr-photo-slider">
-        <div class="dr-photo-big" (click)="hidePhoto()" 
-            [class.dr-photo-big-selected]="i==selectedPhoto"
-            *ngFor="let p of photos; let i=index;">
-            <div id="dr-loader-p-{{p.Id}}" class="loader"></div>
-            <img id="dr-big-p-{{p.Id}}" class="dr-p" >
-        </div>
-    </div>
+<div id="dr-photo-container" (click)="hidePhoto()">
+    <img id="dr-photo">
+    <div id="dr-photo-loader" class="loader"></div>
 </div>
+
 
 <div id="dr-gallery">
     <div class="dr-gallery-background-container" [style.background-image]="gallery.coverUrl"></div>

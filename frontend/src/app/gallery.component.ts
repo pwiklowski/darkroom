@@ -52,6 +52,13 @@ import {BackendService} from './backend.service';
     transition: opacity 500ms ease-in-out;
     height: 100%;
 }
+#dr-photo{
+    height: 95%;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    position: absolute;
+}
 .dr-photo-container{
     height: 100%;
 }
@@ -155,31 +162,6 @@ export class GalleryComponent {
         let container = document.getElementById("body");
         this.viewWidth = container.offsetWidth;
         this.viewHeight = container.offsetHeight;
-        let p = document.getElementById("dr-photo-slider");
-        
-        let firstPhoto = this.photos[0];
-        
-        let w = firstPhoto.Width * (p.offsetHeight/ firstPhoto.Height);
-
-        this.photoOffset = Math.round((this.viewWidth - w)/2);
-
-        p.style.transform = "translate(" +this.photoOffset + "px)";
-        setTimeout(this.initSlider, 200, this.photos);
-    }
-
-    initSlider(photos){
-        let slider = document.getElementById("dr-photo-slider");
-        for(let p of photos){
-            let photoId = p.Id;
-            let photo = document.getElementById("dr-big-p-" + photoId);
-            let loader = document.getElementById("dr-loader-p-" + photoId);
-
-
-            let w = p.Width * (slider.offsetHeight/p.Height);
-            photo.style.width = w + "px";
-            loader.style.width = w + "px";
-
-        }
     }
 
     animateThumbnails(){
@@ -204,64 +186,35 @@ export class GalleryComponent {
 
     showPhoto(photo, selectedPhoto){
         this.isPhotoDisplayed = true;
-
-        let p = document.getElementById("dr-photo-slider-container");
-        let slider = document.getElementById("dr-photo-slider");
-        let firstPhoto = this.photos[0];
-
-        let w = firstPhoto.Width * (slider.offsetHeight/ firstPhoto.Height);
-        let photoOffset = Math.round((this.viewWidth - w)/2);
-        
-        for (let i=0; i < selectedPhoto; i++){
-            photoOffset -= this.getPhotoWidth(i)/2 + this.getPhotoWidth(i+1)/2 + this.PHOTO_MARGIN;
-        }
-
-        this.selectedPhoto = selectedPhoto;
-        this.photoOffset = photoOffset;
-        slider.style.transform = "translate(" +this.photoOffset + "px)";
-
+        let p = document.getElementById("dr-photo-container");
         p.style.top = "0%";
-
         this.loadPhoto(selectedPhoto); 
     }
 
     loadPhoto(selectedPhoto){
+        let photoElement = <HTMLImageElement>document.getElementById("dr-photo");
+        let loader = <HTMLImageElement>document.getElementById("dr-photo-loader");
         if (selectedPhoto >= (this.photos.length)) {
             return;
         }
-
         let photo = this.photos[selectedPhoto];
-        let photoElement = <HTMLImageElement>document.getElementById("dr-big-p-" + photo.Id);
-        let loaderElement = <HTMLImageElement>document.getElementById("dr-loader-p-" + photo.Id);
 
-        if(photoElement.src == ""){
-            var _this = this;
-            photoElement.addEventListener('load', function(){
-                loaderElement.style.opacity = "0.0";
-                _this.loadPhoto(selectedPhoto+1);
-            });
-            this.backend.getQueryToken().then(token=>{
-                photoElement.src = "/api/photo/"+photo.Id+"/1920?token="+token;
-            });
-        }
-    }
-
-
-    getPhotoWidth(id){
-        let p = document.getElementById("dr-photo-slider");
-        return this.photos[id].Width * (p.offsetHeight/ this.photos[id].Height);
+        this.backend.getQueryToken().then(token=>{
+            console.log("Load photo", photo.Id);
+            loader.style.opacity = "1";
+            photoElement.src = "/api/photo/"+photo.Id+"/1920?token="+token;
+            photoElement.addEventListener('load', ()=>{
+                console.log("photo loaded");
+                loader.style.opacity = "0";
+            })
+        });
     }
 
     nextPhoto(){
         if (this.selectedPhoto == (this.photos.length-1)) {
             return;
         }
-        
-        let p = document.getElementById("dr-photo-slider");
-        this.photoOffset -= this.getPhotoWidth(this.selectedPhoto)/2 + this.getPhotoWidth(this.selectedPhoto+1)/2 + this.PHOTO_MARGIN;
         this.selectedPhoto++;
-        p.style.transform = "translate(" +this.photoOffset + "px)";
-
         this.loadPhoto(this.selectedPhoto);
     }
 
@@ -269,18 +222,18 @@ export class GalleryComponent {
         if (this.selectedPhoto==0) {
             return;
         }
-
-        let p = document.getElementById("dr-photo-slider");
-        this.photoOffset += this.getPhotoWidth(this.selectedPhoto)/2 + this.getPhotoWidth(this.selectedPhoto-1)/2 + this.PHOTO_MARGIN;
         this.selectedPhoto--;
-        p.style.transform = "translate(" +this.photoOffset + "px)";
         this.loadPhoto(this.selectedPhoto);
     }
 
     hidePhoto(){
         this.isPhotoDisplayed = false;
-        let p = document.getElementById("dr-photo-slider-container");
+        let p = document.getElementById("dr-photo-container");
         p.style.top = "100%";
+
+
+        let loader = <HTMLImageElement>document.getElementById("dr-photo-loader");
+        loader.style.opacity = "1";
     }
 
     getGallery(galleryId){
