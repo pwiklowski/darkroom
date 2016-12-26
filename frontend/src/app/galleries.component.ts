@@ -54,11 +54,6 @@ export class GalleriesComponent {
         loader.style.opacity = "0";
     }
 
-    getImageUrl(g: Gallery){
-        if (g.Id !== undefined)
-            return this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+g.Id+"/cover?token="+ this.token);
-    }
-
     hideCover(c){
         if (c != this.galleries[0].Id){
             let cover = document.getElementById(c);
@@ -72,6 +67,9 @@ export class GalleriesComponent {
     getGalleries(){
         this.backend.get("/api/galleries").then(res => {
             this.galleries = res.json();
+            this.galleries.forEach(g=> {
+                g.url = this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+g.Id+"/cover?token="+ this.backend.getQueryToken());
+            });
         });
     }
 
