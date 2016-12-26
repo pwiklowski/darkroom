@@ -38,11 +38,6 @@ export class GalleriesComponent {
     }
 
     ngOnInit() {
-        this.sub = this.route.params.subscribe(params => {
-            console.log("pid" + params['photoId']);
-            console.log("id" + params['id']);
-        });
-
         let loader = document.getElementById("dr-loader");
         loader.style.opacity = "0";
     }
@@ -58,7 +53,6 @@ export class GalleriesComponent {
     }
 
     getGalleries(){
-        console.log("getGalleries");
         this.backend.get("/api/galleries").then(res => {
             this.galleries = res.json();
             this.backend.getQueryToken().then(queryToken => {

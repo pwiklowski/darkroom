@@ -114,8 +114,6 @@ export class GalleryComponent {
             this.gallery = new Gallery();
             let id = params['id'];
             
-            console.log("Gallery component" + id);
-
             this.getPhotos(id);
             this.getGallery(id);
 
@@ -160,7 +158,6 @@ export class GalleryComponent {
         let container = document.getElementById("body");
         this.viewWidth = container.offsetWidth;
         this.viewHeight = container.offsetHeight;
-        console.log("body " + this.viewWidth + " " + this.viewHeight);
         let p = document.getElementById("dr-photo-slider");
         
         let firstPhoto = this.photos[0];
@@ -168,12 +165,8 @@ export class GalleryComponent {
         let w = firstPhoto.Width * (p.offsetHeight/ firstPhoto.Height);
 
         this.photoOffset = Math.round((this.viewWidth - w)/2);
-        console.log("photoOffset" + this.photoOffset);
 
         p.style.transform = "translate(" +this.photoOffset + "px)";
-
-        
-
         setTimeout(this.initSlider, 200, this.photos);
     }
 
@@ -234,11 +227,8 @@ export class GalleryComponent {
         }
 
         let photo = this.photos[selectedPhoto];
-        console.log(photo);
         let photoElement = <HTMLImageElement>document.getElementById("dr-big-p-" + photo.Id);
         let loaderElement = <HTMLImageElement>document.getElementById("dr-loader-p-" + photo.Id);
-
-        console.log(photoElement.src);
 
         if(photoElement.src == ""){
             var _this = this;

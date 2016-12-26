@@ -303,7 +303,6 @@ export class AppComponent {
         this.backend.get("/api/gallery/"+this.getGalleryId()+"/photos").then(res => {
             this.photos = res.json();
             this.backend.getQueryToken().then(queryToken=>{
-
                 this.photos.forEach(photo=>{
                     photo.url = "/api/photo/"+photo.Id+"/320?token="+queryToken;
                 });
@@ -348,7 +347,6 @@ export class AppComponent {
         let r = this.dialogService.confirm('Are you sure ?', 'No', 'Yes');
         r.subscribe(()=>{
                 this.backend.delete("/api/gallery/"+this.getGalleryId()).then(res =>{
-                    console.log("Removed gallery " + this.getGalleryId());
                     this.getGalleries();
                     this.router.navigate(['/galleries']);
                 });
