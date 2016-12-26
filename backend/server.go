@@ -21,9 +21,10 @@ import (
 )
 
 type Token struct {
-	Token   string
-	ValidTo int64
-	UserID  string
+	Token    string
+	ValidTo  int64
+	ExpireIn int64
+	UserID   string
 }
 
 type User struct {
