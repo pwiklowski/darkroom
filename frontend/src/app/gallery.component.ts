@@ -48,8 +48,8 @@ import {BackendService} from './backend.service';
     opacity: 1;
 }
 .dr-photo{
-    opacity: 0.5; 
-    transition: opacity 100ms ease-in-out;
+    opacity: 0.0; 
+    transition: opacity 500ms ease-in-out;
     height: 100%;
 }
 .dr-photo-container{
@@ -137,19 +137,16 @@ export class GalleryComponent {
     
     getPhotos(galleyId){
         this.backend.get("/api/gallery/"+galleyId+"/photos").then(res => {
-                this.photos = res.json();
-                this.backend.getQueryToken().then(token=>{
-                    this.photos.forEach(photo =>{
-                        photo.url = "/api/photo/"+photo.Id+"/320?token="+token; 
-                    });
-                });
+            this.photos = res.json();
+            this.photos.forEach(photo =>{
+                photo.url = "assets/img/stub2.gif";
+            });
 
-                if (this.photos.length > 0){
-                    this.initGallery();
-                    setTimeout(this.animatePhotos, 200, this.photos);
-                }
+            if (this.photos.length > 0){
+                this.initGallery();
+                setTimeout(()=>this.animateThumbnails(), 200);
             }
-        );
+        });
     }
 
     initGallery(){
@@ -185,17 +182,24 @@ export class GalleryComponent {
         }
     }
 
-    animatePhotos(photos){
+    animateThumbnails(){
         let timeout = 0;
-        for(let p of photos){
-            let photoId = p.Id;
-            let photo = document.getElementById("dr-p-" + photoId);
+        this.backend.getQueryToken().then(token=>{
+            for(let p of this.photos){
+                let photoId = p.Id;
+                let photo = document.getElementById("dr-p-" + photoId);
 
-            setTimeout(function(e){
-                e.style.opacity = "1.0" ;
-            }, timeout*100, <HTMLElement>photo);
-            timeout++;
-        }
+                setTimeout(() => {
+                    photo.style.opacity = "0.1" ;
+                    p.url = "/api/photo/"+p.Id+"/320?token="+token; 
+                    photo.addEventListener('load',()=>{
+                        photo.style.opacity = "1";
+                    });
+
+                }, timeout*100);
+                timeout++;
+            }
+        });
     }
 
     showPhoto(photo, selectedPhoto){
