@@ -21,10 +21,6 @@ export class BackendService{
                 this.get("/api/me").then((user)=>{
                     this.superuser = user.json().IsSuperuser;
                 });
-
-                this.get("/api/token").then((res) =>{
-                    this.tokenData = res.json();
-                });
             }
         });
     }
@@ -32,7 +28,7 @@ export class BackendService{
     getQueryToken(){
         return new Promise<string>((resolve, reject) => {
             let date = new Date();
-            if((date.getTime()/1000) < this.tokenData.ValidTo){
+            if(this.tokenData !== undefined && (date.getTime()/1000) < this.tokenData.ValidTo){
                 resolve(JSON.parse(JSON.stringify(this.tokenData.Token)));
             }else{
                 this.get("/api/token").then((res) =>{
