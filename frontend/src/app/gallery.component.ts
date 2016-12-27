@@ -53,7 +53,8 @@ import {BackendService} from './backend.service';
     height: 100%;
 }
 #dr-photo{
-    height: 95%;
+    max-width: 95%;
+    max-height: 98%;;
     transform: translate(-50%,-50%);
     top: 50%;
     left: 50%;
@@ -109,6 +110,8 @@ import {BackendService} from './backend.service';
     background-image: url(/assets/img/stub2.gif);
     pointer-events: none;
     background-position: center;
+    background-repeat: no-repeat;
+    background-size: 60%;
 }
     
     `]
@@ -147,6 +150,8 @@ export class GalleryComponent {
     thumbnailsContainer;
 
     scroll;
+
+    photoUrl;
 
     ngOnInit() {
         this.sub = this.route.params.subscribe(params => {
@@ -219,7 +224,8 @@ export class GalleryComponent {
     showPhoto(photo, selectedPhoto){
         this.isPhotoDisplayed = true;
         let p = document.getElementById("dr-photo-container");
-        p.style.top = "0%";
+        p.style.opacity= "1";
+        p.style.visibility = "visible";
         this.loadPhoto(selectedPhoto); 
     }
 
@@ -264,11 +270,10 @@ export class GalleryComponent {
     hidePhoto(){
         this.isPhotoDisplayed = false;
         let p = document.getElementById("dr-photo-container");
-        p.style.top = "100%";
-
-
-        let loader = <HTMLImageElement>document.getElementById("dr-photo-loader");
-        loader.style.opacity = "1";
+        p.style.opacity = "0";
+        setTimeout(()=>{
+            p.style.visibility = "hidden";
+        }, 200);
     }
 
     getGallery(galleryId){

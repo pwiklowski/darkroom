@@ -140,12 +140,15 @@ nav{
 }
 #dr-photo-container{
     position: fixed;
-    left: 0px;
-    top: 100%;
+    left: 0;
+    top: 0;
     height: 100%;
     width: 100%;
     z-index: 800;
+    opacity: 0;
+    visibility: hidden;
     background-color: rgba(0,0,0,0.9);
+    transition: opacity 200ms ease-in-out;
 }
 #dr-photo-slider{
     position:relative;
