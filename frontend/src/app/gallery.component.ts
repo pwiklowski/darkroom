@@ -58,6 +58,8 @@ import {BackendService} from './backend.service';
     top: 50%;
     left: 50%;
     position: absolute;
+    transition: opacity 500ms ease-in-out;
+    opacity: 0;
 }
 .dr-photo-container{
     height: 100%;
@@ -96,6 +98,17 @@ import {BackendService} from './backend.service';
     top: 50%;
     right: 10px;
     cursor: pointer;
+}
+
+#dr-photo-loader{
+    z-index: 1000;
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    transform: translate(50%,50%);
+    background-image: url(/assets/img/stub2.gif);
+    pointer-events: none;
+    background-position: center;
 }
     
     `]
@@ -211,6 +224,7 @@ export class GalleryComponent {
     }
 
     loadPhoto(selectedPhoto){
+        this.selectedPhoto = selectedPhoto;
         let photoElement = <HTMLImageElement>document.getElementById("dr-photo");
         let loader = <HTMLImageElement>document.getElementById("dr-photo-loader");
         if (selectedPhoto >= (this.photos.length)) {
@@ -218,13 +232,15 @@ export class GalleryComponent {
         }
         let photo = this.photos[selectedPhoto];
 
+        photoElement.src = "";
+        loader.style.opacity = "1";
+        photoElement.style.opacity = "0";
+
         this.backend.getQueryToken().then(token=>{
-            console.log("Load photo", photo.Id);
-            loader.style.opacity = "1";
             photoElement.src = "/api/photo/"+photo.Id+"/1920?token="+token;
             photoElement.addEventListener('load', ()=>{
-                console.log("photo loaded");
                 loader.style.opacity = "0";
+                photoElement.style.opacity = "1";
             })
         });
     }
