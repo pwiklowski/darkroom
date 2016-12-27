@@ -1,6 +1,9 @@
-<div id="dr-photo-container" (click)="hidePhoto()">
+<div id="dr-photo-container">
     <img id="dr-photo">
+    <mdl-icon (click)="prevPhoto()" class="dr-left-icon">keyboard_arrow_left</mdl-icon>
+    <mdl-icon (click)="nextPhoto()" class="dr-right-icon">keyboard_arrow_right</mdl-icon>
     <div id="dr-photo-loader" class="loader"></div>
+    <mdl-icon class="dr-close-icon" (click)="hidePhoto()">close</mdl-icon>
 </div>
 
 

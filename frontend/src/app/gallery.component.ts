@@ -77,7 +77,26 @@ import {BackendService} from './backend.service';
     height:1px;
 }
 
+.dr-close-icon{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+ 
+}
 
+.dr-left-icon{
+    position: absolute;
+    top: 50%;
+    left: 10px;  
+    cursor: pointer;
+}
+.dr-right-icon{
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    cursor: pointer;
+}
     
     `]
 
