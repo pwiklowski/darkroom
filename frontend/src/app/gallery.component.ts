@@ -32,25 +32,24 @@ import {BackendService} from './backend.service';
     filter: blur(20px);
 }
 #dr-column-container{
-    margin-top: 10%;
-    height: 70%;
+    height: 100%;
+    overflow-y: scroll;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     background-color: rgba(0, 0, 0, 0.5);
-    overflow: hidden;
+    justify-content: center;
 }
 .dr-photo-column{
     display: flex;
-    flex-direction: row;
-    height: 33.33%;
+    flex-direction: column;
+    width: 300px;
 }
 .dr-photo:hover{
     opacity: 1;
 }
 .dr-photo{
-    opacity: 0.0; 
-    transition: opacity 500ms ease-in-out;
-    height: 100%;
+    transition: opacity 400ms ease-in-out;
+    width: 100%;
 }
 #dr-photo{
     max-width: 95%;
@@ -63,7 +62,7 @@ import {BackendService} from './backend.service';
     opacity: 0;
 }
 .dr-photo-container{
-    height: 100%;
+    margin:  5px;
 }
 
 #dr-scrollbar-fill{
@@ -118,40 +117,23 @@ import {BackendService} from './backend.service';
 
 })
 export class GalleryComponent {
-    http: Http;
     photos = [];
     gallery: Gallery;
     currentPhoto: number = 0;
-    columnsNumber: number = 3;
+    columnsNumber: number = 5;
     columns: Array<number>;
-    router: Router;
     sub: any;
     isPhotoDisplayed: boolean = false;
     photoId: string;
 
-    photoWidth: number;
-    photoHeight: number;
-    photoTop: number;
-    photoLeft: number;
-
-    photoOffset: number;
-
-    MARGIN: number = 50;
-    PHOTO_MARGIN: number = 20;
-
-    viewWidth: number;
-    viewHeight: number;
-
     selectedPhoto: number = 0;
-
     editedGalleryId: string;
 
-    selectedPhotoWidth: number = 1280;
-    thumbnailsContainer;
-
-    scroll;
-
     photoUrl;
+    photo: HTMLImageElement;
+    photoLoader: HTMLElement;
+    photoContainer: HTMLElement;
+    columnContainer: HTMLElement;
 
     ngOnInit() {
         this.sub = this.route.params.subscribe(params => {
@@ -164,19 +146,19 @@ export class GalleryComponent {
         });
         let loader = document.getElementById("dr-loader");
         loader.style.opacity = "0";
+
+        this.photo = <HTMLImageElement>document.getElementById("dr-photo");
+        this.photoLoader = <HTMLElement>document.getElementById("dr-photo-loader");
+        this.photoContainer = <HTMLElement>document.getElementById("dr-photo-container");
+        this.columnContainer =document.getElementById("dr-column-container");
+        this.onResize();
+
     }
     ngOnDestroy() {
         this.sub.unsubscribe();
     }
 
-    constructor(http: Http, private backend: BackendService, router: Router, private route: ActivatedRoute, private sanitizer:DomSanitizer){
-        this.router = router;
-        this.columns = new Array<number>();
-        for(let i = 0; i < this.columnsNumber; i++){
-            this.columns.push(i);
-        }
-
-        this.http = http;
+    constructor(http: Http, private backend: BackendService, private router: Router, private route: ActivatedRoute, private sanitizer:DomSanitizer){
     }
     
     getPhotos(galleyId){
@@ -187,18 +169,9 @@ export class GalleryComponent {
             });
 
             if (this.photos.length > 0){
-                this.initGallery();
                 setTimeout(()=>this.animateThumbnails(), 200);
             }
         });
-    }
-
-    initGallery(){
-        this.thumbnailsContainer = document.getElementById("dr-column-container");
-        this.scroll = document.getElementById("dr-scrollbar-fill");
-        let container = document.getElementById("body");
-        this.viewWidth = container.offsetWidth;
-        this.viewHeight = container.offsetHeight;
     }
 
     animateThumbnails(){
@@ -208,6 +181,7 @@ export class GalleryComponent {
                 let photoId = p.Id;
                 let photo = document.getElementById("dr-p-" + photoId);
 
+                photo.style.opacity = "0.1" ;
                 setTimeout(() => {
                     photo.style.opacity = "0.1" ;
                     p.url = "/api/photo/"+p.Id+"/320?token="+token; 
@@ -223,30 +197,27 @@ export class GalleryComponent {
 
     showPhoto(photo, selectedPhoto){
         this.isPhotoDisplayed = true;
-        let p = document.getElementById("dr-photo-container");
-        p.style.opacity= "1";
-        p.style.visibility = "visible";
+        this.photoContainer.style.opacity= "1";
+        this.photoContainer.style.visibility = "visible";
         this.loadPhoto(selectedPhoto); 
     }
 
     loadPhoto(selectedPhoto){
         this.selectedPhoto = selectedPhoto;
-        let photoElement = <HTMLImageElement>document.getElementById("dr-photo");
-        let loader = <HTMLImageElement>document.getElementById("dr-photo-loader");
         if (selectedPhoto >= (this.photos.length)) {
             return;
         }
         let photo = this.photos[selectedPhoto];
 
-        photoElement.src = "";
-        loader.style.opacity = "1";
-        photoElement.style.opacity = "0";
+        this.photo.src = "";
+        this.photoLoader.style.opacity = "1";
+        this.photo.style.opacity = "0";
 
         this.backend.getQueryToken().then(token=>{
-            photoElement.src = "/api/photo/"+photo.Id+"/1920?token="+token;
-            photoElement.addEventListener('load', ()=>{
-                loader.style.opacity = "0";
-                photoElement.style.opacity = "1";
+            this.photo.src = "/api/photo/"+photo.Id+"/1920?token="+token;
+            this.photo.addEventListener('load', ()=>{
+                this.photoLoader.style.opacity = "0";
+                this.photo.style.opacity = "1";
             })
         });
     }
@@ -269,10 +240,9 @@ export class GalleryComponent {
 
     hidePhoto(){
         this.isPhotoDisplayed = false;
-        let p = document.getElementById("dr-photo-container");
-        p.style.opacity = "0";
+        this.photoContainer.style.opacity = "0";
         setTimeout(()=>{
-            p.style.visibility = "hidden";
+            this.photoContainer.style.visibility = "hidden";
         }, 200);
     }
 
@@ -295,6 +265,20 @@ export class GalleryComponent {
         }
     }
 
+    @HostListener('window:resize', ['$event'])
+    onResize() {
+        let calculatedColumnNumber = Math.floor((this.columnContainer.offsetWidth - 250)/300);
+        if (calculatedColumnNumber !== this.columnsNumber){
+            this.columnsNumber = Math.floor((this.columnContainer.offsetWidth - 250)/300);
+            this.columns = new Array<number>();
+            for(let i = 0; i < this.columnsNumber; i++){
+                this.columns.push(i);
+            }
+        }
+
+    }
+
+
     @HostListener('window:mousewheel', ['$event'])
     onScrollEvent(event: any) {
         if (this.isPhotoDisplayed){
@@ -304,13 +288,6 @@ export class GalleryComponent {
                 this.prevPhoto();
             }
             return false;
-        }else{
-            if (event.wheelDelta  < 0){
-                this.thumbnailsContainer.scrollLeft+=100;
-            }else{
-                this.thumbnailsContainer.scrollLeft-=100;
-            }
-            this.scroll.style.width = (100*this.thumbnailsContainer.scrollLeft)/(this.thumbnailsContainer.scrollWidth-this.thumbnailsContainer.offsetWidth) + "%";
         }
     }
 }

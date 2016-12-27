@@ -1,5 +1,5 @@
 <div id="dr-photo-container">
-    <img id="dr-photo">
+    <img id="dr-photo" (click)="nextPhoto()">
     <mdl-icon (click)="prevPhoto()" *ngIf="selectedPhoto!=0" class="dr-left-icon">keyboard_arrow_left</mdl-icon>
     <mdl-icon (click)="nextPhoto()" *ngIf="selectedPhoto!=(photos.length-1)" class="dr-right-icon">keyboard_arrow_right</mdl-icon>
     <div id="dr-photo-loader"></div>
@@ -8,18 +8,17 @@
 
 
 <div id="dr-gallery">
-    <div class="dr-gallery-background-container" [style.background-image]="gallery.coverUrl"></div>
+    <div class="dr-gallery-background-container"></div>
     <div id="dr-column-container">
         <div *ngFor="let column of columns; let c = index" class="dr-photo-column">
-            <div *ngFor="let p of photos; let i = index"  class="dr-photo-container">
-                <img (click)="showPhoto(p, i)" *ngIf="i%columnsNumber==c"
-                    class="dr-photo b-lazy" src="/assets/img/stub2.gif"
-                    id="dr-p-{{p.Id}}"
-                    src="{{p.url}}"/>
-            </div>
+            <template ngFor let-p [ngForOf]="photos" let-i="index">
+                <div class="dr-photo-container" *ngIf="i%columnsNumber==c">
+                    <img (click)="showPhoto(p, i)"
+                        class="dr-photo" src="/assets/img/stub2.gif"
+                        id="dr-p-{{p.Id}}"
+                        src="{{p.url}}"/>
+                </div>
+            </template>
         </div>
-    </div>
-    <div id="dr-scrollbar">
-        <div id="dr-scrollbar-fill"></div>
     </div>
 </div>
