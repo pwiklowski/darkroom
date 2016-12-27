@@ -116,7 +116,7 @@ import {BackendService} from './backend.service';
 })
 export class GalleryComponent {
     http: Http;
-    photos;
+    photos = [];
     gallery: Gallery;
     currentPhoto: number = 0;
     columnsNumber: number = 3;
