@@ -330,7 +330,7 @@ func main() {
 		}
 		fmt.Printf("GET /gallery cover id:%s uid:%s\n", galleryID, token.UserID)
 
-		if err != nil isSuperuserUID(token.UserID, db) {
+		if err != nil && isSuperuserUID(token.UserID, db) {
 			db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
 		} else {
 			gallery := Gallery{}
