@@ -45,12 +45,9 @@ export class GalleriesComponent {
         loader.style.opacity = "0";
 
         this.authSub = this.af.auth.subscribe(user => {
-            if (user){
-                this.getGalleries();
-            }else{
-                //this.router.navigate(['/login']);
-            }
+            this.getGalleries();
         });
+        this.getGalleries();
     }
     ngOnDestroy(){
         this.authSub.unsubscribe();

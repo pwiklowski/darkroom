@@ -80,8 +80,9 @@ export class BackendService{
     }
     logout(){
         this.af.auth.logout();
-        this.user = {};
+        this.user = undefined;
         this.isLogged = false;
+        this.superuser = false;
     }
     getAuthToken(){
         return new Promise<string>((resolve, reject)=>{
@@ -90,8 +91,9 @@ export class BackendService{
                 this.user.auth.getToken().then((token) => {
                     resolve(token);
                 });
+            }else{
+                resolve(null);
             }
-            resolve(null);
         });
     }
 

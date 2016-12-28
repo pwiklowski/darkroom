@@ -59,22 +59,19 @@ import { AngularFire, AuthProviders } from 'angularfire2';
         No galleries 
     </div>
 </div>
-<mdl-dialog #loginModal [mdl-dialog-config]="{ clickOutsideToClose: true, styles:{'width': '500px'}, isModal:true, enterTransitionDuration: 400, leaveTransitionDuration: 400}" >
-
+<mdl-dialog #loginModal [mdl-dialog-config]="{ clickOutsideToClose: true, styles:{'width': '400px'}, isModal:true, enterTransitionDuration: 400, leaveTransitionDuration: 400}" >
+    <h2>Login</h2>
     <div class="dr-login-buttons">
         <button mdl-button mdl-button-type="raised" mdl-colored="primary"  (click)="loginGoogle()">
-            Use My Google Account
-        </button>
+            Use Google Account
+        </button><br>
         <button mdl-button mdl-button-type="raised" mdl-colored="primary"  (click)="loginFacebook()">
-            Use My Facebook Account
-        </button>
+            Use Facebook Account
+        </button><br>
         <button mdl-button mdl-button-type="raised" mdl-colored="primary"  (click)="loginTwitter()">
-            Use My Twitter Account
-        </button>
+            Use Twitter Account
+        </button><br>
     </div>
-
-
-
 </mdl-dialog>
 
 <mdl-dialog #shareGalleryModal [mdl-dialog-config]="{ clickOutsideToClose: true, styles:{'width': '500px'}, isModal:true, enterTransitionDuration: 400, leaveTransitionDuration: 400}" >
@@ -269,9 +266,8 @@ export class AppComponent {
         });
 
         this.af.auth.subscribe(user => {
-            if (user){
-                this.getGalleries();
-            }
+            console.log("App user =", user);
+            this.getGalleries();
         });
         this.getGalleries();
     }
