@@ -4,6 +4,7 @@ import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Gallery } from './models';
 import { BackendService } from './backend.service';
+import { AngularFire, AuthProviders } from 'angularfire2';
 import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
@@ -30,16 +31,29 @@ export class GalleriesComponent {
     columnsNumber: number = 3;
     columns: Array<number>;
 
+    authSub;
+
     constructor(http: Http, router: Router, private route: ActivatedRoute,
-                private backend: BackendService, private sanitizer:DomSanitizer){
+                private backend: BackendService, private af: AngularFire, 
+                private sanitizer:DomSanitizer){
         this.router = router;
         this.http = http;
-        this.getGalleries();
     }
 
     ngOnInit() {
         let loader = document.getElementById("dr-loader");
         loader.style.opacity = "0";
+
+        this.authSub = this.af.auth.subscribe(user => {
+            if (user){
+                this.getGalleries();
+            }else{
+                //this.router.navigate(['/login']);
+            }
+        });
+    }
+    ngOnDestroy(){
+        this.authSub.unsubscribe();
     }
 
     hideCover(c){

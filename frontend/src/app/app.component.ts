@@ -5,6 +5,7 @@ import { Gallery, Photo } from './models';
 import { BackendService } from './backend.service';
 import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { MdlDialogService } from 'angular2-mdl';
+import { AngularFire, AuthProviders } from 'angularfire2';
 
 @Component({
     selector: 'app',
@@ -43,7 +44,7 @@ import { MdlDialogService } from 'angular2-mdl';
 
 <div #drawer class="dr-drawer">
     <div class="dr-user-info">
-        <img class="dr-user-avatar" src="{{ backend.getUser().photoURL }}"/>   {{backend.getUser().displayName}}
+        <img class="dr-user-avatar" src="{{ backend.getUser()?.photoURL }}"/>   {{backend.getUser()?.displayName}}
     </div>
 
     <div class="dr-drawer-title" (click)="showGalleries()">Galleries</div>
@@ -234,7 +235,8 @@ export class AppComponent {
     public constructor(viewContainerRef:ViewContainerRef,
                        private router: Router,
                        private backend: BackendService,
-                       private dialogService: MdlDialogService){
+                       private dialogService: MdlDialogService,
+                       private af: AngularFire){
 
         this.viewContainerRef = viewContainerRef;
         this.router.events.subscribe((event) =>{
@@ -243,9 +245,15 @@ export class AppComponent {
             this.url = event.url;
         });
 
-        this.getGalleries();
-
+        this.af.auth.subscribe(user => {
+            if (user){
+                this.getGalleries();
+            }else{
+                //this.router.navigate(['/login']);
+            }
+        });
     }
+
 
     getGalleryId(){
         if (this.url.indexOf("/gallery/") !== -1){
