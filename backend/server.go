@@ -324,19 +324,15 @@ func main() {
 
 		token, err := getTokenIfValid(tokenID, tokensDb)
 
-		if err != nil {
-			c.JSON(iris.StatusForbidden, nil)
-			return
-		}
 		fmt.Printf("GET /gallery cover id:%s uid:%s\n", galleryID, token.UserID)
 
-		if err != nil && isSuperuserUID(token.UserID, db) {
+		if err == nil && isSuperuserUID(token.UserID, db) {
 			db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
 		} else {
 			gallery := Gallery{}
-			if err == nil{
+			if err == nil {
 				err = db.C("galleries").Find(bson.M{"usersids": token.UserID, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
-			}else{
+			} else {
 				err = db.C("galleries").Find(bson.M{"ispublic": true, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
 			}
 
