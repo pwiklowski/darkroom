@@ -15,7 +15,6 @@ import { GalleriesComponent } from './galleries.component';
 import { GalleryComponent } from './gallery.component';
 import { AngularFireModule, AuthMethods, AuthProviders } from "angularfire2";
 import { BackendService } from './backend.service';
-import { LoginComponent } from './login.component';
 
 var config = {
     apiKey: "AIzaSyCpISaYT7x11mYNQJSsTOoYUrUfiIOLIwI",
@@ -32,7 +31,6 @@ var config = {
     AppComponent,
     GalleryComponent,
     GalleriesComponent,
-    LoginComponent,
     FileSelectDirective
   ],
   imports: [ // import Angular's modules

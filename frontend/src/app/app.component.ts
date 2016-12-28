@@ -43,7 +43,10 @@ import { AngularFire, AuthProviders } from 'angularfire2';
 
 
 <div #drawer class="dr-drawer">
-    <div class="dr-user-info">
+    <button (click)="loginModal.show()" *ngIf="!backend.isUserLogged()">Login </button>
+    <div class="dr-user-info" *ngIf="backend.isUserLogged()">
+
+
         <img class="dr-user-avatar" src="{{ backend.getUser()?.photoURL }}"/>   {{backend.getUser()?.displayName}}
     </div>
 
@@ -56,6 +59,24 @@ import { AngularFire, AuthProviders } from 'angularfire2';
         No galleries 
     </div>
 </div>
+<mdl-dialog #loginModal [mdl-dialog-config]="{ clickOutsideToClose: true, styles:{'width': '500px'}, isModal:true, enterTransitionDuration: 400, leaveTransitionDuration: 400}" >
+
+    <div class="dr-login-buttons">
+        <button mdl-button mdl-button-type="raised" mdl-colored="primary"  (click)="loginGoogle()">
+            Use My Google Account
+        </button>
+        <button mdl-button mdl-button-type="raised" mdl-colored="primary"  (click)="loginFacebook()">
+            Use My Facebook Account
+        </button>
+        <button mdl-button mdl-button-type="raised" mdl-colored="primary"  (click)="loginTwitter()">
+            Use My Twitter Account
+        </button>
+    </div>
+
+
+
+</mdl-dialog>
+
 <mdl-dialog #shareGalleryModal [mdl-dialog-config]="{ clickOutsideToClose: true, styles:{'width': '500px'}, isModal:true, enterTransitionDuration: 400, leaveTransitionDuration: 400}" >
   Share gallery
   <div class="mdl-dialog__content">
@@ -221,6 +242,8 @@ export class AppComponent {
     @ViewChild('drawerButtons') drawerButtons;
 
     @ViewChild('shareGalleryModal') shareGalleryModal;
+
+    @ViewChild('loginModal') loginModal;
 
     url: string = "";
 
@@ -437,10 +460,43 @@ export class AppComponent {
         }
     }
 
-    logout(){
-        this.backend.logout();
-        this.router.navigate(['/']);
+    handleLogin(user){
+        if(user) {
+            let userData = this.backend.getUserData(user);
+            console.log(userData);
+            let u = {
+                DisplayName: userData.displayName,
+                PhotoUrl: userData.photoURL
+            };
+            
+            this.backend.post("/api/me", u).then();
+            
+            console.log("redirect to galleries");
+            this.router.navigate(['/galleries']);
+        }
     }
+
+    loginGoogle() {
+        this.backend.login(AuthProviders.Google).then(user=>{
+            this.handleLogin(user);
+        });
+    }
+    loginTwitter() {
+        this.backend.login(AuthProviders.Twitter).then(user=>{
+            this.handleLogin(user);
+        });
+    }
+    loginFacebook() {
+        this.backend.login(AuthProviders.Facebook).then(user=>{
+            this.handleLogin(user);
+        });
+    }
+    
+    logout() {
+        this.backend.logout();
+    }
+
+
 }
 
 
