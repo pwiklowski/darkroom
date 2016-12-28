@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs/Rx';
 
 @Injectable()
 export class BackendService{
-    user = {};
+    user;
     superuser:boolean;
     isLogged = false;
     tokenData;
@@ -31,10 +31,15 @@ export class BackendService{
             if(this.tokenData !== undefined && (date.getTime()/1000) < this.tokenData.ValidTo){
                 resolve(JSON.parse(JSON.stringify(this.tokenData.Token)));
             }else{
-                this.get("/api/token").then((res) =>{
-                    this.tokenData = res.json();
-                    resolve(JSON.parse(JSON.stringify(this.tokenData.Token)));
-                });
+                if (this.isUserLogged()){
+                    this.get("/api/token").then((res) =>{
+                        this.tokenData = res.json();
+                        resolve(JSON.parse(JSON.stringify(this.tokenData.Token)));
+                    });
+                }else{
+                    resolve(null);
+                }
+
             }
         });
     }
@@ -62,7 +67,10 @@ export class BackendService{
     }
 
     getUser(){
-        return this.getUserData(this.user);
+        if (this.user)
+            return this.getUserData(this.user);
+        else
+            return undefined;
     }
 
     login(authProvider){
@@ -78,14 +86,13 @@ export class BackendService{
     }
     getAuthToken(){
         return new Promise<string>((resolve, reject)=>{
-                if (this.user){
-                    this.user.auth.getToken().then((token) => {
-                        resolve(token);
-                    });
-                }else{
-                    console.log("reject");
-                    reject();
-                }
+            console.log(this.user);
+            if (this.user){
+                this.user.auth.getToken().then((token) => {
+                    resolve(token);
+                });
+            }
+            resolve(null);
         });
     }
 

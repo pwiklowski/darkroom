@@ -53,6 +53,7 @@ type Gallery struct {
 	Comment    string
 	CoverPhoto bson.ObjectId `bson:",omitempty"`
 	UsersIDs   []string
+	IsPublic   bool
 }
 
 func (p Photo) getLocation() string {
@@ -284,13 +285,12 @@ func main() {
 	api.Get("/galleries", func(c *iris.Context) {
 		uid := getUserID(auth, c)
 
-		if uid == "" {
-			c.JSON(iris.StatusForbidden, nil)
-			return
-		}
 		galleries := []Gallery{}
+		fmt.Printf("GET /galleries uid:%s\n", uid)
 
-		if isSuperuser(auth, c, db) {
+		if uid == "" {
+			db.C("galleries").Find(bson.M{"ispublic": true}).All(&galleries)
+		} else if isSuperuser(auth, c, db) {
 			db.C("galleries").Find(nil).All(&galleries)
 		} else {
 			db.C("galleries").Find(bson.M{"usersids": uid}).All(&galleries)
@@ -301,15 +301,15 @@ func main() {
 
 	api.Get("/gallery/:galleryId", func(c *iris.Context) {
 		uid := getUserID(auth, c)
-		if uid == "" {
-			c.JSON(iris.StatusForbidden, nil)
-			return
-		}
 
 		gallery := Gallery{}
 		galleryID := c.Param("galleryId")
 
-		if isSuperuser(auth, c, db) {
+		fmt.Printf("GET /gallery id:%s uid:%s\n", galleryID, uid)
+
+		if uid == "" {
+			db.C("galleries").Find(bson.M{"ispublic": true, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
+		} else if isSuperuser(auth, c, db) {
 			db.C("galleries").Find(bson.M{"_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
 		} else {
 			db.C("galleries").Find(bson.M{"usersids": uid, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
@@ -328,13 +328,18 @@ func main() {
 			c.JSON(iris.StatusForbidden, nil)
 			return
 		}
+		fmt.Printf("GET /gallery cover id:%s uid:%s\n", galleryID, token.UserID)
 
-		if isSuperuserUID(token.UserID, db) {
+		if err != nil isSuperuserUID(token.UserID, db) {
 			db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryID)}).One(&photo)
 		} else {
 			gallery := Gallery{}
-			err := db.C("galleries").Find(bson.M{"usersids": token.UserID, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
-			fmt.Println(gallery)
+			if err == nil{
+				err = db.C("galleries").Find(bson.M{"usersids": token.UserID, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
+			}else{
+				err = db.C("galleries").Find(bson.M{"ispublic": true, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
+			}
+
 			if err != nil {
 				c.JSON(iris.StatusForbidden, nil)
 				return
@@ -353,19 +358,21 @@ func main() {
 
 	api.Get("/gallery/:galleryId/photos", func(c *iris.Context) {
 		uid := getUserID(auth, c)
-		fmt.Println(uid)
-		if uid == "" {
-			c.JSON(iris.StatusForbidden, nil)
-			return
-		}
+
 		photos := []Photo{}
 		galleryID := c.Param("galleryId")
 
-		if isSuperuser(auth, c, db) {
+		if uid != "" && isSuperuser(auth, c, db) {
 			db.C("photos").Find(bson.M{"galleryid": bson.ObjectIdHex(galleryID)}).All(&photos)
 		} else {
 			gallery := Gallery{}
-			err := db.C("galleries").Find(bson.M{"usersids": uid, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
+			var err error
+
+			if uid == "" {
+				err = db.C("galleries").Find(bson.M{"ispublic": true, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
+			} else {
+				err = db.C("galleries").Find(bson.M{"usersids": uid, "_id": bson.ObjectIdHex(galleryID)}).One(&gallery)
+			}
 			if err != nil {
 				c.JSON(iris.StatusForbidden, nil)
 				return
@@ -399,26 +406,28 @@ func main() {
 		tokenID := c.URLParam("token")
 
 		token, err := getTokenIfValid(tokenID, tokensDb)
-		if err != nil {
-			c.JSON(iris.StatusForbidden, nil)
-			return
-		}
 
 		photo := Photo{}
 		photoID := c.Param("photo")
 		size := c.Param("size")
-		fmt.Println(token)
 
-		if isSuperuserUID(token.UserID, db) {
+		if err == nil && isSuperuserUID(token.UserID, db) {
 			db.C("photos").Find(bson.M{"_id": bson.ObjectIdHex(photoID)}).One(&photo)
 		} else {
-			db.C("photos").Find(bson.M{"_id": bson.ObjectIdHex(photoID)}).One(&photo)
 			gallery := Gallery{}
-			err := db.C("galleries").Find(bson.M{"usersids": token.UserID, "_id": photo.GalleryId}).One(&gallery)
+			db.C("photos").Find(bson.M{"_id": bson.ObjectIdHex(photoID)}).One(&photo)
+
+			if err != nil {
+				err = db.C("galleries").Find(bson.M{"ispublic": true, "_id": photo.GalleryId}).One(&gallery)
+			} else {
+				err = db.C("galleries").Find(bson.M{"usersids": token.UserID, "_id": photo.GalleryId}).One(&gallery)
+			}
+
 			if err != nil {
 				c.JSON(iris.StatusForbidden, nil)
 				return
 			}
+
 		}
 
 		if size == "info" {

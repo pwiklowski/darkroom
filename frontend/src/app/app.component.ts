@@ -248,10 +248,9 @@ export class AppComponent {
         this.af.auth.subscribe(user => {
             if (user){
                 this.getGalleries();
-            }else{
-                //this.router.navigate(['/login']);
             }
         });
+        this.getGalleries();
     }
 
 
