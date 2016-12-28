@@ -18,7 +18,7 @@ import { AngularFire, AuthProviders } from 'angularfire2';
     <div #drawerCloseFill id="dr-drawer-close-fill"></div>
 
     <div #drawerButtons id="dr-drawer-buttons">
-        <button class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="logout()">
+        <button *ngIf="backend.isUserLogged()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="logout()">
             <div class="dr-button-label">Logout</div>
             <mdl-icon>user</mdl-icon>
         </button>
