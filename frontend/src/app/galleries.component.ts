@@ -11,6 +11,16 @@ import {DomSanitizer} from '@angular/platform-browser';
     selector: 'my-app',
     templateUrl: './galleries.template.html',
     styles:[`
+        #dr-gallery-cover{
+            max-width: 95%;
+            max-height: 98%;;
+            transform: translate(-50%,-50%);
+            top: 50%;
+            left: 50%;
+            position: absolute;
+            transition: opacity 500ms ease-in-out;
+            opacity: 0;
+        }
         .dr-centered-error{
             font-size: 30px;
             left: 50%;
@@ -19,30 +29,39 @@ import {DomSanitizer} from '@angular/platform-browser';
             transform: translate(-50%,-50%);
 
         }
+        .dr-left-icon{
+            position: absolute;
+            top: 50%;
+            left: 10px;  
+            cursor: pointer;
+        }
+        .dr-right-icon{
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            cursor: pointer;
+        }
     `]
 })
 
 export class GalleriesComponent {
-
-    http: Http;
-    router: Router;
     galleries: Array<Gallery> = new Array<Gallery>();
+    selectedGallery: Gallery = new Gallery();
+    selectedGalleryIndex = 0;
+    galleryCover;
     sub: any;
-    columnsNumber: number = 3;
-    columns: Array<number>;
 
     authSub;
 
     constructor(http: Http, router: Router, private route: ActivatedRoute,
                 private backend: BackendService, private af: AngularFire, 
                 private sanitizer:DomSanitizer){
-        this.router = router;
-        this.http = http;
     }
 
     ngOnInit() {
         let loader = document.getElementById("dr-loader");
         loader.style.opacity = "0";
+        this.galleryCover= <HTMLImageElement>document.getElementById("dr-gallery-cover");
 
         this.authSub = this.af.auth.subscribe(user => {
             this.getGalleries();
@@ -68,12 +87,51 @@ export class GalleriesComponent {
             this.galleries = res.json();
             this.backend.getQueryToken().then(queryToken => {
                 this.galleries.forEach(g=> {
-                    g.url = this.sanitizer.bypassSecurityTrustStyle("url(/api/gallery/"+g.Id+"/cover?token="+queryToken);
+                    g.url = this.sanitizer.bypassSecurityTrustResourceUrl("/api/gallery/"+g.Id+"/cover?token="+queryToken);
                 });
             });
 
+            this.selectedGalleryIndex = 0;
+
+            if (this.galleries.length >0)
+                this.selectedGallery = this.galleries[this.selectedGalleryIndex];
+
         });
     }
+    loadPhoto(gallery){
+        this.galleryCover.src = "";
+        //this.photoLoader.style.opacity = "1";
+        this.galleryCover.style.opacity = "0";
 
+        this.backend.getQueryToken().then(token=>{
+            this.galleryCover.src = "/api/gallery/"+ gallery.Id+"/cover?token="+token;
+            this.galleryCover.addEventListener('load', ()=>{
+                //this.photoLoader.style.opacity = "0";
+                this.galleryCover.style.opacity = "1";
+            })
+        });
+    }
+    
+
+    nextPhoto(){
+        if (this.selectedGalleryIndex == (this.galleries.length-1)) {
+            this.selectedGalleryIndex = 0;
+        }else{
+            this.selectedGalleryIndex++;
+        }
+        this.selectedGallery = this.galleries[this.selectedGalleryIndex];
+        this.loadPhoto(this.selectedGallery);
+
+    }
+
+    prevPhoto(){
+        if (this.selectedGalleryIndex == 0) {
+            this.selectedGalleryIndex = this.galleries.length -1;
+        }else{
+            this.selectedGalleryIndex--;
+        }
+        this.selectedGallery = this.galleries[this.selectedGalleryIndex];
+        this.loadPhoto(this.selectedGallery);
+    }
 
 }

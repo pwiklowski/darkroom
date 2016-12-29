@@ -3,13 +3,13 @@
         <img id="dr-header-gh" src="/assets/img/github.png">
     </a>
 
-    <div *ngFor="let g of galleries; let i = index"  class="dr-gallery-cover-container" id="{{g.Id}}"  (click)="hideCover(g.Id)">
-        <div class="dr-gallery-cover-container" [style.background-image]="g.url" >
-            <div class="dr-gallery-name"></div>
-            <div class="dr-gallery-name-text"> {{ g.Name }}</div>
-            <div class="dr-gallery-comment">{{ g.Comment }}</div>
-        </div>
+    <div class="dr-gallery-cover-container">
+        <div class="dr-gallery-name-text"> {{ selectedGallery.Name }}</div>
+        <div class="dr-gallery-comment">{{ selectedGallery.Comment }}</div>
+        <img id="dr-gallery-cover" (click)="nextPhoto()">
     </div>
+    <mdl-icon (click)="prevPhoto()"  class="dr-left-icon">keyboard_arrow_left</mdl-icon>
+    <mdl-icon (click)="nextPhoto()"  class="dr-right-icon">keyboard_arrow_right</mdl-icon>
 
     <div *ngIf="galleries.length == 0" class="dr-centered-error">
         No galleries found
