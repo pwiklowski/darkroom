@@ -7,6 +7,7 @@
         <img id="dr-gallery-cover" (click)="nextPhoto()">
         <div class="dr-gallery-name-text"> {{ selectedGallery.Name }}</div>
         <div class="dr-gallery-comment">{{ selectedGallery.Comment }}</div>
+        <div id="dr-gallery-cover-loader"></div>
     </div>
     <mdl-icon (click)="prevPhoto()"  class="dr-left-icon">keyboard_arrow_left</mdl-icon>
     <mdl-icon (click)="nextPhoto()"  class="dr-right-icon">keyboard_arrow_right</mdl-icon>

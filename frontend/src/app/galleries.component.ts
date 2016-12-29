@@ -39,6 +39,18 @@ import {DomSanitizer} from '@angular/platform-browser';
             right: 10px;
             cursor: pointer;
         }
+        #dr-gallery-cover-loader{
+            z-index: 1000;
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform: translate(50%,50%);
+            background-image: url(/assets/img/stub2.gif);
+            pointer-events: none;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 60%;
+        }
         #dr-gallery-cover-container{
             width: 100%;
             height: 100%;
@@ -55,6 +67,7 @@ export class GalleriesComponent {
     selectedGalleryIndex = 0;
     galleryCover;
     galleryCoverContainer;
+    galleryCoverLoader;
     sub: any;
 
     authSub;
@@ -68,6 +81,7 @@ export class GalleriesComponent {
         let loader = document.getElementById("dr-loader");
         loader.style.opacity = "0";
         this.galleryCover= <HTMLImageElement>document.getElementById("dr-gallery-cover");
+        this.galleryCoverLoader = <HTMLImageElement>document.getElementById("dr-gallery-cover-loader");
         this.galleryCoverContainer = <HTMLImageElement>document.getElementById("dr-gallery-cover-container");
 
         this.authSub = this.af.auth.subscribe(user => {
@@ -107,31 +121,27 @@ export class GalleriesComponent {
     }
     loadPhoto(gallery){
         this.galleryCover.src = "";
-        //this.photoLoader.style.opacity = "1";
+        this.galleryCoverLoader.style.opacity = "1";
         this.galleryCover.style.opacity = "0";
 
         this.backend.getQueryToken().then(token=>{
             this.galleryCover.src = "/api/gallery/"+ gallery.Id+"/cover?token="+token;
             this.galleryCover.addEventListener('load', ()=>{
-                //this.photoLoader.style.opacity = "0";
                 this.scalePhoto();
+                this.galleryCoverLoader.style.opacity = "0";
                 this.galleryCover.style.opacity = "1";
             })
         });
     }
 
     scalePhoto(){
-        if(this.galleryCover.width <= this.galleryCoverContainer.offsetWidth)
-        {
+        if(this.galleryCover.width <= this.galleryCoverContainer.offsetWidth) {
             this.galleryCover.style.width = this.galleryCoverContainer.offsetWidth+"px";
             this.galleryCover.style.height = "auto";
-        }
-        else
-        {
+        } else {
             this.galleryCover.style.height= this.galleryCoverContainer.offsetHeight +"px";
             this.galleryCover.style.width = "auto";
         }
-
     }
     
 
