@@ -3,10 +3,10 @@
         <img id="dr-header-gh" src="/assets/img/github.png">
     </a>
 
-    <div class="dr-gallery-cover-container">
+    <div id="dr-gallery-cover-container" (window:resize)="scalePhoto()">
+        <img id="dr-gallery-cover" (click)="nextPhoto()">
         <div class="dr-gallery-name-text"> {{ selectedGallery.Name }}</div>
         <div class="dr-gallery-comment">{{ selectedGallery.Comment }}</div>
-        <img id="dr-gallery-cover" (click)="nextPhoto()">
     </div>
     <mdl-icon (click)="prevPhoto()"  class="dr-left-icon">keyboard_arrow_left</mdl-icon>
     <mdl-icon (click)="nextPhoto()"  class="dr-right-icon">keyboard_arrow_right</mdl-icon>

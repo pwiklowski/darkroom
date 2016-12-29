@@ -12,8 +12,6 @@ import {DomSanitizer} from '@angular/platform-browser';
     templateUrl: './galleries.template.html',
     styles:[`
         #dr-gallery-cover{
-            max-width: 95%;
-            max-height: 98%;;
             transform: translate(-50%,-50%);
             top: 50%;
             left: 50%;
@@ -41,6 +39,13 @@ import {DomSanitizer} from '@angular/platform-browser';
             right: 10px;
             cursor: pointer;
         }
+        #dr-gallery-cover-container{
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+        }
     `]
 })
 
@@ -49,6 +54,7 @@ export class GalleriesComponent {
     selectedGallery: Gallery = new Gallery();
     selectedGalleryIndex = 0;
     galleryCover;
+    galleryCoverContainer;
     sub: any;
 
     authSub;
@@ -62,6 +68,7 @@ export class GalleriesComponent {
         let loader = document.getElementById("dr-loader");
         loader.style.opacity = "0";
         this.galleryCover= <HTMLImageElement>document.getElementById("dr-gallery-cover");
+        this.galleryCoverContainer = <HTMLImageElement>document.getElementById("dr-gallery-cover-container");
 
         this.authSub = this.af.auth.subscribe(user => {
             this.getGalleries();
@@ -107,9 +114,24 @@ export class GalleriesComponent {
             this.galleryCover.src = "/api/gallery/"+ gallery.Id+"/cover?token="+token;
             this.galleryCover.addEventListener('load', ()=>{
                 //this.photoLoader.style.opacity = "0";
+                this.scalePhoto();
                 this.galleryCover.style.opacity = "1";
             })
         });
+    }
+
+    scalePhoto(){
+        if(this.galleryCover.width <= this.galleryCoverContainer.offsetWidth)
+        {
+            this.galleryCover.style.width = this.galleryCoverContainer.offsetWidth+"px";
+            this.galleryCover.style.height = "auto";
+        }
+        else
+        {
+            this.galleryCover.style.height= this.galleryCoverContainer.offsetHeight +"px";
+            this.galleryCover.style.width = "auto";
+        }
+
     }
     
 
