@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, HostListener } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -171,5 +171,16 @@ export class GalleriesComponent {
         this.selectedGallery = this.galleries[this.selectedGalleryIndex];
         this.loadPhoto(this.selectedGallery);
     }
+
+    @HostListener('window:mousewheel', ['$event'])
+    onScrollEvent(event: any) {
+        if (event.wheelDelta  < 0){
+            this.nextPhoto();
+        }else{
+            this.prevPhoto();
+        }
+        return false;
+    }
+
 
 }
