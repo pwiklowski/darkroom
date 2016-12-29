@@ -58,6 +58,16 @@ import {DomSanitizer} from '@angular/platform-browser';
             background-repeat: no-repeat;
             background-position: 50% 50%;
         }
+        .dr-gallery-indicator{
+            font-size: 14px;
+        }
+        #dr-gallery-indicator{
+            z-index: 100;
+            position: absolute;
+            left: 50%;
+            top: 10px;
+            transform: translateX(-50%);
+        }
     `]
 })
 

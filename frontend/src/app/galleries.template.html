@@ -9,6 +9,13 @@
         <div class="dr-gallery-comment">{{ selectedGallery.Comment }}</div>
         <div id="dr-gallery-cover-loader"></div>
     </div>
+    <div id="dr-gallery-indicator">
+        <template ngFor let-g [ngForOf]="galleries" let-i="index">
+            <mdl-icon class="dr-gallery-indicator" *ngIf="g==selectedGallery">radio_button_checked</mdl-icon>
+            <mdl-icon class="dr-gallery-indicator" *ngIf="g!=selectedGallery">radio_button_unchecked</mdl-icon>
+        </template>
+
+    </div>
     <mdl-icon (click)="prevPhoto()"  class="dr-left-icon">keyboard_arrow_left</mdl-icon>
     <mdl-icon (click)="nextPhoto()"  class="dr-right-icon">keyboard_arrow_right</mdl-icon>
 
