@@ -69,6 +69,7 @@ export class GalleriesComponent {
     galleryCoverContainer;
     galleryCoverLoader;
     sub: any;
+    resizeEvent;
 
     authSub;
 
@@ -114,8 +115,10 @@ export class GalleriesComponent {
 
             this.selectedGalleryIndex = 0;
 
-            if (this.galleries.length >0)
+            if (this.galleries.length >0){
                 this.selectedGallery = this.galleries[this.selectedGalleryIndex];
+                this.loadPhoto(this.selectedGallery);
+            }
 
         });
     }
@@ -135,13 +138,20 @@ export class GalleriesComponent {
     }
 
     scalePhoto(){
-        if(this.galleryCover.width <= this.galleryCoverContainer.offsetWidth) {
-            this.galleryCover.style.width = this.galleryCoverContainer.offsetWidth+"px";
-            this.galleryCover.style.height = "auto";
-        } else {
-            this.galleryCover.style.height= this.galleryCoverContainer.offsetHeight +"px";
-            this.galleryCover.style.width = "auto";
-        }
+        this.galleryCoverLoader.style.opacity = "1";
+        this.galleryCover.style.opacity = "0";
+        clearTimeout(this.resizeEvent);
+        this.resizeEvent = setTimeout(()=>{
+            if(this.galleryCover.width <= this.galleryCoverContainer.offsetWidth) {
+                this.galleryCover.style.width = this.galleryCoverContainer.offsetWidth+"px";
+                this.galleryCover.style.height = "auto";
+            } else {
+                this.galleryCover.style.height= this.galleryCoverContainer.offsetHeight +"px";
+                this.galleryCover.style.width = "auto";
+            }
+            this.galleryCoverLoader.style.opacity = "0";
+            this.galleryCover.style.opacity = "1";
+        },300);
     }
     
 
