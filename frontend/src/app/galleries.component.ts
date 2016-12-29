@@ -138,20 +138,16 @@ export class GalleriesComponent {
     }
 
     scalePhoto(){
-        this.galleryCoverLoader.style.opacity = "1";
-        this.galleryCover.style.opacity = "0";
-        clearTimeout(this.resizeEvent);
-        this.resizeEvent = setTimeout(()=>{
-            if(this.galleryCover.width <= this.galleryCoverContainer.offsetWidth) {
-                this.galleryCover.style.width = this.galleryCoverContainer.offsetWidth+"px";
-                this.galleryCover.style.height = "auto";
-            } else {
-                this.galleryCover.style.height= this.galleryCoverContainer.offsetHeight +"px";
-                this.galleryCover.style.width = "auto";
-            }
-            this.galleryCoverLoader.style.opacity = "0";
-            this.galleryCover.style.opacity = "1";
-        },300);
+        let containerAR = this.galleryCoverContainer.offsetWidth / this.galleryCoverContainer.offsetHeight;
+        let coverAR = this.galleryCover.naturalWidth / this.galleryCover.naturalHeight;
+
+        if (containerAR > coverAR ){
+            this.galleryCover.style.width = this.galleryCoverContainer.offsetWidth+"px";
+            this.galleryCover.style.height = "auto";
+        } else {
+            this.galleryCover.style.height= this.galleryCoverContainer.offsetHeight +"px";
+            this.galleryCover.style.width = "auto";
+        }
     }
     
 
