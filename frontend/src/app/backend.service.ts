@@ -79,6 +79,7 @@ export class BackendService{
         });
     }
     logout(){
+        this.router.navigate(["/"]);
         this.af.auth.logout();
         this.user = undefined;
         this.isLogged = false;
