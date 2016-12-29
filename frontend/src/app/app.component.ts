@@ -153,6 +153,7 @@ import { AngularFire, AuthProviders } from 'angularfire2';
     height: 100%;
     background-color:black;
     transition: opacity 200ms ease-in-out;
+    opacity: 0;
 }
 #dr-drawer-buttons{
     position: absolute;
