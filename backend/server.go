@@ -165,7 +165,7 @@ func getTokenIfValid(t string, collection *mgo.Collection) (Token, error) {
 
 func main() {
 	firebase.InitializeApp(&firebase.Options{
-		ServiceAccountPath: "cred.json",
+		ServiceAccountPath: "/cred.json",
 	})
 
 	auth, _ := firebase.GetAuth()
@@ -175,9 +175,10 @@ func main() {
 	}
 	defer session.Close()
 
-	photoLocation := "/hdd/temp/dark_temp"
+	photoLocation := "/darkroom_photos"
 
-	db := session.DB("test1")
+	db := session.DB("darkroom")
+
 	photosDb := db.C("photos")
 	usersDb := db.C("users")
 	tokensDb := db.C("tokens")

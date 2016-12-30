@@ -3,6 +3,9 @@ export class Gallery{
     Name: string;
     Comment: string;
     UsersIDs: Array<string> = [];
+
+    url;
+    coverUrl;
 }
 
 export class Photo{

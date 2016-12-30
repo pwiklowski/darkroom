@@ -1,0 +1,10 @@
+FROM golang:1.8
+ADD backend/server /server
+ADD backend/cred.json /cred.json
+EXPOSE 11001
+
+RUN apt-get update
+RUN apt-get install imagemagick -y
+
+
+ENTRYPOINT ["/server"]
