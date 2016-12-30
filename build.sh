@@ -9,4 +9,4 @@ cd ../backend
 go build server.go
 cd ..
 
-docker-compose build
+docker-compose build --no-cache
