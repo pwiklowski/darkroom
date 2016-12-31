@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Gallery, Photo } from './models.ts';
 import {BackendService} from './backend.service';
+import { AngularFire, AuthProviders } from 'angularfire2';
 
 @Component({
     selector: 'my-app',
@@ -129,36 +130,45 @@ export class GalleryComponent {
     selectedPhoto: number = 0;
     editedGalleryId: string;
 
+    galleryId;
+
     photoUrl;
     photo: HTMLImageElement;
     photoLoader: HTMLElement;
     photoContainer: HTMLElement;
     columnContainer: HTMLElement;
 
+    authSub;
+
     ngOnInit() {
-        this.sub = this.route.params.subscribe(params => {
-            this.gallery = new Gallery();
-            let id = params['id'];
-            
-            this.getPhotos(id);
-            this.getGallery(id);
-
-        });
-        let loader = document.getElementById("dr-loader");
-        loader.style.opacity = "0";
-
         this.photo = <HTMLImageElement>document.getElementById("dr-photo");
         this.photoLoader = <HTMLElement>document.getElementById("dr-photo-loader");
         this.photoContainer = <HTMLElement>document.getElementById("dr-photo-container");
         this.columnContainer =document.getElementById("dr-column-container");
         this.onResize();
+        this.sub = this.route.params.subscribe(params => {
+            this.gallery = new Gallery();
+            this.galleryId = params['id'];
+            
+            this.getPhotos(this.galleryId);
+            this.getGallery(this.galleryId);
+
+        });
+        this.authSub = this.af.auth.subscribe(user => {
+            this.getPhotos(this.galleryId);
+            this.getGallery(this.galleryId);
+        });
+        let loader = document.getElementById("dr-loader");
+        loader.style.opacity = "0";
+
 
     }
     ngOnDestroy() {
         this.sub.unsubscribe();
     }
 
-    constructor(http: Http, private backend: BackendService, private router: Router, private route: ActivatedRoute, private sanitizer:DomSanitizer){
+    constructor(private backend: BackendService, private router: Router, private route: ActivatedRoute,
+                private af: AngularFire, private sanitizer:DomSanitizer){
     }
     
     getPhotos(galleyId){
@@ -171,7 +181,9 @@ export class GalleryComponent {
             if (this.photos.length > 0){
                 setTimeout(()=>this.animateThumbnails(), 200);
             }
-        });
+        }).catch(()=>{
+            console.log("error");
+        })
     }
 
     animateThumbnails(){
