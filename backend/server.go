@@ -199,7 +199,9 @@ func main() {
 
 		now := time.Now()
 		token := Token{}
-		token.ValidTo = now.Unix() + 120
+		token.ValidTo = now.Unix() + 30
+		token.ExpireIn = 30
+
 		token.Token = generateToken(48)
 		token.UserID = uid
 		tokensDb.Insert(&token)
