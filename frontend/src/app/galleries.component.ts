@@ -130,6 +130,9 @@ export class GalleriesComponent {
                 this.selectedGallery = this.galleries[this.selectedGalleryIndex];
                 this.loadPhoto(this.selectedGallery);
             }else{
+                this.selectedGallery = undefined;
+                this.galleryCover.src = "";
+                this.galleryCover.style.opacity = "0";
                 this.galleryCoverLoader.style.opacity = "0";
             }
 
