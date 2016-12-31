@@ -466,6 +466,8 @@ export class AppComponent {
             this.backend.post("/api/me", u).then();
             
             this.router.navigate(['/galleries']);
+            this.loginModal.close();
+            this.closeDrawer();
         }
     }
 
