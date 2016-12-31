@@ -113,7 +113,12 @@ func (p *Photo) convertPhoto() {
 	resolutions := []string{"320", "640", "1280", "1920", "3840"}
 
 	for _, res := range resolutions {
-		cmd := exec.Command("convert", p.getLocation(), "-quality", "90", "-resize", res, p.Location+res+"_"+p.Name)
+		quality := "90"
+		if res == "320" {
+			quality = "50"
+		}
+
+		cmd := exec.Command("convert", p.getLocation(), "-quality", quality, "-resize", res, p.Location+res+"_"+p.Name)
 		cmd.Start()
 		cmd.Wait()
 	}
