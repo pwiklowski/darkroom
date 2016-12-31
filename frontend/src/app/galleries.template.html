@@ -5,8 +5,8 @@
 
     <div id="dr-gallery-cover-container" (window:resize)="scalePhoto()">
         <img id="dr-gallery-cover" (click)="nextPhoto()">
-        <div class="dr-gallery-name-text"> {{ selectedGallery.Name }}</div>
-        <div class="dr-gallery-comment">{{ selectedGallery.Comment }}</div>
+        <div class="dr-gallery-name-text"> {{ selectedGallery?.Name }}</div>
+        <div class="dr-gallery-comment">{{ selectedGallery?.Comment }}</div>
         <div id="dr-gallery-cover-loader"></div>
     </div>
     <div id="dr-gallery-indicator">
