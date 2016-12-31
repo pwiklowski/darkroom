@@ -187,12 +187,14 @@ export class GalleriesComponent {
 
     @HostListener('window:mousewheel', ['$event'])
     onScrollEvent(event: any) {
-        if (event.wheelDelta  < 0){
-            this.nextPhoto();
-        }else{
-            this.prevPhoto();
+        if (this.galleries.length > 1){
+            if (event.wheelDelta  < 0){
+                this.nextPhoto();
+            }else{
+                this.prevPhoto();
+            }
+            return false;
         }
-        return false;
     }
 
 

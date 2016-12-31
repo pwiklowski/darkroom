@@ -16,8 +16,8 @@
         </template>
 
     </div>
-    <mdl-icon (click)="prevPhoto()"  class="dr-left-icon">keyboard_arrow_left</mdl-icon>
-    <mdl-icon (click)="nextPhoto()"  class="dr-right-icon">keyboard_arrow_right</mdl-icon>
+    <mdl-icon *ngIf="galleries.length > 1" (click)="prevPhoto()"  class="dr-left-icon">keyboard_arrow_left</mdl-icon>
+    <mdl-icon *ngIf="galleries.length > 1" (click)="nextPhoto()"  class="dr-right-icon">keyboard_arrow_right</mdl-icon>
 
     <div *ngIf="galleries.length == 0" class="dr-centered-error">
         No galleries found
