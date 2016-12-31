@@ -110,7 +110,7 @@ func (p *Photo) convertPhoto() {
 
 	fmt.Println("convertPhoto " + p.getLocation())
 
-	resolutions := []string{"320", "640", "1280", "1920", "3840"}
+	resolutions := []string{"320", "640", "1280", "1920"}
 
 	for _, res := range resolutions {
 		quality := "90"
