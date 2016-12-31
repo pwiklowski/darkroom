@@ -457,35 +457,31 @@ export class AppComponent {
         }
     }
 
-    handleLogin(user){
-        if(user) {
-            let userData = this.backend.getUserData(user);
-            console.log(userData);
+    handleLogin(userData){
+        if(userData) {
             let u = {
                 DisplayName: userData.displayName,
                 PhotoUrl: userData.photoURL
             };
-            
             this.backend.post("/api/me", u).then();
             
-            console.log("redirect to galleries");
             this.router.navigate(['/galleries']);
         }
     }
 
     loginGoogle() {
         this.backend.login(AuthProviders.Google).then(user=>{
-            this.handleLogin(user);
+            this.handleLogin(user.auth);
         });
     }
     loginTwitter() {
         this.backend.login(AuthProviders.Twitter).then(user=>{
-            this.handleLogin(user);
+            this.handleLogin(user.auth);
         });
     }
     loginFacebook() {
         this.backend.login(AuthProviders.Facebook).then(user=>{
-            this.handleLogin(user);
+            this.handleLogin(user.auth);
         });
     }
     
