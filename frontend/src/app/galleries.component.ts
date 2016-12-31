@@ -50,6 +50,7 @@ import {DomSanitizer} from '@angular/platform-browser';
             background-position: center;
             background-repeat: no-repeat;
             background-size: 60%;
+            transition: opacity 500ms ease-in-out;
         }
         #dr-gallery-cover-container{
             width: 100%;
@@ -128,6 +129,8 @@ export class GalleriesComponent {
             if (this.galleries.length >0){
                 this.selectedGallery = this.galleries[this.selectedGalleryIndex];
                 this.loadPhoto(this.selectedGallery);
+            }else{
+                this.galleryCoverLoader.style.opacity = "0";
             }
 
         });
