@@ -52,10 +52,10 @@ import { AngularFire, AuthProviders } from 'angularfire2';
 
     <div class="dr-drawer-title" (click)="showGalleries()">Galleries</div>
 
-    <div *ngFor="let g of galleries" class="dr-drawer-name" (click)="openGallery(g.Id)" >
+    <div *ngFor="let g of backend.getGalleries()" class="dr-drawer-name" (click)="openGallery(g.Id)" >
     {{ g.Name }}
     </div>
-    <div *ngIf="galleries.length == 0" class="dr-drawer-name">
+    <div *ngIf="backend.getGalleries().length == 0" class="dr-drawer-name">
         No galleries 
     </div>
 </div>
@@ -230,7 +230,6 @@ import { AngularFire, AuthProviders } from 'angularfire2';
 
 export class AppComponent {
     viewContainerRef;
-    galleries: Array<Gallery> = new Array<Gallery>();
     @ViewChild('drawer') drawer;
     @ViewChild('drawerClose') drawerClose;
     @ViewChild('drawerCloseFill') drawerCloseFill;
@@ -265,12 +264,6 @@ export class AppComponent {
             console.log("is logged " + this.backend.isUserLogged());
             this.url = event.url;
         });
-
-        this.af.auth.subscribe(user => {
-            console.log("App user =", user);
-            this.getGalleries();
-        });
-        this.getGalleries();
     }
 
 
@@ -309,11 +302,6 @@ export class AppComponent {
     openGallery(galleryId){
         this.router.navigate(['/gallery', galleryId]);
         this.closeDrawer();
-    }
-    getGalleries(){
-        this.backend.get("/api/galleries").then(res => {
-            this.galleries = res.json();
-        });
     }
 
     show(el){
@@ -374,7 +362,7 @@ export class AppComponent {
         let r = this.dialogService.confirm('Are you sure ?', 'No', 'Yes');
         r.subscribe(()=>{
                 this.backend.delete("/api/gallery/"+this.getGalleryId()).then(res =>{
-                    this.getGalleries();
+                    this.backend.refreshGalleries();
                     this.router.navigate(['/galleries']);
                 });
             },

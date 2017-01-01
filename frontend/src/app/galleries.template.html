@@ -10,16 +10,16 @@
         <div id="dr-gallery-cover-loader"></div>
     </div>
     <div id="dr-gallery-indicator">
-        <template ngFor let-g [ngForOf]="galleries" let-i="index">
+        <template ngFor let-g [ngForOf]="backend.getGalleries()" let-i="index">
             <mdl-icon class="dr-gallery-indicator" *ngIf="g==selectedGallery">radio_button_checked</mdl-icon>
             <mdl-icon class="dr-gallery-indicator" *ngIf="g!=selectedGallery">radio_button_unchecked</mdl-icon>
         </template>
 
     </div>
-    <mdl-icon *ngIf="galleries.length > 1" (click)="prevPhoto()"  class="dr-left-icon">keyboard_arrow_left</mdl-icon>
-    <mdl-icon *ngIf="galleries.length > 1" (click)="nextPhoto()"  class="dr-right-icon">keyboard_arrow_right</mdl-icon>
+    <mdl-icon *ngIf="backend.getGalleries().length > 1" (click)="prevPhoto()"  class="dr-left-icon">keyboard_arrow_left</mdl-icon>
+    <mdl-icon *ngIf="backend.getGalleries().length > 1" (click)="nextPhoto()"  class="dr-right-icon">keyboard_arrow_right</mdl-icon>
 
-    <div *ngIf="galleries.length == 0" class="dr-centered-error">
+    <div *ngIf="backend.getGalleries().length == 0" class="dr-centered-error">
         No galleries found
     </div>
 

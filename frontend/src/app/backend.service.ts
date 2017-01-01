@@ -1,19 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { AngularFire, AuthProviders } from 'angularfire2';
-import {Observable} from 'rxjs/Rx';
+import {Observable, BehaviorSubject} from 'rxjs/Rx';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Rx';
-
+import { Gallery } from './models';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable()
 export class BackendService{
+    galleries: BehaviorSubject<Array<Gallery>> = new BehaviorSubject(new Array<Gallery>());
+    galleriesData = Array<Gallery>();
     user;
     superuser:boolean;
     isLogged = false;
     tokenData;
 
-    constructor(private http: Http, public af: AngularFire, private router: Router){
+    constructor(private http: Http, public af: AngularFire, private sanitizer: DomSanitizer, private router: Router){
         this.af.auth.subscribe(user => {
             if(user) {
                 this.isLogged = true;
@@ -22,6 +25,29 @@ export class BackendService{
                     this.superuser = user.json().IsSuperuser;
                 });
             }
+            this.refreshGalleries();
+        });
+
+        this.galleries.subscribe((galleries)=>{
+            console.log("new galleries data", galleries);
+            this.galleriesData = galleries;
+        });
+
+    }
+
+    getGalleries(){
+        return this.galleriesData;
+    }
+    refreshGalleries(){
+        console.log("refreshGalleries");
+        this.get("/api/galleries").then(res => {
+            let galleries = res.json();
+            this.getQueryToken().then(queryToken => {
+                galleries.forEach(g=> {
+                    g.url = this.sanitizer.bypassSecurityTrustResourceUrl("/api/gallery/"+g.Id+"/cover?token="+queryToken);
+                });
+            });
+            this.galleries.next(galleries);
         });
     }
 

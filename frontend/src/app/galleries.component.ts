@@ -73,7 +73,6 @@ import {DomSanitizer} from '@angular/platform-browser';
 })
 
 export class GalleriesComponent {
-    galleries: Array<Gallery> = new Array<Gallery>();
     selectedGallery: Gallery = new Gallery();
     selectedGalleryIndex = 0;
     galleryCover;
@@ -82,7 +81,7 @@ export class GalleriesComponent {
     sub: any;
     resizeEvent;
 
-    authSub;
+    galleriesSub;
 
     constructor(http: Http, router: Router, private route: ActivatedRoute,
                 private backend: BackendService, private af: AngularFire, 
@@ -96,47 +95,26 @@ export class GalleriesComponent {
         this.galleryCoverLoader = <HTMLImageElement>document.getElementById("dr-gallery-cover-loader");
         this.galleryCoverContainer = <HTMLImageElement>document.getElementById("dr-gallery-cover-container");
 
-        this.authSub = this.af.auth.subscribe(user => {
-            this.getGalleries();
+        this.galleriesSub = this.backend.galleries.subscribe((galleries) => {
+            this.initGalleries();
         });
-        this.getGalleries();
     }
     ngOnDestroy(){
-        this.authSub.unsubscribe();
+        this.galleriesSub.unsubscribe();
     }
 
-    hideCover(c){
-        if (c != this.galleries[0].Id){
-            let cover = document.getElementById(c);
-            cover.style.opacity = "0";
-            setTimeout(()=> cover.style.visibility= "hidden", 500);
+    initGalleries(){
+        this.selectedGalleryIndex = 0;
+
+        if (this.backend.getGalleries().length >0){
+            this.selectedGallery = this.backend.getGalleries()[this.selectedGalleryIndex];
+            this.loadPhoto(this.selectedGallery);
         }else{
-
+            this.selectedGallery = undefined;
+            this.galleryCover.src = "";
+            this.galleryCover.style.opacity = "0";
+            this.galleryCoverLoader.style.opacity = "0";
         }
-    }
-
-    getGalleries(){
-        this.backend.get("/api/galleries").then(res => {
-            this.galleries = res.json();
-            this.backend.getQueryToken().then(queryToken => {
-                this.galleries.forEach(g=> {
-                    g.url = this.sanitizer.bypassSecurityTrustResourceUrl("/api/gallery/"+g.Id+"/cover?token="+queryToken);
-                });
-            });
-
-            this.selectedGalleryIndex = 0;
-
-            if (this.galleries.length >0){
-                this.selectedGallery = this.galleries[this.selectedGalleryIndex];
-                this.loadPhoto(this.selectedGallery);
-            }else{
-                this.selectedGallery = undefined;
-                this.galleryCover.src = "";
-                this.galleryCover.style.opacity = "0";
-                this.galleryCoverLoader.style.opacity = "0";
-            }
-
-        });
     }
     loadPhoto(gallery){
         this.galleryCover.src = "";
@@ -168,29 +146,29 @@ export class GalleriesComponent {
     
 
     nextPhoto(){
-        if (this.selectedGalleryIndex == (this.galleries.length-1)) {
+        if (this.selectedGalleryIndex == (this.backend.getGalleries().length-1)) {
             this.selectedGalleryIndex = 0;
         }else{
             this.selectedGalleryIndex++;
         }
-        this.selectedGallery = this.galleries[this.selectedGalleryIndex];
+        this.selectedGallery = this.backend.getGalleries()[this.selectedGalleryIndex];
         this.loadPhoto(this.selectedGallery);
 
     }
 
     prevPhoto(){
         if (this.selectedGalleryIndex == 0) {
-            this.selectedGalleryIndex = this.galleries.length -1;
+            this.selectedGalleryIndex = this.backend.getGalleries().length -1;
         }else{
             this.selectedGalleryIndex--;
         }
-        this.selectedGallery = this.galleries[this.selectedGalleryIndex];
+        this.selectedGallery = this.backend.getGalleries()[this.selectedGalleryIndex];
         this.loadPhoto(this.selectedGallery);
     }
 
     @HostListener('window:mousewheel', ['$event'])
     onScrollEvent(event: any) {
-        if (this.galleries.length > 1){
+        if (this.backend.getGalleries().length > 1){
             if (event.wheelDelta  < 0){
                 this.nextPhoto();
             }else{
