@@ -6,6 +6,9 @@
     <mdl-icon class="dr-close-icon" (click)="hidePhoto()">close</mdl-icon>
 </div>
 
+<div *ngIf="error" class="dr-centered-error">
+    {{error}}
+</div>
 
 <div id="dr-gallery">
     <div class="dr-gallery-background-container"></div>

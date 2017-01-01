@@ -113,6 +113,14 @@ import { AngularFire, AuthProviders } from 'angularfire2';
     background-repeat: no-repeat;
     background-size: 60%;
 }
+    .dr-centered-error{
+        font-size: 30px;
+        left: 50%;
+        top: 50%;
+        position: absolute;
+        transform: translate(-50%,-50%);
+
+    }
     
     `]
 
@@ -139,6 +147,7 @@ export class GalleryComponent {
     columnContainer: HTMLElement;
 
     authSub;
+    error;
 
     ngOnInit() {
         this.photo = <HTMLImageElement>document.getElementById("dr-photo");
