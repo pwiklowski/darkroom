@@ -146,7 +146,7 @@ export class GalleryComponent {
     photoContainer: HTMLElement;
     columnContainer: HTMLElement;
 
-    authSub;
+    galleriesSub;
     error;
 
     ngOnInit() {
@@ -163,7 +163,7 @@ export class GalleryComponent {
             this.getGallery(this.galleryId);
 
         });
-        this.authSub = this.af.auth.subscribe(user => {
+        this.galleriesSub = this.backend.galleries.subscribe(galleries => {
             this.getPhotos(this.galleryId);
             this.getGallery(this.galleryId);
         });
@@ -174,6 +174,7 @@ export class GalleryComponent {
     }
     ngOnDestroy() {
         this.sub.unsubscribe();
+        this.galleriesSub.unsubscribe();
     }
 
     constructor(private backend: BackendService, private router: Router, private route: ActivatedRoute,
