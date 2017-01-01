@@ -191,8 +191,10 @@ export class GalleryComponent {
             if (this.photos.length > 0){
                 setTimeout(()=>this.animateThumbnails(), 200);
             }
+            this.error = undefined;
         }).catch(()=>{
             console.log("error");
+            this.error = "Not found";
         })
     }
 
@@ -210,6 +212,8 @@ export class GalleryComponent {
                     photo.addEventListener('load',()=>{
                         photo.style.opacity = "1";
                     });
+                    console.log("p",photo.complete);
+
 
                 }, timeout*100);
                 timeout++;
