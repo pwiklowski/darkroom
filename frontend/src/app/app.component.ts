@@ -129,7 +129,7 @@ import { AngularFire, AuthProviders } from 'angularfire2';
         <button mdl-button mdl-ripple (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
             Remove all
         </button>
-        <button mdl-button (click)="getGalleries(); hide(editGalleryModal)" mdl-ripple>Close</button>
+        <button mdl-button (click)="backend.refreshGalleries(); hide(editGalleryModal)" mdl-ripple>Close</button>
     </div>
     </div>
 </div>
