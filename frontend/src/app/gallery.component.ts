@@ -199,22 +199,19 @@ export class GalleryComponent {
     }
 
     animateThumbnails(){
-        let timeout = 0;
+        let timeout = 1;
         this.backend.getQueryToken().then(token=>{
             for(let p of this.photos){
                 let photoId = p.Id;
                 let photo = document.getElementById("dr-p-" + photoId);
+                photo.url = "";
 
                 photo.style.opacity = "0.1" ;
+                photo.addEventListener('load',()=>{
+                    photo.style.opacity = "1";
+                });
                 setTimeout(() => {
-                    photo.style.opacity = "0.1" ;
                     p.url = "/api/photo/"+p.Id+"/320?token="+token; 
-                    photo.addEventListener('load',()=>{
-                        photo.style.opacity = "1";
-                    });
-                    console.log("p",photo.complete);
-
-
                 }, timeout*100);
                 timeout++;
             }
