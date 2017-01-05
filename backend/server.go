@@ -169,8 +169,11 @@ func getTokenIfValid(t string, collection *mgo.Collection) (Token, error) {
 }
 
 func main() {
+	firebaseConfig := os.Getenv("FIREBASE_CONFIG")
+	photoLocation := os.Getenv("PHOTOS_LOCATION")
+
 	firebase.InitializeApp(&firebase.Options{
-		ServiceAccountPath: "/cred.json",
+		ServiceAccountPath: firebaseConfig,
 	})
 
 	auth, _ := firebase.GetAuth()
@@ -179,8 +182,6 @@ func main() {
 		panic(err)
 	}
 	defer session.Close()
-
-	photoLocation := "/darkroom_photos"
 
 	db := session.DB("darkroom")
 

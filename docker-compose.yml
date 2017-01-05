@@ -4,14 +4,19 @@ services:
   mongo:  
     image: mvertes/alpine-mongo:3.2.3
     volumes:
-      - /home/pawwik/dev/darkroom_go/mydatabase:/data/db
-      - /hdd/temp/dark_temp/mydatabase:/darkroom_photos
+      - $DATABASE_LOCATION:/data/db
+
     ports:
       - "27017:27017"
     command: mongod --smallfiles
     network_mode: "host"
     
   backend:
+    environment:
+      - FIREBASE_CONFIG=$FIREBASE_CONFIG
+      - PHOTOS_LOCATION=$PHOTOS_LOCATION
+    volumes:
+      - $PHOTOS_LOCATION:$PHOTOS_LOCATION
     network_mode: "host"
     ports:
       - "11001:11001"
@@ -23,4 +28,4 @@ services:
     network_mode: "host"
     build:
       context: .
-      dockerfile: Dockerfile-webui
+      dockerfile: Dockerfile-webui 
