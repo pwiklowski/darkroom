@@ -204,7 +204,7 @@ export class GalleryComponent {
             for(let p of this.photos){
                 let photoId = p.Id;
                 let photo = document.getElementById("dr-p-" + photoId);
-                photo.url = "";
+                p.url = "";
 
                 photo.style.opacity = "0.1" ;
                 photo.addEventListener('load',()=>{
