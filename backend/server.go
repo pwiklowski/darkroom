@@ -178,7 +178,7 @@ func main() {
 	})
 
 	auth, _ := firebase.GetAuth()
-	session, err := mgo.Dial("127.0.0.1")
+	session, err := mgo.Dial("mongo")
 	if err != nil {
 		panic(err)
 	}
@@ -576,5 +576,5 @@ func main() {
 
 	})
 
-	api.Listen(":11001")
+	api.Listen("0.0.0.0:11001")
 }

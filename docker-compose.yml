@@ -8,8 +8,7 @@ services:
     ports:
       - "27017:27017"
     command: mongod --smallfiles
-    network_mode: "host"
-    
+
   backend:
     environment:
       - FIREBASE_CONFIG=$FIREBASE_CONFIG
@@ -17,7 +16,6 @@ services:
       - ADMIN_UID=FILL_ME
     volumes:
       - $PHOTOS_LOCATION:$PHOTOS_LOCATION
-    network_mode: "host"
     ports:
       - "11001:11001"
     build:
@@ -25,7 +23,9 @@ services:
       dockerfile: Dockerfile-gobackend
 
   frontend:
-    network_mode: "host"
+    links:
+      - backend
     build:
       context: .
       dockerfile: Dockerfile-webui 
+      
