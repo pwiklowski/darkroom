@@ -5,7 +5,6 @@ services:
     image: mvertes/alpine-mongo:3.2.3
     volumes:
       - $DATABASE_LOCATION:/data/db
-
     ports:
       - "27017:27017"
     command: mongod --smallfiles
@@ -15,6 +14,7 @@ services:
     environment:
       - FIREBASE_CONFIG=$FIREBASE_CONFIG
       - PHOTOS_LOCATION=$PHOTOS_LOCATION
+      - ADMIN_UID=FILL_ME
     volumes:
       - $PHOTOS_LOCATION:$PHOTOS_LOCATION
     network_mode: "host"

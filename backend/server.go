@@ -171,6 +171,7 @@ func getTokenIfValid(t string, collection *mgo.Collection) (Token, error) {
 func main() {
 	firebaseConfig := os.Getenv("FIREBASE_CONFIG")
 	photoLocation := os.Getenv("PHOTOS_LOCATION")
+	adminUID := os.Getenv("ADMIN_UID")
 
 	firebase.InitializeApp(&firebase.Options{
 		ServiceAccountPath: firebaseConfig,
@@ -246,10 +247,17 @@ func main() {
 		err := usersDb.Find(bson.M{"userid": uid}).One(&user)
 		if err != nil {
 			user.UserID = uid
+			if uid == adminUID {
+				user.IsSuperuser = true
+			}
+
 			usersDb.Insert(user)
 		} else {
 			user.DisplayName = sentUser.DisplayName
 			user.PhotoUrl = sentUser.PhotoUrl
+			if uid == adminUID {
+				user.IsSuperuser = true
+			}
 
 			usersDb.Update(bson.M{"userid": uid}, user)
 		}
