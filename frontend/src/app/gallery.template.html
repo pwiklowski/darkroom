@@ -9,6 +9,9 @@
 <div *ngIf="error" class="dr-centered-error">
     {{error}}
 </div>
+<div *ngIf="photos.length==0" class="dr-centered-error">
+    No photos
+</div>
 
 <div id="dr-gallery">
     <div class="dr-gallery-background-container"></div>
