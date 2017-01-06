@@ -43,11 +43,15 @@ import { AngularFire, AuthProviders } from 'angularfire2';
 
 
 <div #drawer class="dr-drawer">
-    <button (click)="loginModal.show()" *ngIf="!backend.isUserLogged()">Login </button>
-    <div class="dr-user-info" *ngIf="backend.isUserLogged()">
-
-
-        <img class="dr-user-avatar" src="{{ backend.getUser()?.photoURL }}"/>   {{backend.getUser()?.displayName}}
+    <div class="dr-user-info">
+        <div *ngIf="!backend.isUserLogged()">
+          <button mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple (click)="loginModal.show()">
+            Login
+          </button>
+        </div>
+        <div *ngIf="backend.isUserLogged()">
+            <img class="dr-user-avatar" src="{{ backend.getUser()?.photoURL }}"/>   {{backend.getUser()?.displayName}}
+        </div>
     </div>
 
     <div class="dr-drawer-title" (click)="showGalleries()">Galleries</div>
@@ -62,15 +66,18 @@ import { AngularFire, AuthProviders } from 'angularfire2';
 <mdl-dialog #loginModal [mdl-dialog-config]="{ clickOutsideToClose: true, styles:{'width': '400px'}, isModal:true, enterTransitionDuration: 400, leaveTransitionDuration: 400}" >
     <h2>Login</h2>
     <div class="dr-login-buttons">
-        <button mdl-button mdl-button-type="raised" mdl-colored="primary"  (click)="loginGoogle()">
+        <div class="dr-login-item" (click)="loginGoogle()">
+            <img class="dr-login-logo" src="/assets/img/google.png">
             Use Google Account
-        </button><br>
-        <button mdl-button mdl-button-type="raised" mdl-colored="primary"  (click)="loginFacebook()">
+        </div>
+        <div class="dr-login-item"(click)="loginFacebook()">
+            <img class="dr-login-logo" src="/assets/img/facebook.png">
             Use Facebook Account
-        </button><br>
-        <button mdl-button mdl-button-type="raised" mdl-colored="primary"  (click)="loginTwitter()">
+        </div>
+        <div class="dr-login-item" (click)="loginTwitter()">
+            <img class="dr-login-logo" src="/assets/img/twitter.png">
             Use Twitter Account
-        </button><br>
+        </div>
     </div>
 </mdl-dialog>
 
@@ -216,12 +223,27 @@ import { AngularFire, AuthProviders } from 'angularfire2';
 .dr-user-avatar{
     width: 60px;
     height: 60px;
-    margin: 15px;
     border-radius: 30px;
 }
 .dr-user-info{
     height: 70px;
     font-size: 22px;
+    padding: 20px;
+}
+.dr-login-item:hover{
+    background-color: #DDD;
+
+}
+.dr-login-item{
+    margin: 20px;
+    padding: 15px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.dr-login-logo{
+    width:50px;
+    height:50px;
 }
     
     `]
