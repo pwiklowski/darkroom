@@ -20,7 +20,7 @@ import { AngularFire, AuthProviders } from 'angularfire2';
     <div #drawerButtons id="dr-drawer-buttons">
         <button *ngIf="backend.isUserLogged()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="logout()">
             <div class="dr-button-label">Logout</div>
-            <mdl-icon>user</mdl-icon>
+            <mdl-icon>exit_to_app</mdl-icon>
         </button>
         <button *ngIf="backend.isSuperuser() && getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="shareGallery()">
             <div class="dr-button-label">Share gallery</div>
