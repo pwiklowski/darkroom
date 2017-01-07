@@ -22,6 +22,13 @@
   cursor: pointer;
 }
 
+.dr-gallery-name-text {
+  font-size: 50px;
+  position: absolute;
+  bottom: 70px;
+  left: 30px;
+}
+
 .dr-right-icon {
   position: absolute;
   top: 50%;

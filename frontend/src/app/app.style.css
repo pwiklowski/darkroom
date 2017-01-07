@@ -186,13 +186,6 @@
   width: 80px;
 }
 
-.dr-gallery-name-text {
-  font-size: 50px;
-  position: absolute;
-  bottom: 70px;
-  left: 30px;
-}
-
 .dr-gallery-cover {
   height: 100%;
   transition: transform 500ms;
