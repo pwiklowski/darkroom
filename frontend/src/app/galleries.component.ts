@@ -146,6 +146,8 @@ export class GalleriesComponent {
     
 
     nextPhoto(){
+        if (this.backend.getGalleries().length ==1) return;
+
         if (this.selectedGalleryIndex == (this.backend.getGalleries().length-1)) {
             this.selectedGalleryIndex = 0;
         }else{
