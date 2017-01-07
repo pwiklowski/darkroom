@@ -85,6 +85,18 @@ import { AngularFire, AuthProviders } from 'angularfire2';
   Share gallery
   <div class="mdl-dialog__content">
     <mdl-list>
+        <mdl-list-item mdl-ripple (click)="gallery.IsPublic= !gallery.IsPublic">
+            <button mdl-colored="primary" mdl-button mdl-button-type="mini-fab" class="dr-user-avatar-list">
+                <mdl-icon>share</mdl-icon>
+            </button>
+            <mdl-list-item-primary-content>
+                <span>Public</span>
+            </mdl-list-item-primary-content>
+            <mdl-list-item-secondary-action >
+                <mdl-switch mdl-ripple [ngModel]="gallery.IsPublic" ></mdl-switch>
+            </mdl-list-item-secondary-action>
+            
+        </mdl-list-item>
         <mdl-list-item mdl-ripple *ngFor="let user of users" (click)="toggleSharing(user.UserID)">
             <mdl-list-item-primary-content>
             <mdl-icon *ngIf="user.PhotoUrl ==''" mdl-list-item-avatar>person</mdl-icon>
