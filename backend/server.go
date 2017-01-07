@@ -310,7 +310,7 @@ func main() {
 		} else if isSuperuser(auth, c, db) {
 			db.C("galleries").Find(nil).All(&galleries)
 		} else {
-			db.C("galleries").Find(bson.M{"usersids": uid}).All(&galleries)
+			db.C("galleries").Find(bson.M{"$or": []bson.M{bson.M{"usersids": uid}, bson.M{"ispublic": true}}}).All(&galleries)
 		}
 
 		c.JSON(iris.StatusOK, galleries)
