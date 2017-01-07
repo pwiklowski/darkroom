@@ -7,6 +7,9 @@ import { FileUploader} from 'ng2-file-upload/ng2-file-upload';
 import { MdlDialogService } from 'angular2-mdl';
 import { AngularFire, AuthProviders } from 'angularfire2';
 
+declare var VERSION: any;
+
+
 @Component({
     selector: 'app',
     template:`
@@ -62,6 +65,11 @@ import { AngularFire, AuthProviders } from 'angularfire2';
     <div *ngIf="backend.getGalleries().length == 0" class="dr-drawer-name">
         No galleries 
     </div>
+
+    <div class="dr-version">
+        Version: {{ getVersion() }}
+    </div>
+
 </div>
 <mdl-dialog #loginModal [mdl-dialog-config]="{ clickOutsideToClose: true, styles:{'width': '400px'}, isModal:true, enterTransitionDuration: 400, leaveTransitionDuration: 400}" >
     <h2>Login</h2>
@@ -257,9 +265,17 @@ import { AngularFire, AuthProviders } from 'angularfire2';
     width:50px;
     height:50px;
 }
-    
+
+.dr-version{
+    font-size: 14px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-family: monospace;
+}
     `]
 })
+
 
 
 export class AppComponent {
@@ -298,6 +314,10 @@ export class AppComponent {
             console.log("is logged " + this.backend.isUserLogged());
             this.url = event.url;
         });
+    }
+
+    getVersion(){
+        return VERSION;
     }
 
 

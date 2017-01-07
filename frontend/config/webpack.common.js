@@ -267,6 +267,10 @@ module.exports = function (options) {
        */
       new LoaderOptionsPlugin({}),
 
+      new webpack.DefinePlugin({
+        VERSION: JSON.stringify(require("../package.json").version)
+      }),
+
     ],
 
     /*
