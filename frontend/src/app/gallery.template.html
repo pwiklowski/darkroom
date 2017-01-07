@@ -1,30 +1,18 @@
-<div id="dr-photo-container">
-    <img id="dr-photo" (click)="nextPhoto()">
-    <mdl-icon (click)="prevPhoto()" *ngIf="selectedPhoto!=0" class="dr-left-icon">keyboard_arrow_left</mdl-icon>
-    <mdl-icon (click)="nextPhoto()" *ngIf="selectedPhoto!=(photos.length-1)" class="dr-right-icon">keyboard_arrow_right</mdl-icon>
-    <div id="dr-photo-loader"></div>
-    <mdl-icon class="dr-close-icon" (click)="hidePhoto()">close</mdl-icon>
+<div id="dr-photo-container"> <img id="dr-photo" (click)="nextPhoto()">
+  <mdl-icon (click)="prevPhoto()" *ngIf="selectedPhoto!=0" class="dr-left-icon">keyboard_arrow_left</mdl-icon>
+  <mdl-icon (click)="nextPhoto()" *ngIf="selectedPhoto!=(photos.length-1)" class="dr-right-icon">keyboard_arrow_right</mdl-icon>
+  <div id="dr-photo-loader"></div>
+  <mdl-icon class="dr-close-icon" (click)="hidePhoto()">close</mdl-icon>
 </div>
-
-<div *ngIf="error" class="dr-centered-error">
-    {{error}}
-</div>
-<div *ngIf="photos.length==0" class="dr-centered-error">
-    No photos
-</div>
-
+<div *ngIf="error" class="dr-centered-error"> {{error}} </div>
+<div *ngIf="photos.length==0" class="dr-centered-error"> No photos </div>
 <div id="dr-gallery">
-    <div class="dr-gallery-background-container"></div>
-    <div id="dr-column-container">
-        <div *ngFor="let column of columns; let c = index" class="dr-photo-column">
-            <template ngFor let-p [ngForOf]="photos" let-i="index">
-                <div class="dr-photo-container" *ngIf="i%columnsNumber==c">
-                    <img (click)="showPhoto(p, i)"
-                        class="dr-photo" src="/assets/img/stub2.gif"
-                        id="dr-p-{{p.Id}}"
-                        src="{{p.url}}"/>
-                </div>
-            </template>
-        </div>
+  <div class="dr-gallery-background-container"></div>
+  <div id="dr-column-container">
+    <div *ngFor="let column of columns; let c = index" class="dr-photo-column">
+      <template ngFor let-p [ngForOf]="photos" let-i="index">
+        <div class="dr-photo-container" *ngIf="i%columnsNumber==c"> <img (click)="showPhoto(p, i)" class="dr-photo" src="/assets/img/stub2.gif" id="dr-p-{{p.Id}}" src="{{p.url}}" /> </div>
+      </template>
     </div>
+  </div>
 </div>

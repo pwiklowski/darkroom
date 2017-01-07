@@ -10,68 +10,8 @@ import {DomSanitizer} from '@angular/platform-browser';
 @Component({
     selector: 'my-app',
     templateUrl: './galleries.template.html',
-    styles:[`
-        #dr-gallery-cover{
-            transform: translate(-50%,-50%);
-            top: 50%;
-            left: 50%;
-            position: absolute;
-            transition: opacity 500ms ease-in-out;
-            opacity: 0;
-        }
-        .dr-centered-error{
-            font-size: 30px;
-            left: 50%;
-            top: 50%;
-            position: absolute;
-            transform: translate(-50%,-50%);
-
-        }
-        .dr-left-icon{
-            position: absolute;
-            top: 50%;
-            left: 10px;  
-            cursor: pointer;
-        }
-        .dr-right-icon{
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            cursor: pointer;
-        }
-        #dr-gallery-cover-loader{
-            z-index: 1000;
-            position: absolute;
-            width: 50%;
-            height: 50%;
-            transform: translate(50%,50%);
-            background-image: url(/assets/img/stub2.gif);
-            pointer-events: none;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: 60%;
-            transition: opacity 500ms ease-in-out;
-        }
-        #dr-gallery-cover-container{
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: 50% 50%;
-        }
-        .dr-gallery-indicator{
-            font-size: 14px;
-        }
-        #dr-gallery-indicator{
-            z-index: 100;
-            position: absolute;
-            left: 50%;
-            top: 10px;
-            transform: translateX(-50%);
-        }
-    `]
+    styleUrls: ['./galleries.style.css']
 })
-
 export class GalleriesComponent {
     selectedGallery: Gallery = new Gallery();
     selectedGalleryIndex = 0;

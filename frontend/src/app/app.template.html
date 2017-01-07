@@ -1,0 +1,102 @@
+<div id="dr-hamburger" (click)="showDrawer()"> <img class="dr-header-img" src="/assets/img/logo.png"> </div>
+<div #drawerClose id="dr-drawer-close" (click)="closeDrawer()">
+  <div #drawerCloseFill id="dr-drawer-close-fill"></div>
+  <div #drawerButtons id="dr-drawer-buttons">
+    <button *ngIf="backend.isUserLogged()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="logout()">
+      <div class="dr-button-label">Logout</div>
+      <mdl-icon>exit_to_app</mdl-icon>
+    </button>
+    <button *ngIf="backend.isSuperuser() && getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="shareGallery()">
+      <div class="dr-button-label">Share gallery</div>
+      <mdl-icon>share</mdl-icon>
+    </button>
+    <button *ngIf="backend.isSuperuser() && getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="removeGallery()">
+      <div class="dr-button-label">Remove gallery</div>
+      <mdl-icon>delete_forever</mdl-icon>
+    </button>
+    <button *ngIf="backend.isSuperuser() && getGalleryId()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="editGallery()">
+      <div class="dr-button-label">Edit gallery</div>
+      <mdl-icon>add_to_photos</mdl-icon>
+    </button>
+    <button *ngIf="backend.isSuperuser()" class="dr-drawer-button" mdl-button mdl-button-type="fab" mdl-colored="primary" mdl-ripple (click)="newGallery()">
+      <div class="dr-button-label">Add new gallery</div>
+      <mdl-icon>add</mdl-icon>
+    </button>
+  </div>
+</div>
+<div #drawer class="dr-drawer">
+  <div class="dr-user-info">
+    <div *ngIf="!backend.isUserLogged()">
+      <button mdl-button mdl-button-type="raised" mdl-colored="primary" mdl-ripple (click)="loginModal.show()"> Login </button>
+    </div>
+    <div *ngIf="backend.isUserLogged()"> <img class="dr-user-avatar" src="{{ backend.getUser()?.photoURL }}" /> {{backend.getUser()?.displayName}} </div>
+  </div>
+  <div class="dr-drawer-title" (click)="showGalleries()">Galleries</div>
+  <div *ngFor="let g of backend.getGalleries()" class="dr-drawer-name" (click)="openGallery(g.Id)"> {{ g.Name }} </div>
+  <div *ngIf="backend.getGalleries().length == 0" class="dr-drawer-name"> No galleries </div>
+  <div class="dr-version"> Version: {{ getVersion() }} </div>
+  <a href="https://github.com/pwiklowski/darkroom"> <img id="dr-header-gh" src="/assets/img/github.png"> </a>
+</div>
+<mdl-dialog #loginModal [mdl-dialog-config]="{ clickOutsideToClose: true, styles:{'width': '400px'}, isModal:true, enterTransitionDuration: 400, leaveTransitionDuration: 400}">
+  <h2>Login</h2>
+  <div class="dr-login-buttons">
+    <div class="dr-login-item" (click)="loginGoogle()"> <img class="dr-login-logo" src="/assets/img/google.png"> Use Google Account </div>
+    <div class="dr-login-item" (click)="loginFacebook()"> <img class="dr-login-logo" src="/assets/img/facebook.png"> Use Facebook Account </div>
+    <div class="dr-login-item" (click)="loginTwitter()"> <img class="dr-login-logo" src="/assets/img/twitter.png"> Use Twitter Account </div>
+  </div>
+</mdl-dialog>
+<mdl-dialog #shareGalleryModal [mdl-dialog-config]="{ clickOutsideToClose: true, styles:{'width': '500px'}, isModal:true, enterTransitionDuration: 400, leaveTransitionDuration: 400}"> Share gallery
+  <div class="mdl-dialog__content">
+    <mdl-list>
+      <mdl-list-item mdl-ripple (click)="gallery.IsPublic= !gallery.IsPublic">
+        <button mdl-colored="primary" mdl-button mdl-button-type="mini-fab" class="dr-user-avatar-list">
+          <mdl-icon>share</mdl-icon>
+        </button>
+        <mdl-list-item-primary-content> <span>Public</span> </mdl-list-item-primary-content>
+        <mdl-list-item-secondary-action>
+          <mdl-switch mdl-ripple [ngModel]="gallery.IsPublic"></mdl-switch>
+        </mdl-list-item-secondary-action>
+      </mdl-list-item>
+      <mdl-list-item mdl-ripple *ngFor="let user of users" (click)="toggleSharing(user.UserID)">
+        <mdl-list-item-primary-content>
+          <mdl-icon *ngIf="user.PhotoUrl ==''" mdl-list-item-avatar>person</mdl-icon> <img *ngIf="user.PhotoUrl !=''" class="dr-user-avatar-list" src="{{user.PhotoUrl }}" /> <span>{{user.DisplayName}}</span> </mdl-list-item-primary-content>
+        <mdl-list-item-secondary-action>
+          <mdl-switch mdl-ripple [ngModel]="isSharedToUser(user.UserID)"></mdl-switch>
+        </mdl-list-item-secondary-action>
+      </mdl-list-item>
+    </mdl-list>
+  </div>
+  <div class="mdl-dialog__actions">
+    <button mdl-button (click)="saveGallery(shareGalleryModal)" mdl-button-type="raised" mdl-colored="primary" mdl-ripple>Save</button>
+    <button mdl-button (click)="shareGalleryModal.close()" mdl-ripple>Cancel</button>
+  </div>
+</mdl-dialog>
+<div #editGalleryModal class="dr-modal-container">
+  <div class="dr-modal">
+    <div>Upload photos</div>
+    <mdl-textfield #galleryName type="text" label="Gallery name" floating-label autofocus [(ngModel)]="gallery.Name" (blur)="saveGallery()"></mdl-textfield>
+    <mdl-textfield #galleryComment type="text" label="Comment" floating-label autofocus [(ngModel)]="gallery.Comment" (blur)="saveGallery()"></mdl-textfield>
+    <br>
+    <input type="file" ng2FileSelect [uploader]="uploader" multiple name="uploadField" />
+    <br/>
+    <div class="dr-upload">
+      <div class="dr-upload-container" *ngFor="let photo of photos"> <img src="{{ photo.url }}" class="dr-upload-photo" />
+        <button mdl-button mdl-button-type="icon" mdl-colored="primary" (click)="removePhoto(photo.Id)">
+          <mdl-icon>remove</mdl-icon>
+        </button>
+      </div>
+      <div class="dr-upload-container" *ngFor="let item of uploader.queue"> <img src="{{item.url }}" class="dr-upload-photo" />
+        <button mdl-button mdl-button-type="icon" mdl-colored="primary" (click)="item.remove()">
+          <mdl-icon>remove</mdl-icon>
+        </button>
+      </div>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button mdl-button mdl-ripple (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length"> Upload all </button>
+      <button mdl-button mdl-ripple (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading"> Cancel all </button>
+      <button mdl-button mdl-ripple (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length"> Remove all </button>
+      <button mdl-button (click)="backend.refreshGalleries(); hide(editGalleryModal)" mdl-ripple>Close</button>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>

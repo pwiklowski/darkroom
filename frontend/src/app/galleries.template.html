@@ -1,26 +1,24 @@
 <div class="dr-galleries">
 
-    <div id="dr-gallery-cover-container" (window:resize)="scalePhoto()">
-        <img id="dr-gallery-cover" (click)="nextPhoto()">
-        <div class="dr-gallery-name-text"> {{ selectedGallery?.Name }}</div>
-        <div class="dr-gallery-comment">{{ selectedGallery?.Comment }}</div>
-        <div id="dr-gallery-cover-loader"></div>
-    </div>
-    <div id="dr-gallery-indicator">
-        <template ngFor let-g [ngForOf]="backend.getGalleries()" let-i="index">
-            <mdl-icon class="dr-gallery-indicator" *ngIf="g==selectedGallery">radio_button_checked</mdl-icon>
-            <mdl-icon class="dr-gallery-indicator" *ngIf="g!=selectedGallery">radio_button_unchecked</mdl-icon>
-        </template>
+  <div id="dr-gallery-cover-container" (window:resize)="scalePhoto()">
+    <img id="dr-gallery-cover" (click)="nextPhoto()">
+    <div class="dr-gallery-name-text"> {{ selectedGallery?.Name }}</div>
+    <div class="dr-gallery-comment">{{ selectedGallery?.Comment }}</div>
+    <div id="dr-gallery-cover-loader"></div>
+  </div>
+  <div id="dr-gallery-indicator">
+    <template ngFor let-g [ngForOf]="backend.getGalleries()" let-i="index">
+      <mdl-icon class="dr-gallery-indicator" *ngIf="g==selectedGallery">radio_button_checked</mdl-icon>
+      <mdl-icon class="dr-gallery-indicator" *ngIf="g!=selectedGallery">radio_button_unchecked</mdl-icon>
+    </template>
 
-    </div>
-    <mdl-icon *ngIf="backend.getGalleries().length > 1" (click)="prevPhoto()"  class="dr-left-icon">keyboard_arrow_left</mdl-icon>
-    <mdl-icon *ngIf="backend.getGalleries().length > 1" (click)="nextPhoto()"  class="dr-right-icon">keyboard_arrow_right</mdl-icon>
+  </div>
+  <mdl-icon *ngIf="backend.getGalleries().length > 1" (click)="prevPhoto()" class="dr-left-icon">keyboard_arrow_left</mdl-icon>
+  <mdl-icon *ngIf="backend.getGalleries().length > 1" (click)="nextPhoto()" class="dr-right-icon">keyboard_arrow_right</mdl-icon>
 
-    <div *ngIf="backend.getGalleries().length == 0" class="dr-centered-error">
-        No galleries found
-    </div>
+  <div *ngIf="backend.getGalleries().length == 0" class="dr-centered-error">
+    No galleries found
+  </div>
 
 
 </div>
-
-
