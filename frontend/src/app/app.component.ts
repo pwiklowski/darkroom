@@ -69,6 +69,9 @@ declare var VERSION: any;
     <div class="dr-version">
         Version: {{ getVersion() }}
     </div>
+    <a href="https://github.com/pwiklowski/darkroom">
+        <img id="dr-header-gh" src="/assets/img/github.png">
+    </a>
 
 </div>
 <mdl-dialog #loginModal [mdl-dialog-config]="{ clickOutsideToClose: true, styles:{'width': '400px'}, isModal:true, enterTransitionDuration: 400, leaveTransitionDuration: 400}" >
@@ -272,6 +275,15 @@ declare var VERSION: any;
     bottom: 5px;
     right: 5px;
     font-family: monospace;
+}
+#dr-header-gh{
+    position: absolute;
+    bottom: 0px;
+    padding: 20px;
+    
+    width: 60px;
+    height: 60px;
+    opacity: 0.5;
 }
     `]
 })

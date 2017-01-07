@@ -79,17 +79,7 @@ html{
     opacity: 1.0;
     transition: opacity 1000ms ease-in-out;
 }
-#dr-header-gh{
-    position: absolute;
-    top: 0px;
-    right: -100px;
-    padding: 20px;
-    height: 100px;
-    transition: all 2000ms ease-in-out;
-    
-    width: 60px;
-    height: 60px;
-}
+
 
 #dr-hamburger{
     position: absolute;
