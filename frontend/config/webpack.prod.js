@@ -157,7 +157,8 @@ module.exports = function (env) {
           keep_fnames: true
         }, //prod
         compress: {
-          screw_ie8: true
+          screw_ie8: true,
+          drop_console: true
         }, //prod
         comments: false //prod
       }),
