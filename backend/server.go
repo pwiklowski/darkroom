@@ -169,12 +169,11 @@ func getTokenIfValid(t string, collection *mgo.Collection) (Token, error) {
 }
 
 func main() {
-	firebaseConfig := os.Getenv("FIREBASE_CONFIG")
 	photoLocation := os.Getenv("PHOTOS_LOCATION")
 	adminUID := os.Getenv("ADMIN_UID")
 
 	firebase.InitializeApp(&firebase.Options{
-		ServiceAccountPath: firebaseConfig,
+		ServiceAccountPath: "/cred.json",
 	})
 
 	auth, _ := firebase.GetAuth()
