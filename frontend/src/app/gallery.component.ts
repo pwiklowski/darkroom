@@ -76,7 +76,7 @@ export class GalleryComponent {
             });
 
             if (this.photos.length > 0){
-                setTimeout(()=>this.animateThumbnails(), 200);
+                setTimeout(()=>this.animateThumbnails(), 500);
             }
             this.error = undefined;
         }).catch(()=>{
