@@ -33,9 +33,9 @@ export ADMIN_UID=UID
 docker-compose up -d
 ```
 
-**PHOTOS_LOCATION** - is used to inform container where to store encoded photos (outside of container)
-**DATABASE_LOCATION** - is used to inform container where to keep database files
-**ADMIN_UID** - put here your user id from firebase console to make sure that you will always have superuser powers (it is needed to be able to grant superuser powers to other accounts) 
+* **PHOTOS_LOCATION** - is used to inform container where to store encoded photos (outside of container)
+* **DATABASE_LOCATION** - is used to inform container where to keep database files
+* **ADMIN_UID** - put here your user id from firebase console to make sure that you will always have superuser powers (it is needed to be able to grant superuser powers to other accounts) 
 
 
 
