@@ -1,4 +1,4 @@
-import { Component, ViewChild, HostListener } from '@angular/core';
+import { Component, ViewChild, HostListener, ChangeDetectorRef } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -65,7 +65,7 @@ export class GalleryComponent {
     }
 
     constructor(private backend: BackendService, private router: Router, private route: ActivatedRoute,
-                private af: AngularFire, private sanitizer:DomSanitizer){
+                private af: AngularFire, private sanitizer:DomSanitizer, private cdr:ChangeDetectorRef){
     }
     
     getPhotos(galleyId){
@@ -76,7 +76,8 @@ export class GalleryComponent {
             });
 
             if (this.photos.length > 0){
-                setTimeout(()=>this.animateThumbnails(), 500);
+                this.cdr.detectChanges();
+                this.animateThumbnails();
                 this.error = undefined;
             }else{
                 this.error = "No photos";
