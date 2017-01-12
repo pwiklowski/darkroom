@@ -18,9 +18,6 @@
   <mdl-icon *ngIf="backend.getGalleries().length > 1" (click)="prevPhoto()" class="dr-left-icon">keyboard_arrow_left</mdl-icon>
   <mdl-icon *ngIf="backend.getGalleries().length > 1" (click)="nextPhoto()" class="dr-right-icon">keyboard_arrow_right</mdl-icon>
 
-  <div *ngIf="backend.getGalleries().length == 0" class="dr-centered-error">
-    No galleries found
-  </div>
-
+  <div *ngIf="error" class="dr-centered-error"> {{error}} </div>
 
 </div>

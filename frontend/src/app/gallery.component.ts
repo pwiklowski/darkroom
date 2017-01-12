@@ -77,8 +77,10 @@ export class GalleryComponent {
 
             if (this.photos.length > 0){
                 setTimeout(()=>this.animateThumbnails(), 500);
+                this.error = undefined;
+            }else{
+                this.error = "No photos";
             }
-            this.error = undefined;
         }).catch(()=>{
             console.log("error");
             this.error = "Not found";

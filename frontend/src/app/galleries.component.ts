@@ -22,6 +22,7 @@ export class GalleriesComponent {
     resizeEvent;
 
     galleriesSub;
+    error = "test";
 
     constructor(http: Http, router: Router, private route: ActivatedRoute,
                 private backend: BackendService, private af: AngularFire, 
@@ -49,7 +50,9 @@ export class GalleriesComponent {
         if (this.backend.getGalleries().length >0){
             this.selectedGallery = this.backend.getGalleries()[this.selectedGalleryIndex];
             this.loadPhoto(this.selectedGallery);
+            this.error = undefined;
         }else{
+            this.error = "No galleries found";
             this.selectedGallery = undefined;
             this.galleryCover.src = "";
             this.galleryCover.style.opacity = "0";
