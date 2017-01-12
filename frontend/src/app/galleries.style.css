@@ -22,6 +22,18 @@
   cursor: pointer;
 }
 
+.dr-gallery-details {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 150px;
+  width: 100%;
+
+  background: -webkit-linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.9)); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.9)); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.9)); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.9)); /* Standard syntax */
+}
 .dr-gallery-name-text {
   font-size: 50px;
   position: absolute;
