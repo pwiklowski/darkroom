@@ -9,8 +9,10 @@
   <div class="dr-gallery-background-container"></div>
   <div id="dr-column-container">
     <div *ngFor="let column of columns; let c = index" class="dr-photo-column">
-      <template ngFor let-p [ngForOf]="photos" let-i="index">
-        <div class="dr-photo-container" *ngIf="i%columnsNumber==c"> <img (click)="showPhoto(p, i)" class="dr-photo" src="/assets/img/stub2.gif" id="dr-p-{{p.Id}}" src="{{p.url}}" /> </div>
+      <template ngFor let-p [ngForOf]="photos" let-i="index" let-last="last">
+        <div class="dr-photo-container" *ngIf="i%columnsNumber==c">
+           <thumbnail (click)="showPhoto(p, i)" [pid]="p.Id" [index]="i"></thumbnail>
+        </div>
       </template>
     </div>
   </div>

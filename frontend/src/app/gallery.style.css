@@ -34,14 +34,6 @@
   width: 300px;
 }
 
-.dr-photo:hover {
-  opacity: 1;
-}
-
-.dr-photo {
-  transition: opacity 400ms ease-in-out;
-  width: 100%;
-}
 img {-webkit-backface-visibility: hidden;}
 
 #dr-photo {

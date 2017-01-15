@@ -15,6 +15,7 @@ import { GalleriesComponent } from './galleries.component';
 import { GalleryComponent } from './gallery.component';
 import { AngularFireModule, AuthMethods, AuthProviders } from "angularfire2";
 import { BackendService } from './backend.service';
+import { ThumbnailComponent } from './thumbnail.component';
 
 var config = {
     apiKey: "AIzaSyCpISaYT7x11mYNQJSsTOoYUrUfiIOLIwI",
@@ -29,6 +30,7 @@ var config = {
   bootstrap: [ AppComponent ],
   declarations: [
     AppComponent,
+    ThumbnailComponent,
     GalleryComponent,
     GalleriesComponent,
     FileSelectDirective

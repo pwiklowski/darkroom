@@ -1,4 +1,4 @@
-import { Component, ViewChild, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Input, Component, ViewChild, HostListener, ChangeDetectorRef, OnChanges,NgZone } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -12,7 +12,7 @@ import { AngularFire, AuthProviders } from 'angularfire2';
     templateUrl: './gallery.template.html',
     styleUrls:['./gallery.style.css']
 })
-export class GalleryComponent {
+export class GalleryComponent{
     photos = [];
     gallery: Gallery;
     currentPhoto: number = 0;
@@ -37,6 +37,8 @@ export class GalleryComponent {
     error;
 
     ngOnInit() {
+        let loader = document.getElementById("dr-loader");
+        loader.style.opacity = "0";
         this.photo = <HTMLImageElement>document.getElementById("dr-photo");
         this.photoLoader = <HTMLElement>document.getElementById("dr-photo-loader");
         this.photoContainer = <HTMLElement>document.getElementById("dr-photo-container");
@@ -50,14 +52,6 @@ export class GalleryComponent {
             this.getGallery(this.galleryId);
 
         });
-        this.galleriesSub = this.backend.galleries.subscribe(galleries => {
-            this.getPhotos(this.galleryId);
-            this.getGallery(this.galleryId);
-        });
-        let loader = document.getElementById("dr-loader");
-        loader.style.opacity = "0";
-
-
     }
     ngOnDestroy() {
         this.sub.unsubscribe();
@@ -65,19 +59,14 @@ export class GalleryComponent {
     }
 
     constructor(private backend: BackendService, private router: Router, private route: ActivatedRoute,
-                private af: AngularFire, private sanitizer:DomSanitizer, private cdr:ChangeDetectorRef){
+                private af: AngularFire, private sanitizer:DomSanitizer){
     }
     
     getPhotos(galleyId){
         this.backend.get("/api/gallery/"+galleyId+"/photos").then(res => {
             this.photos = res.json();
-            this.photos.forEach(photo =>{
-                photo.url = "assets/img/stub2.gif";
-            });
 
             if (this.photos.length > 0){
-                this.cdr.detectChanges();
-                this.animateThumbnails();
                 this.error = undefined;
             }else{
                 this.error = "No photos";
@@ -86,26 +75,6 @@ export class GalleryComponent {
             console.log("error");
             this.error = "Not found";
         })
-    }
-
-    animateThumbnails(){
-        let timeout = 1;
-        this.backend.getQueryToken().then(token=>{
-            for(let p of this.photos){
-                let photoId = p.Id;
-                let photo = document.getElementById("dr-p-" + photoId);
-                p.url = "";
-
-                photo.style.opacity = "0.1" ;
-                photo.addEventListener('load',()=>{
-                    photo.style.opacity = "1";
-                });
-                setTimeout(() => {
-                    p.url = "/api/photo/"+p.Id+"/320?token="+token; 
-                }, timeout*100);
-                timeout++;
-            }
-        });
     }
 
     showPhoto(photo, selectedPhoto){
