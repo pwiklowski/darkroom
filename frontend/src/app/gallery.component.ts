@@ -152,6 +152,7 @@ export class GalleryComponent{
         let calculatedColumnNumber = Math.floor((this.columnContainer.offsetWidth - 250)/300);
         if (calculatedColumnNumber !== this.columnsNumber){
             this.columnsNumber = Math.floor((this.columnContainer.offsetWidth - 250)/300);
+            if (this.columnsNumber <1) this.columnsNumber = 1;
             this.columns = new Array<number>();
             for(let i = 0; i < this.columnsNumber; i++){
                 this.columns.push(i);
