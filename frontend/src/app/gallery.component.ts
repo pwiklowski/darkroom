@@ -33,7 +33,6 @@ export class GalleryComponent{
     photoContainer: HTMLElement;
     columnContainer: HTMLElement;
 
-    galleriesSub;
     error;
 
     ngOnInit() {
@@ -55,7 +54,6 @@ export class GalleryComponent{
     }
     ngOnDestroy() {
         this.sub.unsubscribe();
-        this.galleriesSub.unsubscribe();
     }
 
     constructor(private backend: BackendService, private router: Router, private route: ActivatedRoute,
