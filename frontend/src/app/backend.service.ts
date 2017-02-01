@@ -119,7 +119,15 @@ export class BackendService{
                     resolve(token);
                 });
             }else{
-                resolve(null);
+                let sub = this.af.auth.subscribe(user => {
+                    console.log("user", user);
+                    if(user){
+                        this.user.auth.getToken().then((token) => {
+                            resolve(token);
+                        });
+                        sub.unsubscribe();
+                    }
+                });
             }
         });
     }
