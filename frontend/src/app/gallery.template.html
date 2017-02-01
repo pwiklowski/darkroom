@@ -1,4 +1,8 @@
-<div id="dr-photo-container"> <img id="dr-photo" (click)="nextPhoto()">
+<div id="dr-photo-container"> 
+  <div id="dr-photo-temp-container">
+    <img id="dr-photo-temp">
+  </div>
+  <img id="dr-photo" (click)="nextPhoto()">
   <mdl-icon (click)="prevPhoto()" *ngIf="selectedPhoto!=0" class="dr-left-icon">keyboard_arrow_left</mdl-icon>
   <mdl-icon (click)="nextPhoto()" *ngIf="selectedPhoto!=(photos.length-1)" class="dr-right-icon">keyboard_arrow_right</mdl-icon>
   <div id="dr-photo-loader"></div>

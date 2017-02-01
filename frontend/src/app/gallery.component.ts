@@ -1,11 +1,12 @@
 import { Input, Component, ViewChild, HostListener, ChangeDetectorRef, OnChanges,NgZone } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, Headers } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import { Router, ActivatedRoute } from '@angular/router';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Gallery, Photo } from './models.ts';
 import {BackendService} from './backend.service';
 import { AngularFire, AuthProviders } from 'angularfire2';
+import { Photo } from './models';
 
 @Component({
     selector: 'my-app',
@@ -21,6 +22,7 @@ export class GalleryComponent{
     sub: any;
     isPhotoDisplayed: boolean = false;
     photoId: string;
+    currentPhotoThumbnail : Photo;
 
     selectedPhoto: number = 0;
     editedGalleryId: string;
@@ -29,6 +31,8 @@ export class GalleryComponent{
 
     photoUrl;
     photo: HTMLImageElement;
+    photoTemp: HTMLImageElement;
+    photoTempContainer: HTMLImageElement;
     photoLoader: HTMLElement;
     photoContainer: HTMLElement;
     columnContainer: HTMLElement;
@@ -39,6 +43,8 @@ export class GalleryComponent{
         let loader = document.getElementById("dr-loader");
         loader.style.opacity = "0";
         this.photo = <HTMLImageElement>document.getElementById("dr-photo");
+        this.photoTemp = <HTMLImageElement>document.getElementById("dr-photo-temp");
+        this.photoTempContainer = <HTMLImageElement>document.getElementById("dr-photo-temp-container");
         this.photoLoader = <HTMLElement>document.getElementById("dr-photo-loader");
         this.photoContainer = <HTMLElement>document.getElementById("dr-photo-container");
         this.columnContainer =document.getElementById("dr-column-container");
@@ -61,6 +67,7 @@ export class GalleryComponent{
     }
     
     getPhotos(galleyId){
+        console.log("getPhotos");
         this.backend.get("/api/gallery/"+galleyId+"/photos").then(res => {
             this.photos = res.json();
 
@@ -69,17 +76,50 @@ export class GalleryComponent{
             }else{
                 this.error = "No photos";
             }
-        }).catch(()=>{
-            console.log("error");
+        }).catch((err)=>{
+            console.log("error", err);
             this.error = "Not found";
         })
     }
 
     showPhoto(photo, selectedPhoto){
+        this.currentPhotoThumbnail = this.photos[selectedPhoto];
         this.isPhotoDisplayed = true;
         this.photoContainer.style.opacity= "1";
         this.photoContainer.style.visibility = "visible";
+
+
         this.loadPhoto(selectedPhoto); 
+    }
+
+    scaleTempPhoto(){
+        this.photoTempContainer.style.width = "95%";
+        this.photoTempContainer.style.height = "95%";
+        let scale = 4.0;
+
+        let containerAR = this.photoTempContainer.offsetWidth/this.photoTempContainer.offsetHeight;
+        let photoAR = this.currentPhotoThumbnail.Width/this.currentPhotoThumbnail.Height;
+
+        if (containerAR < photoAR ){
+            scale = this.photoTempContainer.offsetWidth/this.photoTemp.offsetWidth;
+        }else{
+            scale = this.photoTempContainer.offsetHeight/this.photoTemp.offsetHeight;
+        }
+
+        console.log(containerAR, photoAR, scale);
+        scale *= 1;
+
+        if (containerAR > photoAR ){
+            this.photoTempContainer.style.width= (this.photoTempContainer.offsetHeight*photoAR) +"px";
+            this.photoTempContainer.style.height= "95%";
+
+        }else{
+            this.photoTempContainer.style.height= (this.photoTempContainer.offsetWidth/photoAR) +"px";
+            this.photoTempContainer.style.width = "95%";
+        }
+
+        this.photoTemp.style.transform = "translate(-50%, -50%) scale("+scale+')';
+
     }
 
     loadPhoto(selectedPhoto){
@@ -89,15 +129,29 @@ export class GalleryComponent{
         }
         let photo = this.photos[selectedPhoto];
 
-        this.photo.src = "";
         this.photoLoader.style.opacity = "1";
         this.photo.style.opacity = "0";
+        this.photoTemp.style.opacity = "1";
+
+        this.photoTemp.src = "";
+        this.photo.src = "";
+        
+        this.backend.getQueryToken().then(token=>{
+            console.log(photo);
+            this.photoTemp.src = "/api/photo/"+photo.Id+"/320?token="+token;
+            this.photoTemp.style.opacity = "1";
+
+            this.photoTemp.onload = ()=>{
+                this.scaleTempPhoto();
+            }
+        });
 
         this.backend.getQueryToken().then(token=>{
             this.photo.src = "/api/photo/"+photo.Id+"/1920?token="+token;
             this.photo.addEventListener('load', ()=>{
                 this.photoLoader.style.opacity = "0";
                 this.photo.style.opacity = "1";
+                this.photoTemp.style.opacity = "0";
             })
         });
     }
@@ -123,7 +177,7 @@ export class GalleryComponent{
         this.photoContainer.style.opacity = "0";
         setTimeout(()=>{
             this.photoContainer.style.visibility = "hidden";
-        }, 200);
+        }, 50);
     }
 
     getGallery(galleryId){
@@ -155,6 +209,10 @@ export class GalleryComponent{
             for(let i = 0; i < this.columnsNumber; i++){
                 this.columns.push(i);
             }
+        }
+
+        if (this.isPhotoDisplayed){
+            this.scaleTempPhoto();
         }
 
     }
