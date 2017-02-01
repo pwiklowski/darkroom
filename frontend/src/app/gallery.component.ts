@@ -6,7 +6,6 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {Gallery, Photo } from './models.ts';
 import {BackendService} from './backend.service';
 import { AngularFire, AuthProviders } from 'angularfire2';
-import { Photo } from './models';
 
 @Component({
     selector: 'my-app',
