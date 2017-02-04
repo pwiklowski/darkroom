@@ -126,6 +126,9 @@ export class BackendService{
                             resolve(token);
                         });
                         sub.unsubscribe();
+                    }else{
+                        resolve(null);
+                        sub.unsubscribe();
                     }
                 });
             }
